@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
 @import 'tailwindcss';
 
 @plugin '@tailwindcss/forms';
@@ -19,7 +21,7 @@
   If we ever want to remove these styles, we need to add an explicit border
   color utility to any element that depends on these defaults.
 */
-@layer base {
+/* @layer base {
   *,
   ::after,
   ::before,
@@ -27,4 +29,9 @@
   ::file-selector-button {
     border-color: var(--color-gray-200, currentcolor);
   }
+} */
+
+:root
+{
+  font-family: "Plus Jakarta Sans", "Poppins";
 }
