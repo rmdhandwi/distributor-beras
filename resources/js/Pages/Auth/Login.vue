@@ -1,28 +1,51 @@
 <script setup>
-import { Head, Link, useForm } from '@inertiajs/vue3'
+import { onMounted } from 'vue'
+import { Head, useForm } from '@inertiajs/vue3'
 
+import { useToast } from 'primevue'
 // import Layouts
 import GuestLayout from '@/Layouts/GuestLayout.vue'
 
+onMounted(()=>
+{
+    checkNotif()
+})
 
-defineProps({
-    canResetPassword: {
-        type: Boolean,
-    },
-    status: {
-        type: String,
-    },
+const props = defineProps({
+    flash : Object,
 });
+
+const toast = useToast()
+
+const checkNotif = () =>
+{
+    const notifStatus = loginForm.errors?'error':'success'
+
+    if(props.flash.notif_status??loginForm.errors.username??loginForm.errors.password)
+    {
+        setTimeout(() =>
+        {
+            toast.add({
+                severity : props.flash.notif_status??notifStatus,
+                summary : 'Notifikasi',
+                detail : props.flash.notif_message??loginForm.errors.username??loginForm.errors.password,
+                life : 2000,
+                group : 'tc'
+            })
+        },1000)
+    }
+}
 
 const loginForm = useForm({
-    username: '',
-    password: '',
-    remember: false,
+    username: null,
+    password: null,
 });
 
-const submit = () => {
-    loginForm.post(route('login'), {
-        onFinish: () => form.reset('password'),
+const submitForm = () => {
+    loginForm.post(route('login.submit'), {
+        onFinish: () => {
+            checkNotif()
+        }
     });
 };
 </script>
@@ -30,16 +53,22 @@ const submit = () => {
 <template>
     <GuestLayout>
         <Head title="Login"/>
-            <form @submit.prevent="submit" class="flex flex-col gap-4 mt-4" autocomplete="off">
-                <FloatLabel variant="on">
-                    <InputText id="on_label" v-model="loginForm.username" fluid/>
-                    <label for="on_label">Username</label>
-                </FloatLabel>
+            <form @submit.prevent="submitForm" class="flex flex-col gap-4 mt-4" autocomplete="off">
+                <div>
+                    <FloatLabel variant="on">
+                        <InputText id="on_label" v-model="loginForm.username" fluid/>
+                        <label for="on_label">Username</label>
+                    </FloatLabel>
+                    <span class="text-red-500" v-if="loginForm.errors.username"> {{ loginForm.errors.username }} </span>
+                </div>
 
-                <FloatLabel variant="on">
-                    <Password id="on_label" v-model="loginForm.password" toggleMask fluid/>
-                    <label for="on_label">Password</label>
-                </FloatLabel>
+                <div>
+                    <FloatLabel variant="on">
+                        <Password id="password_label" v-model="loginForm.password" toggleMask fluid/>
+                        <label for="password_label">Password</label>
+                    </FloatLabel>
+                    <span class="text-red-500" v-if="loginForm.errors.password"> {{ loginForm.errors.password }} </span>
+                </div>
 
                 <Button type="submit" :label="loginForm.processing?null:'Login'" class="min-w-full" :disabled="loginForm.processing" :icon="loginForm.processing?'pi pi-spin pi-spinner':null" />
 
