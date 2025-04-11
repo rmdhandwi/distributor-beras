@@ -21,7 +21,7 @@ const loginForm = useForm({
 });
 
 const submit = () => {
-    form.post(route('login'), {
+    loginForm.post(route('login'), {
         onFinish: () => form.reset('password'),
     });
 };
@@ -30,16 +30,18 @@ const submit = () => {
 <template>
     <GuestLayout>
         <Head title="Login"/>
-            <form @submit.prevent="submit" class="flex flex-col gap-4 mt-4">
+            <form @submit.prevent="submit" class="flex flex-col gap-4 mt-4" autocomplete="off">
                 <FloatLabel variant="on">
-                    <InputText fluid id="on_label" v-model="loginForm.username"/>
+                    <InputText id="on_label" v-model="loginForm.username" fluid/>
                     <label for="on_label">Username</label>
                 </FloatLabel>
 
                 <FloatLabel variant="on">
-                    <Password id="on_label" v-model="loginForm.password" fluid/>
+                    <Password id="on_label" v-model="loginForm.password" toggleMask fluid/>
                     <label for="on_label">Password</label>
                 </FloatLabel>
+
+                <Button type="submit" :label="loginForm.processing?null:'Login'" class="min-w-full" :disabled="loginForm.processing" :icon="loginForm.processing?'pi pi-spin pi-spinner':null" />
 
             </form>
     </GuestLayout>
