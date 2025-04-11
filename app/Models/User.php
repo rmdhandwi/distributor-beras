@@ -13,8 +13,13 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    protected $primaryKey = 'user_id';
-    protected $keyType = 'string';
+    protected
+    $guarded = [],
+    $table = 'users',
+    $primaryKey = 'user_id',
+    $keyType = 'string',
+    $fillable= [];
+    // protected $keyType = 'string';
 
     // deteksi kolom pada tabel dinamis
     public function __construct(array $attributes = [])
