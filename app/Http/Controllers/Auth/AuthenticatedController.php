@@ -16,24 +16,63 @@ class AuthenticatedController extends Controller
     /**
      * Display the login view.
      */
-    public function create(): Response
-    {
-        return Inertia::render('Auth/Login', [
-            'canResetPassword' => Route::has('password.request'),
-            'status' => session('status'),
-        ]);
-    }
+    // public function create(): Response
+    // {
+    //     return Inertia::render('Auth/Login', [
+    //         'canResetPassword' => Route::has('password.request'),
+    //         'status' => session('status'),
+    //     ]);
+    // }
 
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    // public function store(LoginRequest $request): RedirectResponse
+    // {
+    //     $request->authenticate();
+
+    //     $request->session()->regenerate();
+
+    //     return redirect()->intended(route('dashboard', absolute: false));
+    // }
+    public function submitLogin(Request $req)
     {
-        $request->authenticate();
+        $loginForm = $req->validate([
+            'username' => 'required|exists:users,username',
+            'password' => 'required',
+        ],[
+            'username.required' => 'Harap isi username',
+            'username.exists' => $req->username.' tidak terdaftar',
+            'password.required' => 'Harap isi password',
+        ]);
 
-        $request->session()->regenerate();
+        if(Auth::attempt($loginForm))
+        {
+            $notification = [
+                'notif_status' => 'success',
+                'notif_message' => 'Selamat Datang '.$req->username,
+            ];
 
-        return redirect()->intended(route('dashboard', absolute: false));
+            $req->session()->regenerate();
+
+            switch(auth()->guard()->user()->role)
+            {
+                case 'Admin' : return redirect()->route('admin.dashboard')->with($notification);
+                break;
+            }
+
+        }
+        else
+        {
+            $notification = [
+                'notif_status' => 'error',
+                'notif_message' => 'Login Gagal',
+            ];
+
+            return redirect()->back()->with($notification)->withErrors([
+                'password' => 'Password Salah'
+            ]);
+        }
     }
 
     /**
@@ -47,6 +86,6 @@ class AuthenticatedController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/'); 
+        return redirect('/');
     }
 }
