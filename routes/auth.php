@@ -9,7 +9,7 @@ Route::middleware('guest')->group(function () {
     Route::get('login', [AuthenticatedController::class, 'create'])
         ->name('login');
 
-    Route::post('login', [AuthenticatedController::class, 'store']);
+    Route::post('login', [AuthenticatedController::class, 'submitLogin'])->name('login.submit');
 
 });
 
