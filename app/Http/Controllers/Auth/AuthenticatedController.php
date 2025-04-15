@@ -8,12 +8,13 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class AuthenticatedController extends Controller
 {
-    
+
     public function submitLogin(Request $req)
     {
         $loginForm = $req->validate([
@@ -57,14 +58,25 @@ class AuthenticatedController extends Controller
     /**
      * Destroy an authenticated session.
      */
-    public function destroy(Request $request): RedirectResponse
+    // public function destroy(Request $request): RedirectResponse
+    // {
+    //     Auth::guard('web')->logout();
+
+    //     $request->session()->invalidate();
+
+    //     $request->session()->regenerateToken();
+
+    //     return redirect('/');
+    // }
+
+    public function logout()
     {
-        Auth::guard('web')->logout();
-
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
-        return redirect('/');
+        $notification = [
+                'notif_status' => 'success',
+                'notif_message' => 'Berhasil Logout',
+        ];
+        Auth::logout();
+        Session::flush();
+        return redirect()->route('login')->with($notification);
     }
 }
