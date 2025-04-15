@@ -5,6 +5,10 @@ import Sidebar from '@/Components/Sidebar.vue';
 </script>
 
 <template>
+     <!-- toast notifikasi -->
+    <Toast class="z-50" position="top-center"/>
+    <!-- dialog logout -->
+    <ConfirmDialog class="w-[24rem]"></ConfirmDialog>
     <!-- layout utama -->
     <div class="bg-slate-200 flex p-1 min-h-screen overflow-hidden">
         <!-- Sidebar -->
