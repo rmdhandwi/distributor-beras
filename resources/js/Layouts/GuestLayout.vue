@@ -10,7 +10,7 @@ import leftImg from '../../assets/img/login-img.jpg'
             <img :src="leftImg" alt="warehouse picture" class="size-full">
         </div>
         <div class="flex flex-col p-8 lg:p-16 lg:gap-y-4 lg:w-[500px]">
-            <h1 class="text-2xl lg:text-4xl font-semibold">Distributor Beras</h1>
+            <h1 class="text-2xl lg:text-4xl font-semibold text-center">Distributor Beras</h1>
             <!-- form login/signup -->
             <slot/>
         </div>
