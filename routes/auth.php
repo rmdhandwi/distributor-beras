@@ -7,16 +7,12 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
-    Route::get('login', [AuthenticatedController::class, 'create'])
-        ->name('login');
-
     Route::post('login', [AuthenticatedController::class, 'submitLogin'])->name('login.submit');
 
 });
 
 Route::middleware('auth')->group(function () {
-    Route::post('logout', [AuthenticatedController::class, 'destroy'])
-        ->name('logout');
+    Route::get('logout', [AuthenticatedController::class, 'logout'])->name('logout');
 });
 
 // admin routes
