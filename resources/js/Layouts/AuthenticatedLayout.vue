@@ -1,18 +1,21 @@
 <script setup>
-import { ref } from 'vue';
 
 </script>
 
 <template>
-    <div>
-        <div class="min-h-screen bg-gray-100">
-            <nav
-                class="border-b border-gray-100 bg-white"
-            >
-                
-            </nav>
-
-        
+    <!-- layout utama -->
+    <div class="bg-slate-200 flex p-1 min-h-screen overflow-hidden">
+        <!-- Sidebar -->
+         
+        <!-- Sidebar Selesai  -->
+        <!-- Konten Halaman -->
+        <div class="transition-all duration-[450ms] w-full h-full px-1 overflow-hidden flex flex-col gap-2">
+            <!-- body -->
+            <div class="bg-slate-50 rounded-lg w-full p-4 min-h-screen">
+                <slot name="pageContent"/>
+            </div>
+            <!-- body selesai -->
         </div>
+        <!-- Konten Halaman Selesai -->
     </div>
 </template>
