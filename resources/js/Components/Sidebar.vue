@@ -1,10 +1,39 @@
 <script setup>
 import { router } from '@inertiajs/vue3'
 import { ref } from 'vue';
+import { useConfirm, useToast } from 'primevue';
 
 import { adminMenu } from '@/Composables/SidebarLists'
 
 const adminMenus = ref(adminMenu)
+
+const confirm = useConfirm()
+
+const toast = useToast()
+
+const confirmLogout = () =>
+{
+    confirm.require({
+        message: 'Yakin ingin logout dari aplikasi?',
+        header: 'Peringatan',
+        icon: 'pi pi-exclamation-triangle',
+        rejectProps: {
+            label: 'Batal',
+            severity: 'secondary',
+            outlined: true
+        },
+        acceptProps: {
+            label: 'Logout',
+            severity: 'danger'
+        },
+        accept : () => {
+            toast.add({ severity: 'info', summary: 'Notifikasi', detail: 'Proses Logout', life: 3000 });
+            setTimeout(() =>
+                router.get(route('logout'))
+            ,3000)
+        },
+    });
+}
 
 </script>
 
@@ -13,7 +42,9 @@ const adminMenus = ref(adminMenu)
 
         <div class="flex flex-col gap-4 text-lg items-center">
             <Button v-if="$page.props.auth.user.role === 'Admin'" v-for="menu in adminMenus" :key="menu.route" :label="menu.label" :icon="menu.icon" class="w-full p-1 flex items-center justify-center gap-2 rounded" :class="{'bg-slate-50 text-amber-500' : route().current(menu.current), 'text-slate-50 bg-transparent' : !route().current(menu.route)}" unstyled/>
+
         </div>
+        <Button @click="confirmLogout()" class="w-full self-end" severity="danger" label="Logout" icon="pi pi-power-off"/>
     </div>
 </template>
 
