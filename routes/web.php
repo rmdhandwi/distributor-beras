@@ -7,6 +7,6 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
     return Inertia::render('Auth/Login');
-});
+})->name('login');
 
 require __DIR__.'/auth.php';
