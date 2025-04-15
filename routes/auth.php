@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\AuthenticatedController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
@@ -16,4 +17,9 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthenticatedController::class, 'destroy'])
         ->name('logout');
+});
+
+// admin routes
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('admin/dashboard', [AdminController::class, 'dashboardPage'])->name('admin.dashboard');
 });
