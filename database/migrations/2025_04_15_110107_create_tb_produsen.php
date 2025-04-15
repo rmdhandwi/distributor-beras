@@ -22,7 +22,6 @@ return new class extends Migration
             $table->integer('jml_stok');
             $table->string('status_stok');
             $table->date('tgl_pendaftaran');
-            $table->text('riwayat_pemesanan');
             $table->dateTime('created_at');
             $table->dateTime('updated_at')->nullable();
         });
