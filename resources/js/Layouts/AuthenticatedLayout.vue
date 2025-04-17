@@ -1,6 +1,11 @@
 <script setup>
-import Sidebar from '@/Components/Sidebar.vue';
 
+import Header from '@/Components/Header.vue'
+import Sidebar from '@/Components/Sidebar.vue'
+
+const props = defineProps({
+    pageTitle : String,
+})
 
 </script>
 
@@ -16,6 +21,9 @@ import Sidebar from '@/Components/Sidebar.vue';
         <!-- Sidebar Selesai  -->
         <!-- Konten Halaman -->
         <div class="transition-all duration-[450ms] ml-[200px] w-full h-full px-1 overflow-hidden flex flex-col gap-2">
+            <!-- header -->
+            <Header :page-title="props.pageTitle"/>
+            <!-- header selesai -->
             <!-- body -->
             <div class="bg-slate-50 rounded-lg w-full p-4 min-h-screen">
                 <slot name="pageContent"/>
