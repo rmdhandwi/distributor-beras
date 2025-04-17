@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tb_pemesanan', function (Blueprint $table) {
-            $table->id('id_pemesanan')->primary();
+            $table->id('id_pemesanan');
             $table->foreignId('id_produsen')->references('id_produsen')->on('tb_produsen')->onDelete('cascade');
             $table->foreignId('id_beras')->references('id_beras')->on('tb_beras')->onDelete('cascade');
             $table->integer('jmlh');
