@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\AuthenticatedController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\ProdusenController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -18,4 +19,6 @@ Route::middleware('auth')->group(function () {
 // admin routes
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('admin/dashboard', [AdminController::class, 'dashboardPage'])->name('admin.dashboard');
+
+    Route::get('admin/produsen', [ProdusenController::class, 'index'])->name('admin.produsen.index');
 });
