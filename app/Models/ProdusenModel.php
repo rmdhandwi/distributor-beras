@@ -27,7 +27,7 @@ class ProdusenModel extends Model
     protected $casts = [
         'harga_beras' => 'integer',
         'jml_stok' => 'integer',
-        'tgl_pendaftaran' => 'date',
+        'tgl_pendaftaran' => 'string',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
