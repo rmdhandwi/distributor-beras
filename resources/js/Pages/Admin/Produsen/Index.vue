@@ -8,12 +8,13 @@ import { computed, defineAsyncComponent, onMounted, ref,} from 'vue'
 onMounted(() =>
 {
     checkNotif()
+
 })
 
 const props = defineProps({
-    flash: Object,
+    flash : Object,
+    dataProdusen : Object,
 })
-
 
 const toast = useToast()
 
@@ -59,6 +60,14 @@ const TambahProdusen = defineAsyncComponent(() => import('./TambahProdusen.vue')
 const currentComponent = computed(() => {
   return currentTab.value === 'DaftarProdusen' ? DaftarProdusen : TambahProdusen
 })
+
+const componentProps = computed(() => {
+  if (currentTab.value === 'DaftarProdusen') {
+    return {
+      dataProdusen : props.dataProdusen?.map((p,i) => ({nomor:i+1,...p})),
+    }
+  }
+})
 </script>
 
 <template>
@@ -69,8 +78,8 @@ const currentComponent = computed(() => {
                 <Button @click="switchComponents('DaftarProdusen','Daftar Produsen')" label="Daftar Produsen" :severity="currentTab==='DaftarProdusen'?'primary':'secondary'" icon="pi pi-list"/>
                 <Button @click="switchComponents('TambahProdusen','Tambah Produsen')" label="Tambah Produsen" :severity="currentTab==='DaftarProdusen'?'secondary':'primary'" icon="pi pi-plus"/>
             </div>
-            <div class="p-4 flex flex-col">
-                <component :is="currentComponent" @refreshPage="refreshPage()"/>
+            <div class="flex flex-col mt-4">
+                <component :is="currentComponent" v-bind="componentProps" @refreshPage="refreshPage()"/>
             </div>
         </template>
     </AuthenticatedLayout>
