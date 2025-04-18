@@ -14,7 +14,11 @@ class ProdusenController extends Controller
     public function index()
     {
         //
-        return Inertia::render('Admin/Produsen/Index');
+        $dataProdusen = ProdusenModel::all();
+
+        return Inertia::render('Admin/Produsen/Index', [
+            'dataProdusen' => $dataProdusen,
+        ]);
     }
 
     /**
