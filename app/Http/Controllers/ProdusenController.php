@@ -86,9 +86,47 @@ class ProdusenController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $req)
     {
         //
+        $id_produsen = $req->id_produsen;
+
+        $req->validate([
+            '*' => 'required',
+            'nama_produsen' => 'required|unique:tb_produsen,nama_produsen,' .$id_produsen.',id_produsen',
+            'email' => 'required|email:rfc|unique:tb_produsen,email,' .$id_produsen. ',id_produsen',
+            'no_telp' => 'required|numeric|min_digits:12|unique:tb_produsen,no_telp,' .$id_produsen. ',id_produsen',
+        ], [
+            '*.required' => 'Kolom wajib diisi.',
+            'nama_produsen.unique' => $req->nama_produsen . ' telah terdaftar',
+            'email.unique' => $req->email . ' telah terdaftar',
+            'no_telp.min_digits' => 'Nomor telepon minimal 12 angka.',
+            'no_telp.numeric' => 'Nomor telepon harus berupa angka.',
+            'no_telp.unique' => $req->no_telp . ' telah terdaftar',
+        ]);
+
+        $update = ProdusenModel::where('id_produsen', $id_produsen)->update([
+            'nama_produsen' => $req->nama_produsen,
+            'alamat' => $req->alamat,
+            'no_telp' => $req->no_telp,
+            'email' => $req->email,
+            'jenis_beras' => $req->jenis_beras,
+            'harga_beras' => $req->harga_beras,
+            'jml_stok' => $req->jml_stok,
+            'status_stok' => $req->jml_stok > 0 ? 'Tersedia' : 'Kosong',
+        ]);
+
+        if ($update) {
+            return redirect()->back()->with([
+                'notif_status' => 'success',
+                'notif_message' => 'Berhasil update data produsen: ' . $req->nama_produsen,
+            ]);
+        } else {
+            return redirect()->back()->with([
+                'notif_status' => 'error',
+                'notif_message' => 'Gagal update data produsen.',
+            ]);
+        }
     }
 
     /**
