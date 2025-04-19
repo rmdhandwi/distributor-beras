@@ -20,7 +20,9 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('admin/dashboard', [AdminController::class, 'dashboardPage'])->name('admin.dashboard');
 
+    // Route Produsen
     Route::get('admin/produsen', [ProdusenController::class, 'index'])->name('admin.produsen.index');
 
     Route::post('admin/produsen/tambah', [ProdusenController::class, 'store'])->name('admin.produsen.store');
+    Route::post('admin/produsen/update', [ProdusenController::class, 'update'])->name('admin.produsen.update');
 });
