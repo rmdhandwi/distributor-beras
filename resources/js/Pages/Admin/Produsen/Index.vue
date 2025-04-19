@@ -2,7 +2,7 @@
 import { computed, defineAsyncComponent, onMounted, ref,} from 'vue'
 import { Head, router } from '@inertiajs/vue3'
 
-import { useToast } from 'primevue'
+import { useConfirm, useToast } from 'primevue'
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import LoadingSpinner from '@/Components/LoadingSpinner.vue'
@@ -14,12 +14,18 @@ onMounted(() =>
 
 })
 
+
+
 const props = defineProps({
     flash : Object,
     dataProdusen : Object,
 })
 
+const confirm = useConfirm()
+
 const toast = useToast()
+
+const dataEditProdusen = ref(null)
 
 const refreshPage = async () =>
 {
@@ -38,10 +44,10 @@ const checkNotif = async () =>
                 severity : props.flash.notif_status,
                 summary : 'notifikasi',
                 detail : props.flash.notif_message,
-                life : 3000,
+                life : 1000,
             })
 
-            setTimeout(() => { resolve()}, 3000)
+            setTimeout(() => { resolve()}, 1000)
         })
     }
 }
@@ -57,22 +63,20 @@ const switchComponents = (component,title) =>
 }
 
 // async component
-const DaftarProdusen = defineAsyncComponent({
-    loader : () => import('./DaftarProdusen.vue'),
-    loadingComponent : LoadingSpinner,
-    delay : 200,
-    timeout: 3000
-})
-const TambahProdusen = defineAsyncComponent({
-    loader : () => import('./TambahProdusen.vue'),
-    loadingComponent : LoadingSpinner,
-    delay : 200,
-    timeout: 3000
-})
+const loadComponent = componentName =>
+{
+    return  defineAsyncComponent({
+        loader : () => import(`./${componentName}.vue`),
+        loadingComponent : LoadingSpinner,
+        delay : 200,
+        timeout: 3000
+    })
+}
 
 const currentComponent = computed(() => {
-  return currentTab.value === 'DaftarProdusen' ? DaftarProdusen : TambahProdusen
+  return loadComponent(currentTab.value)
 })
+
 
 const componentProps = computed(() => {
   if (currentTab.value === 'DaftarProdusen') {
@@ -80,19 +84,58 @@ const componentProps = computed(() => {
       dataProdusen : props.dataProdusen?.map((p,i) => ({nomor:i+1,...p})),
     }
   }
+  if (currentTab.value === 'EditProdusen') {
+    return {
+      dataProdusen : {...dataEditProdusen.value},
+    }
+  }
 })
+
+const editData = dataEmit =>
+{
+    dataEditProdusen.value = dataEmit
+    switchComponents('EditProdusen','Edit Produsen')
+}
+
+const batalkanEditProdusen = () =>
+{
+    confirm.require({
+        message: 'Batal Edit Produsen?',
+        header: 'Peringatan',
+        icon: 'pi pi-exclamation-triangle',
+        rejectProps: {
+            label: 'Batal',
+            severity: 'secondary',
+            outlined: true
+        },
+        acceptProps: {
+            label: 'Ya',
+            severity: 'info'
+        },
+        accept : () => {
+            toast.add({ severity: 'info', summary: 'Notifikasi', detail: 'Membatalkan...', life: 2000 });
+            setTimeout(() =>
+                router.visit(route('admin.produsen.index'))
+            ,2000)
+        },
+    });
+}
 </script>
 
 <template>
     <Head :title="pageTitle" />
     <AuthenticatedLayout :page-title="pageTitle">
         <template #pageContent>
-            <div class="flex gap-x-4">
+            <div class="flex gap-x-4" v-if="currentTab==='EditProdusen'">
+                <Button @click="batalkanEditProdusen()" label="Batal" severity="danger" icon="pi pi-times"/>
+                <Button label="Edit Produsen" icon="pi pi-pen-to-square"/>
+            </div>
+            <div class="flex gap-x-4" v-else>
                 <Button @click="switchComponents('DaftarProdusen','Daftar Produsen')" label="Daftar Produsen" :severity="currentTab==='DaftarProdusen'?'primary':'secondary'" icon="pi pi-list"/>
                 <Button @click="switchComponents('TambahProdusen','Tambah Produsen')" label="Tambah Produsen" :severity="currentTab==='DaftarProdusen'?'secondary':'primary'" icon="pi pi-plus"/>
             </div>
             <div class="flex flex-col mt-4">
-                <component :is="currentComponent" v-bind="componentProps" @refreshPage="refreshPage()"/>
+                <component :is="currentComponent" v-bind="componentProps" @refreshPage="refreshPage()" @editData="editData"/>
             </div>
         </template>
     </AuthenticatedLayout>
