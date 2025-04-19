@@ -60,6 +60,9 @@ const editProdusen = id_produsen =>
                     <Button icon="pi pi-print" severity="contrast" variant="outlined" label="CSV" size="small" />
                 </div>
             </template>
+            <template #footer>
+                <span>Jumlah Data Produsen ({{ props.dataProdusen.length }})</span>
+            </template>
             <template #loading>
                 <span class="flex justify-center">Sedang Memuat Data...</span>
             </template>
