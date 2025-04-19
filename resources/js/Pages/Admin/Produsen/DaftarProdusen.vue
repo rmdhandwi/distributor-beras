@@ -19,6 +19,8 @@ const props = defineProps({
     dataProdusen : Object,
 })
 
+const emit = defineEmits(['editData'])
+
 function formatRupiah(angka) {
   return new Intl.NumberFormat('id-ID', {
     style: 'currency',
@@ -30,6 +32,17 @@ function formatRupiah(angka) {
 function formatTanggal(tanggal) {
   const [tahun, bulan, hari] = tanggal.split('-')
   return `${hari}/${bulan}/${tahun}`
+}
+
+const editProdusen = id_produsen =>
+{
+    const dataProdusen = props.dataProdusen.filter((produsen) => produsen.id_produsen === id_produsen).map(item => {
+        const copy = {...item}
+        delete copy.nomor
+        return copy
+    })
+
+    emit('editData', dataProdusen)
 }
 
 </script>
@@ -79,7 +92,7 @@ function formatTanggal(tanggal) {
             <Column header="Action" frozen align-frozen="right">
                 <template #body="{data}">
                     <div class="flex place-content-center gap-2">
-                        <Button severity="info" size="small" icon="pi pi-pen-to-square"/>
+                        <Button @click="editProdusen(data.id_produsen)" severity="info" size="small" icon="pi pi-pen-to-square"/>
                     </div>
                 </template>
             </Column>
