@@ -2,8 +2,6 @@
 import { computed, ref } from 'vue'
 
 import {FilterMatchMode} from '@primevue/core/api'
-// import { Select } from 'primevue';
-
 
 const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -14,6 +12,7 @@ const filters = ref({
     'email': { value: null, matchMode: FilterMatchMode.CONTAINS },
     'jenis_beras': { value: null, matchMode: FilterMatchMode.EQUALS },
     'harga_beras': { value: null, matchMode: FilterMatchMode.EQUALS },
+    // 'jumlah_stok': { value: null, matchMode: FilterMatchMode.CONTAINS },
 })
 
 const props = defineProps({
@@ -28,16 +27,6 @@ function formatRupiah(angka) {
   }).format(angka);
 }
 
-const jenisBerasOptions = computed(() => {
-  const semuaJenis = props.dataProdusen.map(item => item.jenis_beras)
-  const unik = [...new Set(semuaJenis)]
-
-  return unik.map(jenis => ({
-    label: jenis,
-    value: jenis
-  }))
-})
-
 function formatTanggal(tanggal) {
   const [tahun, bulan, hari] = tanggal.split('-')
   return `${hari}/${bulan}/${tahun}`
@@ -47,7 +36,7 @@ function formatTanggal(tanggal) {
 
 <template>
     <div class="flex flex-col">
-        <DataTable :value="props.dataProdusen" dataKey="index" class="shadow border border-amber-500 rounded-lg overflow-hidden" showGridlines removable-sort striped-rows scrollable v-model:filters="filters" :global-filter-fields="['nomor','nama_produsen','alamat','no_telp','email','jenis_beras','harga_beras']">
+        <DataTable :value="props.dataProdusen" dataKey="index" class="shadow border border-amber-500 rounded-lg overflow-hidden" showGridlines removable-sort striped-rows scrollable v-model:filters="filters" :global-filter-fields="['nomor','nama_produsen','alamat','no_telp','email','jenis_beras','harga_beras','jml_stok']">
             <template #header>
                 <div class="flex justify-between items-center gap-x-2">
                     <IconField class="w-full">
@@ -56,8 +45,11 @@ function formatTanggal(tanggal) {
                         </InputIcon>
                         <InputText v-model="filters['global'].value" placeholder="Cari Data Barang" size="small" fluid/>
                     </IconField>
-                    <Button icon="pi pi-print" severity="success" label="CSV" size="small" />
+                    <Button icon="pi pi-print" severity="contrast" variant="outlined" label="CSV" size="small" />
                 </div>
+            </template>
+            <template #loading>
+                <span class="flex justify-center">Sedang Memuat Data...</span>
             </template>
             <template #empty>
                 <span class="flex justify-center">Tidak Ada Barang</span>
@@ -86,7 +78,7 @@ function formatTanggal(tanggal) {
             </Column>
             <Column header="Action" frozen align-frozen="right">
                 <template #body="{data}">
-                    <div class="flex place-content-center">
+                    <div class="flex place-content-center gap-2">
                         <Button severity="info" size="small" icon="pi pi-pen-to-square"/>
                     </div>
                 </template>
