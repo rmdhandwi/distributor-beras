@@ -11,7 +11,6 @@ import LoadingSpinner from '@/Components/LoadingSpinner.vue'
 onMounted(() =>
 {
     checkNotif()
-
 })
 
 const props = defineProps({
