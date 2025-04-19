@@ -1,6 +1,6 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3'
-import { useConfirm } from 'primevue'
+import { useConfirm, useToast } from 'primevue'
 
 const props = defineProps({
     formType : String,
@@ -10,7 +10,7 @@ const props = defineProps({
 const emit = defineEmits(['refreshPage'])
 
 const confirm = useConfirm()
-
+const toast = useToast()
 
 const produsenForm = useForm({
     id_produsen: props.dataProdusen?.[0]?.id_produsen ?? null,
@@ -45,7 +45,18 @@ const submitProdusen = () =>
             label: 'Tambah',
         },
         accept: () => {
-            produsenForm.post(route('admin.produsen.store'), {
+            produsenForm.transform((data) => {
+                const {id_produsen,...dataFix } = data
+                return dataFix
+            }).post(route('admin.produsen.store'), {
+                onError : () => {
+                    toast.add({
+                        severity : 'error',
+                        summary : 'Notifikasi',
+                        detail : 'Terjadi kesalahan',
+                        life : 3000,
+                    })
+                },
                 onSuccess : () => {
                     produsenForm.reset()
                     produsenForm.clearErrors()
