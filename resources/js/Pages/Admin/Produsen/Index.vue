@@ -29,8 +29,8 @@ const dataEditProdusen = ref(null)
 
 const refreshPage = async () =>
 {
+    switchComponents('DaftarProdusen','Daftar Produsen')
     await checkNotif()
-    router.visit(route('admin.produsen.index'))
 }
 
 
@@ -44,10 +44,10 @@ const checkNotif = async () =>
                 severity : props.flash.notif_status,
                 summary : 'notifikasi',
                 detail : props.flash.notif_message,
-                life : 1000,
+                life : 2000,
             })
 
-            setTimeout(() => { resolve()}, 1000)
+            setTimeout(() => { resolve()}, 2000)
         })
     }
 }
