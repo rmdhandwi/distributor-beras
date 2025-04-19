@@ -1,8 +1,11 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
-import { Head, router } from '@inertiajs/vue3'
-import { useToast } from 'primevue'
 import { computed, defineAsyncComponent, onMounted, ref,} from 'vue'
+import { Head, router } from '@inertiajs/vue3'
+
+import { useToast } from 'primevue'
+
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
+import LoadingSpinner from '@/Components/LoadingSpinner.vue'
 
 
 onMounted(() =>
@@ -54,8 +57,18 @@ const switchComponents = (component,title) =>
 }
 
 // async component
-const DaftarProdusen = defineAsyncComponent(() => import('./DaftarProdusen.vue'))
-const TambahProdusen = defineAsyncComponent(() => import('./TambahProdusen.vue'))
+const DaftarProdusen = defineAsyncComponent({
+    loader : () => import('./DaftarProdusen.vue'),
+    loadingComponent : LoadingSpinner,
+    delay : 200,
+    timeout: 3000
+})
+const TambahProdusen = defineAsyncComponent({
+    loader : () => import('./TambahProdusen.vue'),
+    loadingComponent : LoadingSpinner,
+    delay : 200,
+    timeout: 3000
+})
 
 const currentComponent = computed(() => {
   return currentTab.value === 'DaftarProdusen' ? DaftarProdusen : TambahProdusen
