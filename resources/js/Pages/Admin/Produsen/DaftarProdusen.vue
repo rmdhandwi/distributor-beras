@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 
 import {FilterMatchMode} from '@primevue/core/api'
 
@@ -12,7 +12,6 @@ const filters = ref({
     'email': { value: null, matchMode: FilterMatchMode.CONTAINS },
     'jenis_beras': { value: null, matchMode: FilterMatchMode.EQUALS },
     'harga_beras': { value: null, matchMode: FilterMatchMode.EQUALS },
-    // 'jumlah_stok': { value: null, matchMode: FilterMatchMode.CONTAINS },
 })
 
 const props = defineProps({
@@ -56,7 +55,7 @@ const editProdusen = id_produsen =>
                         <InputIcon>
                             <i class="pi pi-search me-4" />
                         </InputIcon>
-                        <InputText v-model="filters['global'].value" placeholder="Cari Data Barang" size="small" fluid/>
+                        <InputText v-model="filters['global'].value" placeholder="Cari Data Produsen" size="small" fluid/>
                     </IconField>
                     <Button icon="pi pi-print" severity="contrast" variant="outlined" label="CSV" size="small" />
                 </div>
@@ -65,7 +64,7 @@ const editProdusen = id_produsen =>
                 <span class="flex justify-center">Sedang Memuat Data...</span>
             </template>
             <template #empty>
-                <span class="flex justify-center">Tidak Ada Barang</span>
+                <span class="flex justify-center">Tidak Ada Produsen</span>
             </template>
             <Column sortable field="nomor" header="No" frozen/>
             <Column sortable field="nama_produsen" header="Nama Produsen" style="min-width: 180px;" frozen/>
