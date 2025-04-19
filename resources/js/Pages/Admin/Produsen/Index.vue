@@ -14,8 +14,6 @@ onMounted(() =>
 
 })
 
-
-
 const props = defineProps({
     flash : Object,
     dataProdusen : Object,
@@ -32,7 +30,6 @@ const refreshPage = async () =>
     switchComponents('DaftarProdusen','Daftar Produsen')
     await checkNotif()
 }
-
 
 const checkNotif = async () =>
 {
@@ -76,7 +73,6 @@ const loadComponent = componentName =>
 const currentComponent = computed(() => {
   return loadComponent(currentTab.value)
 })
-
 
 const componentProps = computed(() => {
   if (currentTab.value === 'DaftarProdusen') {
