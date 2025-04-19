@@ -62,12 +62,23 @@ const switchComponents = (component,title) =>
 // async component
 const loadComponent = componentName =>
 {
-    return  defineAsyncComponent({
-        loader : () => import(`./${componentName}.vue`),
-        loadingComponent : LoadingSpinner,
-        delay : 200,
-        timeout: 3000
-    })
+    if(componentName === 'TambahProdusen' || componentName === 'EditProdusen')
+    {
+        return  defineAsyncComponent({
+            loader : () => import(`./FormProdusen.vue`),
+            loadingComponent : LoadingSpinner,
+            delay : 200,
+            timeout: 3000
+        })
+    }
+    else {
+        return  defineAsyncComponent({
+            loader : () => import(`./${componentName}.vue`),
+            loadingComponent : LoadingSpinner,
+            delay : 200,
+            timeout: 3000
+        })
+    }
 }
 
 const currentComponent = computed(() => {
@@ -75,16 +86,27 @@ const currentComponent = computed(() => {
 })
 
 const componentProps = computed(() => {
-  if (currentTab.value === 'DaftarProdusen') {
-    return {
-      dataProdusen : props.dataProdusen?.map((p,i) => ({nomor:i+1,...p})),
+    switch (currentTab.value) {
+
+        case 'DaftarProdusen':
+        return {
+            dataProdusen: props.dataProdusen?.map((p, i) => ({ nomor: i + 1, ...p })),
+        };
+
+        case 'TambahProdusen':
+        return {
+            formType: 'Create',
+        };
+
+        case 'EditProdusen':
+        return {
+            formType: 'Edit',
+            dataProdusen: { ...dataEditProdusen.value },
+        };
+
+        default:
+        return {};
     }
-  }
-  if (currentTab.value === 'EditProdusen') {
-    return {
-      dataProdusen : {...dataEditProdusen.value},
-    }
-  }
 })
 
 const editData = dataEmit =>
@@ -100,18 +122,19 @@ const batalkanEditProdusen = () =>
         header: 'Peringatan',
         icon: 'pi pi-exclamation-triangle',
         rejectProps: {
-            label: 'Batal',
+            label: 'Lanjut',
             severity: 'secondary',
             outlined: true
         },
         acceptProps: {
-            label: 'Ya',
-            severity: 'info'
+            label: 'Batalkan',
+            severity: 'danger'
         },
         accept : () => {
             toast.add({ severity: 'info', summary: 'Notifikasi', detail: 'Membatalkan...', life: 2000 });
+            dataEditProdusen.value = null
             setTimeout(() =>
-                router.visit(route('admin.produsen.index'))
+                switchComponents('DaftarProdusen','Daftar Produsen')
             ,2000)
         },
     });
