@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\AuthenticatedController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\BerasController;
 use App\Http\Controllers\ProdusenController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,4 +26,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::post('admin/produsen/tambah', [ProdusenController::class, 'store'])->name('admin.produsen.store');
     Route::post('admin/produsen/update', [ProdusenController::class, 'update'])->name('admin.produsen.update');
+
+    // Route Beras
+    Route::get('admin/beras', [BerasController::class, 'index'])->name('admin.beras.index');
 });
