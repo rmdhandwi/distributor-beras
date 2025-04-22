@@ -4,6 +4,7 @@ import { Head } from '@inertiajs/vue3'
 
 import { useConfirm, useToast } from 'primevue'
 
+import LoadingSpinner from '@/Components/LoadingSpinner.vue'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 
 
@@ -14,13 +15,13 @@ onMounted(() =>
 
 const props = defineProps({
     flash : Object,
-    dataProdusen : Object
+    dataBeras : Object
 })
 
 const confirm = useConfirm()
 const toast = useToast()
 
-const pageTitle = 'Daftar Beras'
+const pageTitle = ref('Daftar Beras')
 const currentTab = ref('DaftarBeras')
 
 
@@ -40,6 +41,13 @@ const checkNotif = async () =>
             setTimeout(() => { resolve()}, 2000)
         })
     }
+}
+
+
+const switchComponents = (component,title) =>
+{
+    currentTab.value = component
+    pageTitle.value = title
 }
 
 // async component
@@ -79,7 +87,7 @@ const componentProps = computed(() => {
         case 'TambahBeras':
         return {
             formType: 'Create',
-            dataProdusen : props.dataProdusen
+            dataBeras : props.dataBeras
         };
 
         case 'EditBeras':
@@ -99,7 +107,17 @@ const componentProps = computed(() => {
     <Head :title="pageTitle" />
     <AuthenticatedLayout :page-title="pageTitle">
         <template #pageContent>
-
+            <div class="flex gap-x-4" v-if="currentTab==='EditBeras'">
+                <Button @click="batalkanEditBeras()" label="Batal" severity="danger" icon="pi pi-times"/>
+                <Button label="Edit Beras" icon="pi pi-pen-to-square"/>
+            </div>
+            <div class="flex gap-x-4" v-else>
+                <Button @click="switchComponents('DaftarBeras','Daftar Beras')" label="Daftar Beras" :severity="currentTab==='DaftarBeras'?'primary':'secondary'" icon="pi pi-list"/>
+                <Button @click="switchComponents('TambahBeras','Tambah Beras')" label="Tambah Beras" :severity="currentTab==='DaftarBeras'?'secondary':'primary'" icon="pi pi-plus"/>
+            </div>
+            <div class="flex flex-col mt-4">
+                <component :is="currentComponent" v-bind="componentProps" @refreshPage="refreshPage()"/>
+            </div>
         </template>
     </AuthenticatedLayout>
 </template>
