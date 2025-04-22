@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class BerasController extends Controller
 {
@@ -12,6 +13,7 @@ class BerasController extends Controller
     public function index()
     {
         //
+        return Inertia::render('Admin/Beras/Index');
     }
 
     /**
