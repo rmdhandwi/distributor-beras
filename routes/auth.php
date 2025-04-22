@@ -29,4 +29,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     // Route Beras
     Route::get('admin/beras', [BerasController::class, 'index'])->name('admin.beras.index');
+
+    Route::post('admin/beras/tambah', [BerasController::class, 'store'])->name('admin.beras.store');
+    Route::post('admin/beras/update', [BerasController::class, 'update'])->name('admin.beras.update');
 });
