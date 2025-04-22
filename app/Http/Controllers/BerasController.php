@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ProdusenModel;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -13,7 +14,8 @@ class BerasController extends Controller
     public function index()
     {
         //
-        return Inertia::render('Admin/Beras/Index');
+        $dataProdusen = ProdusenModel::select('id_produsen','nama_produsen')->get();
+        return Inertia::render('Admin/Beras/Index', ['dataProdusen' => $dataProdusen]);
     }
 
     /**
