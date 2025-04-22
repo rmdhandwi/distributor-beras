@@ -26,6 +26,12 @@ const pageTitle = ref('Daftar Beras')
 const currentTab = ref('DaftarBeras')
 
 
+const refreshPage = async () =>
+{
+    switchComponents('DaftarProdusen','Daftar Produsen')
+    await checkNotif()
+}
+
 const checkNotif = async () =>
 {
     if(props.flash.notif_status)
@@ -43,7 +49,6 @@ const checkNotif = async () =>
         })
     }
 }
-
 
 const switchComponents = (component,title) =>
 {
