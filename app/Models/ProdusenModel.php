@@ -32,7 +32,7 @@ class ProdusenModel extends Model
         'updated_at' => 'datetime',
     ];
 
-    // isi tanggal_pendaftaran secara otomatis
+    // isi status dan tanggal_pendaftaran secara otomatis
     protected static function booted(): void
     {
         static::creating(function ($model) {
@@ -41,5 +41,11 @@ class ProdusenModel extends Model
                 $model->tgl_pendaftaran = Carbon::now();
             }
         });
+    }
+
+    // relasi produsen ke beras
+    public function daftarBeras()
+    {
+        return $this->hasMany(BerasModel::class, 'id_produsen');
     }
 }
