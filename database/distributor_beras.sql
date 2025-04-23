@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3000
--- Generation Time: Apr 19, 2025 at 06:39 PM
+-- Generation Time: Apr 23, 2025 at 02:11 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.7
 
@@ -64,7 +64,10 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('gmr03eYhn6K3lBA2q6KbGDU7Q3QsV6FO26tp8ZwQ', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'YToyOntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im5ldyI7YTowOnt9czozOiJvbGQiO2E6MDp7fX1zOjY6Il90b2tlbiI7czo0MDoiSXgzOVNQblV4YjNHeXF1S0xhSzlMMzFVT01uaTQzVWlITGdVSlo5WiI7fQ==', 1745087954);
+('Aoe1i9cpSTpjRQQBkh7CloGEZ266NBpckXmkzJtE', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'YToyOntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im5ldyI7YTowOnt9czozOiJvbGQiO2E6MDp7fX1zOjY6Il90b2tlbiI7czo0MDoicTZrTmdwVDlWelN6WERyNzRYUElZZ2V0M3F3SWRHVGQ1M1dIZWJzcyI7fQ==', 1745407311),
+('hC9S11ZrOP0hfYM9jTUjjzdldfjY7icCZyLUrkku', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoicGxUS2xjbnNNRFdxYk9QVUpUMzRjUjc0YXRUZ0FsTG9zVG5qZmlocCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtzOjE6IjEiO30=', 1745417247),
+('jqJAb3jZ37yRYn8jvCcPX3msZ6RSwJ1WHKfd5WIg', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'YToyOntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im5ldyI7YTowOnt9czozOiJvbGQiO2E6MDp7fX1zOjY6Il90b2tlbiI7czo0MDoiUE9NMjNmSnlMTWtaMEF3TDhOS0dOVGRuMkNjZFd3RE1jZFFrUVJxWiI7fQ==', 1745388831),
+('q1GwXrtcoGmSYTp1JDru4S57VfnjIvoDFPAkSGqN', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'YToyOntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im5ldyI7YTowOnt9czozOiJvbGQiO2E6MDp7fX1zOjY6Il90b2tlbiI7czo0MDoid005eHBxMGJpVFpsYmNuSGxHNjN6ZGdXS1BjeTM1eTdoM2tNeDJyUyI7fQ==', 1745337809);
 
 -- --------------------------------------------------------
 
@@ -88,6 +91,14 @@ CREATE TABLE `tb_beras` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tb_beras`
+--
+
+INSERT INTO `tb_beras` (`id_beras`, `nama_beras`, `id_produsen`, `jenis_beras`, `harga_jual`, `stok_awal`, `stok_tersedia`, `tgl_produksi`, `tgl_kadaluarsa`, `kualitas_beras`, `sertifikat_beras`, `status_beras`, `created_at`, `updated_at`) VALUES
+(1, 'Beras Putih ABC001', 2, 'D', 98000, 55, 55, '2025-04-21', '2026-04-21', 'Esse a repellendus', 'Nobis obcaecati anim', 'Tersedia', '2025-04-23 00:58:43', '2025-04-23 19:54:10'),
+(3, 'Beras Merah  ABC003', 4, 'A', 88000, 60, 0, '2025-04-22', '2026-04-22', 'Hic magna velit labo', 'Similique culpa quod', 'Kosong', '2025-04-23 19:53:56', '2025-04-23 19:54:24');
 
 -- --------------------------------------------------------
 
@@ -137,8 +148,7 @@ INSERT INTO `tb_produsen` (`id_produsen`, `nama_produsen`, `alamat`, `no_telp`, 
 (2, 'Beras ABC001', 'Jln ABCD No.098 Jayapura', '081234567891', 'berasABC001@example.net', 'C', 95000, 35, 'Tersedia', '2025-04-17', '2025-04-17 23:34:44', '2025-04-20 03:22:53'),
 (3, 'Beras ABC002', 'Jln ABC No.03 Jayapura Selatan', '081234567892', 'BerasABC002@example.net', 'D', 90000, 0, 'Kosong', '2025-04-20', '2025-04-20 00:36:50', '2025-04-20 03:23:35'),
 (4, 'Beras ABC003', 'Jln ABCD No.55 Jayapura Selatan', '0812345678902', 'berasABC003@gmail.com', 'B', 89000, 15, 'Tersedia', '2025-04-20', '2025-04-20 00:41:03', '2025-04-20 03:23:58'),
-(5, 'Beras ABC004', 'Jln. ABCD No.01 Jayapura', '082345678904', 'berasABC004@example.org', 'C', 87000, 50, 'Tersedia', '2025-04-20', '2025-04-20 02:52:15', '2025-04-20 02:55:21'),
-(6, 'Beras ABC005', 'Jln ABCD No.55 Jayapura', '081122334456', 'BerasABC005@example.org', 'A', 88000, 66, 'Tersedia', '2025-04-20', '2025-04-20 03:22:19', '2025-04-20 03:22:32');
+(5, 'Beras ABC004', 'Jln. ABCD No.01 Jayapura', '082345678904', 'berasABC004@example.org', 'C', 87000, 50, 'Tersedia', '2025-04-20', '2025-04-20 02:52:15', '2025-04-20 02:55:21');
 
 -- --------------------------------------------------------
 
@@ -255,7 +265,7 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT for table `tb_beras`
 --
 ALTER TABLE `tb_beras`
-  MODIFY `id_beras` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id_beras` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `tb_pemesanan`
