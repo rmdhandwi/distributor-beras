@@ -26,10 +26,13 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::post('admin/produsen/tambah', [ProdusenController::class, 'store'])->name('admin.produsen.store');
     Route::post('admin/produsen/update', [ProdusenController::class, 'update'])->name('admin.produsen.update');
+    Route::post('admin/produsen/destroy', [ProdusenController::class, 'destroy'])->name('admin.produsen.destroy');
+
 
     // Route Beras
     Route::get('admin/beras', [BerasController::class, 'index'])->name('admin.beras.index');
 
     Route::post('admin/beras/tambah', [BerasController::class, 'store'])->name('admin.beras.store');
     Route::post('admin/beras/update', [BerasController::class, 'update'])->name('admin.beras.update');
+    Route::post('admin/beras/destroy', [BerasController::class, 'destroy'])->name('admin.beras.destroy');
 });
