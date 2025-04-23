@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\AuthenticatedController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\BerasController;
+use App\Http\Controllers\PemesananController;
 use App\Http\Controllers\ProdusenController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,4 +36,13 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('admin/beras/tambah', [BerasController::class, 'store'])->name('admin.beras.store');
     Route::post('admin/beras/update', [BerasController::class, 'update'])->name('admin.beras.update');
     Route::post('admin/beras/destroy', [BerasController::class, 'destroy'])->name('admin.beras.destroy');
+
+    // Route Pemesanan
+    // Route::resource('admin/pemesanan', PemesananController::class);
+    Route::resource('admin/pemesanan', PemesananController::class)->names([
+        'index'   => 'admin.pemesanan.index',
+        'store'   => 'admin.pemesanan.store',
+        'update'  => 'admin.pemesanan.update',
+        'destroy' => 'admin.pemesanan.destroy',
+    ]);
 });
