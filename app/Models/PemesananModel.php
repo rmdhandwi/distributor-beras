@@ -6,5 +6,32 @@ use Illuminate\Database\Eloquent\Model;
 
 class PemesananModel extends Model
 {
-    //
+    protected $table = 'tb_pemesanan';
+    protected $primaryKey = 'id_pemesanan';
+    public $incrementing = true;
+    protected $keyType = 'int';
+
+    protected $fillable = [
+        'id_produsen',
+        'id_beras',
+        'jmlh',
+        'tgl_pemesanan',
+        'status_pesanan',
+        'catatan',
+    ];
+
+    protected $casts = [
+        'tgl_pemesanan' => 'string',
+    ];
+
+    // Relasi
+    public function produsen()
+    {
+        return $this->belongsTo(ProdusenModel::class, 'id_produsen');
+    }
+
+    public function beras()
+    {
+        return $this->belongsTo(BerasModel::class, 'id_beras');
+    }
 }
