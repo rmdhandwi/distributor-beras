@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BerasModel;
 use App\Models\PemesananModel;
 use App\Models\ProdusenModel;
 use Illuminate\Http\Request;
@@ -14,9 +15,12 @@ class PemesananController extends Controller
      */
     public function index()
     {
-        $dataProdusen = ProdusenModel::with(['daftarBeras:id_beras,nama_beras'])->get();
+        // $dataProdusen = ProdusenModel::with(['daftarBeras:id_beras,id_produsen,nama_beras'])->get(['id_produsen','nama_produsen']);
+        $dataBeras = BerasModel::get(['id_beras','id_produsen','nama_beras']);
+        $dataProdusen = ProdusenModel::get(['id_produsen','nama_produsen']);
         $dataPemesanan = PemesananModel::all();
         return Inertia::render('Admin/Pemesanan/Index', [
+            'dataBeras' => $dataBeras,
             'dataProdusen' => $dataProdusen,
             'dataPemesanan' => $dataPemesanan,
         ]);
