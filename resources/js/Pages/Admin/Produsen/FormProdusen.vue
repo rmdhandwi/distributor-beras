@@ -93,6 +93,42 @@ const updateProdusen = () =>
     })
 }
 
+const hapusProdusen = () => {
+    confirm.require({
+        message: 'Hapus Data produsen?',
+        header: 'Peringatan',
+        icon: 'pi pi-exclamation-triangle',
+        rejectProps: {
+            label: 'Batalkan',
+            severity: 'secondary',
+            outlined: true
+        },
+        acceptProps: {
+            label: 'Hapus',
+            severity: 'danger'
+        },
+        accept : () => {
+            toast.add({ severity: 'info', summary: 'Notifikasi', detail: 'Menghapus Produsen...', life: 2000 });
+            produsenForm.post(route('admin.produsen.destroy'), {
+                onError : () => {
+                    toast.add({
+                        severity : 'error',
+                        summary : 'Notifikasi',
+                        detail : 'Terjadi kesalahan',
+                        life : 3000,
+                    })
+                },
+                onSuccess : () => {
+                    produsenForm.reset()
+                    produsenForm.clearErrors()
+                    emit('refreshPage')
+                }
+            })
+
+        },
+    });
+}
+
 </script>
 
 <template>
@@ -164,6 +200,8 @@ const updateProdusen = () =>
 
         <Button @click="submitProdusen" label="Submit" v-if="props.formType==='Create'"/>
         <Button @click="updateProdusen" label="Update"  v-if="props.formType==='Edit'"/>
+        <Button @click="hapusProdusen()" label="Hapus Produsen" severity="danger"  v-if="props.formType==='Edit'"/>
+
     </form>
 
 </template>
