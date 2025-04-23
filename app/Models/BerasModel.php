@@ -43,11 +43,17 @@ class BerasModel extends Model
         });
     }
 
-     /**
+    /**
      * Relasi ke model Produsen (satu beras dimiliki oleh satu produsen)
-     */
+    */
     public function produsen()
     {
         return $this->belongsTo(ProdusenModel::class, 'id_produsen');
+    }
+
+    // Relasi ke model pemesanan
+    public function pemesanan()
+    {
+        return $this->hasMany(PemesananModel::class, 'id_beras');
     }
 }
