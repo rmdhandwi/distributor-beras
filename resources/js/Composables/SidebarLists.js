@@ -1,4 +1,4 @@
-import { computed, reactive } from "vue";
+import { reactive } from "vue";
 
 export const adminMenu = reactive([
     { label: "Dashboard", icon: "pi pi-home", route: "admin.dashboard" },
