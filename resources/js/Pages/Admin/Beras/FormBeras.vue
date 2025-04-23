@@ -90,6 +90,42 @@ const submitBeras = (Action) =>
     })
 }
 
+const confirmHapus = () => {
+    confirm.require({
+        message: 'Hapus Data Beras?',
+        header: 'Peringatan',
+        icon: 'pi pi-exclamation-triangle',
+        rejectProps: {
+            label: 'Batalkan',
+            severity: 'secondary',
+            outlined: true
+        },
+        acceptProps: {
+            label: 'Hapus',
+            severity: 'danger'
+        },
+        accept : () => {
+            toast.add({ severity: 'info', summary: 'Notifikasi', detail: 'Menghapus Beras...', life: 2000 });
+            berasForm.post(route('admin.beras.destroy'), {
+                onError : () => {
+                    toast.add({
+                        severity : 'error',
+                        summary : 'Notifikasi',
+                        detail : 'Terjadi kesalahan',
+                        life : 3000,
+                    })
+                },
+                onSuccess : () => {
+                    berasForm.reset()
+                    berasForm.clearErrors()
+                    emit('refreshPage')
+                }
+            })
+
+        },
+    });
+}
+
 </script>
 
 <template>
@@ -186,6 +222,7 @@ const submitBeras = (Action) =>
 
         <Button @click="submitBeras('Tambah')" label="Submit" v-if="props.formType==='Create'"/>
         <Button @click="submitBeras('Update')" label="Update"  v-if="props.formType==='Edit'"/>
+        <Button @click="confirmHapus()" label="Hapus Beras" severity="danger"  v-if="props.formType==='Edit'"/>
     </form>
 
 </template>
