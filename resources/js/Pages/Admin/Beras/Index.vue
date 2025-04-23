@@ -25,11 +25,12 @@ const toast = useToast()
 const pageTitle = ref('Daftar Beras')
 const currentTab = ref('DaftarBeras')
 
+const dataEditBeras = ref(null)
 
-const refreshPage = async () =>
+const refreshPage = () =>
 {
-    switchComponents('DaftarProdusen','Daftar Produsen')
-    await checkNotif()
+    checkNotif()
+    switchComponents('DaftarBeras','Daftar Beras')
 }
 
 const checkNotif = async () =>
@@ -40,7 +41,7 @@ const checkNotif = async () =>
         {
             toast.add({
                 severity : props.flash.notif_status,
-                summary : 'notifikasi',
+                summary : 'Notifikasi',
                 detail : props.flash.notif_message,
                 life : 2000,
             })
@@ -54,6 +55,12 @@ const switchComponents = (component,title) =>
 {
     currentTab.value = component
     pageTitle.value = title
+}
+
+const editData = dataEmit =>
+{
+    dataEditBeras.value = dataEmit
+    switchComponents('EditBeras','Edit Beras')
 }
 
 // async component
@@ -100,12 +107,38 @@ const componentProps = computed(() => {
         return {
             formType: 'Edit',
             dataBeras: { ...dataEditBeras.value },
+            dataProdusen : props.dataProdusen,
         };
 
         default:
         return {};
     }
 })
+
+const batalkanEditBeras = () =>
+{
+    confirm.require({
+        message: 'Batal Edit Beras?',
+        header: 'Peringatan',
+        icon: 'pi pi-exclamation-triangle',
+        rejectProps: {
+            label: 'Lanjut',
+            severity: 'secondary',
+            outlined: true
+        },
+        acceptProps: {
+            label: 'Batalkan',
+            severity: 'danger'
+        },
+        accept : () => {
+            toast.add({ severity: 'info', summary: 'Notifikasi', detail: 'Membatalkan...', life: 2000 });
+            dataEditBeras.value = null
+            setTimeout(() =>
+                switchComponents('DaftarBeras','Daftar Beras')
+            ,2000)
+        },
+    });
+}
 
 </script>
 
@@ -122,7 +155,7 @@ const componentProps = computed(() => {
                 <Button @click="switchComponents('TambahBeras','Tambah Beras')" label="Tambah Beras" :severity="currentTab==='DaftarBeras'?'secondary':'primary'" icon="pi pi-plus"/>
             </div>
             <div class="flex flex-col mt-4">
-                <component :is="currentComponent" v-bind="componentProps" @refreshPage="refreshPage()"/>
+                <component :is="currentComponent" v-bind="componentProps" @refreshPage="refreshPage()" @editData="editData"/>
             </div>
         </template>
     </AuthenticatedLayout>
