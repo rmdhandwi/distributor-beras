@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\BerasModel;
 use App\Models\ProdusenModel;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -16,7 +17,11 @@ class BerasController extends Controller
     {
         //
         $dataProdusen = ProdusenModel::select('id_produsen','nama_produsen')->get();
-        return Inertia::render('Admin/Beras/Index', ['dataProdusen' => $dataProdusen]);
+        $dataBeras = BerasModel::with(['produsen:id_produsen,nama_produsen'])->get();
+        return Inertia::render('Admin/Beras/Index', [
+            'dataProdusen' => $dataProdusen,
+            'dataBeras' => $dataBeras,
+        ]);
     }
 
     /**
@@ -30,15 +35,15 @@ class BerasController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $req)
     {
         // Format ulang tanggal dari ISO menjadi Y-m-d
-        $request->merge([
-            'tgl_produksi' => \Carbon\Carbon::parse($request->tgl_produksi)->format('Y-m-d'),
-            'tgl_kadaluarsa' => \Carbon\Carbon::parse($request->tgl_kadaluarsa)->format('Y-m-d'),
+        $req->merge([
+            'tgl_produksi' => Carbon::parse($req->tgl_produksi)->format('Y-m-d'),
+            'tgl_kadaluarsa' => Carbon::parse($req->tgl_kadaluarsa)->format('Y-m-d'),
         ]);
 
-        $validated = $request->validate([
+        $validated = $req->validate([
             'nama_beras'       => 'required|string|max:255|unique:tb_beras,nama_beras',
             'id_produsen'      => 'required|exists:tb_produsen,id_produsen',
             'jenis_beras'      => 'required|string|max:255',
@@ -74,27 +79,42 @@ class BerasController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $req)
     {
-        //
+        $id = $req->id_beras;
+        // Format tanggal ISO ke format MySQL
+        $req->merge([
+            'tgl_produksi' => Carbon::parse($req->tgl_produksi)->format('Y-m-d'),
+            'tgl_kadaluarsa' => Carbon::parse($req->tgl_kadaluarsa)->format('Y-m-d'),
+        ]);
+
+        // Validasi input
+        $validated = $req->validate([
+            'nama_beras'       => 'required|string|max:255|unique:tb_beras,nama_beras,' . $id . ',id_beras',
+            'id_produsen'      => 'required|exists:tb_produsen,id_produsen',
+            'jenis_beras'      => 'required|string|max:255',
+            'harga_jual'       => 'required|integer|min:0',
+            'stok_awal'        => 'required|integer|min:0',
+            'stok_tersedia'    => 'required|integer|min:0',
+            'tgl_produksi'     => 'required|date',
+            'tgl_kadaluarsa'   => 'required|date|after_or_equal:tgl_produksi',
+            'kualitas_beras'   => 'nullable|string|max:255',
+            'sertifikat_beras' => 'nullable|string|max:255',
+            'status_beras'     => 'required|string|max:255',
+        ]);
+
+        // Cari data berdasarkan ID
+        $beras = BerasModel::findOrFail($id);
+
+        // Update data
+        $beras->update($validated);
+
+        return redirect()->back()->with([
+            'notif_status' => 'success',
+            'notif_message' => 'Data beras berhasil diperbarui.',
+        ]);
     }
 
     /**
