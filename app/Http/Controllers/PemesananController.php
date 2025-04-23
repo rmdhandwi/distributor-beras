@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PemesananModel;
+use App\Models\ProdusenModel;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class PemesananController extends Controller
 {
@@ -11,7 +14,12 @@ class PemesananController extends Controller
      */
     public function index()
     {
-        //
+        $dataProdusen = ProdusenModel::with(['daftarBeras:id_beras,nama_beras'])->get();
+        $dataPemesanan = PemesananModel::all();
+        return Inertia::render('Admin/Pemesanan/Index', [
+            'dataProdusen' => $dataProdusen,
+            'dataPemesanan' => $dataPemesanan,
+        ]);
     }
 
     /**
