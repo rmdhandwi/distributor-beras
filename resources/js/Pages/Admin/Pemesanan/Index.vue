@@ -15,6 +15,7 @@ onMounted(() =>
 
 const props = defineProps({
     flash : Object,
+    dataBeras : Object,
     dataPemesanan : Object,
     dataProdusen : Object,
 })
@@ -100,7 +101,8 @@ const componentProps = computed(() => {
         case 'TambahPemesanan':
         return {
             formType: 'Create',
-            dataProdusen : props.dataProdusen
+            dataBeras : props.dataBeras,
+            dataProdusen : props.dataProdusen,
         };
 
         case 'EditPemesanan':
