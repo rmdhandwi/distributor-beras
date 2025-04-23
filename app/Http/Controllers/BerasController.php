@@ -120,8 +120,20 @@ class BerasController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $req)
     {
-        //
+        $beras = BerasModel::findOrFail($req->id_beras);
+
+        if ($beras->delete()) {
+            return redirect()->back()->with([
+                'notif_status' => 'success',
+                'notif_message' => 'Data beras berhasil dihapus.',
+            ]);
+        } else {
+            return redirect()->back()->with([
+                'notif_status' => 'error',
+                'notif_message' => 'Gagal menghapus data beras.',
+            ]);
+        }
     }
 }
