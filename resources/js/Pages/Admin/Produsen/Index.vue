@@ -24,10 +24,10 @@ const toast = useToast()
 
 const dataEditProdusen = ref(null)
 
-const refreshPage = async () =>
+const refreshPage = () =>
 {
     switchComponents('DaftarProdusen','Daftar Produsen')
-    await checkNotif()
+    checkNotif()
 }
 
 const checkNotif = async () =>
@@ -38,7 +38,7 @@ const checkNotif = async () =>
         {
             toast.add({
                 severity : props.flash.notif_status,
-                summary : 'notifikasi',
+                summary : 'Notifikasi',
                 detail : props.flash.notif_message,
                 life : 2000,
             })
