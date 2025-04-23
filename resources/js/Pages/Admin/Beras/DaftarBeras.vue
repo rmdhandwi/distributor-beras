@@ -27,7 +27,7 @@ function formatTanggal(tanggal) {
   return `${hari}/${bulan}/${tahun}`
 }
 
-const editProdusen = id_beras =>
+const editBeras = id_beras =>
 {
     const dataBeras = props.dataBeras.filter((beras) => beras.id_beras === id_beras).map(item => {
         const copy = {...item}
@@ -40,7 +40,65 @@ const editProdusen = id_beras =>
 </script>
 
 <template>
-    <div>
+     <div class="flex flex-col">
+        <DataTable :value="props.dataBeras" dataKey="index" class="shadow border border-amber-500 rounded-lg overflow-hidden" showGridlines removable-sort striped-rows scrollable v-model:filters="filters">
+            <template #header>
+                <div class="flex justify-between items-center gap-x-2">
+                    <IconField class="w-full">
+                        <InputIcon>
+                            <i class="pi pi-search me-4" />
+                        </InputIcon>
+                        <InputText v-model="filters['global'].value" placeholder="Cari Data Beras" size="small" fluid/>
+                    </IconField>
+                    <Button icon="pi pi-print" severity="contrast" variant="outlined" label="CSV" size="small" />
+                </div>
+            </template>
+            <template #footer>
+                <span>Jumlah Data Beras ({{ props.dataBeras.length }})</span>
+            </template>
+            <template #loading>
+                <span class="flex justify-center">Sedang Memuat Data...</span>
+            </template>
+            <template #empty>
+                <span class="flex justify-center">Tidak Ada Beras</span>
+            </template>
+            <Column sortable field="nomor" header="No" frozen/>
+            <Column sortable field="nama_beras" header="Nama Beras" style="min-width: 180px;" frozen/>
+            <Column sortable field="produsen.nama_produsen" header="Produsen" style="min-width: 180px;"/>
+            <Column field="jenis_beras" header="Jenis Beras" style="min-width: 140px;"/>
+            <Column sortable field="harga_jual" header="Harga Jual" style="min-width: 180px;">
+                <template #body="{data}">
+                    <span>{{ formatRupiah(data.harga_jual) }}</span>
+                </template>
+            </Column>
+            <Column sortable field="stok_awal" header="Stok Awal" style="min-width: 140px;"/>
+            <Column sortable field="stok_tersedia" header="Stok Tersedia" style="min-width: 160px;"/>
+            <Column header="Status">
+                <template #body="{data}">
+                    <Badge :value="data.status_beras" :severity="data.status_beras==='Tersedia'?'success':'danger'"/>
+                </template>
+            </Column>
+            <Column field="kualitas_beras" header="Kualitas" style="min-width: 240px;"/>
+            <Column field="sertifikat_beras" header="Sertifikat" style="min-width: 240px;"/>
+            <Column sortable header="Tanggal Produksi" style="min-width: 240px;">
+                <template #body="{data}">
+                    <span>{{ formatTanggal(data.tgl_produksi) }}</span>
+                </template>
+            </Column>
+            <Column sortable header="Tanggal Kadaluarsa" style="min-width: 240px;">
+                <template #body="{data}">
+                    <span>{{ formatTanggal(data.tgl_kadaluarsa) }}</span>
+                </template>
+            </Column>
+            <Column header="Action" frozen align-frozen="right">
+                <template #body="{data}">
+                    <div class="flex place-content-center gap-2">
+                        <Button @click="editBeras(data.id_beras)" severity="info" size="small" icon="pi pi-pen-to-square"/>
+                    </div>
+                </template>
+            </Column>
+        </DataTable>
+
     </div>
 </template>
 
