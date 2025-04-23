@@ -115,8 +115,20 @@ class ProdusenController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $req)
     {
-        //
+        $produsen = ProdusenModel::findOrFail($req->id_produsen);
+
+        if ($produsen->delete()) {
+            return redirect()->back()->with([
+                'notif_status' => 'success',
+                'notif_message' => 'Data produsen berhasil dihapus.',
+            ]);
+        } else {
+            return redirect()->back()->with([
+                'notif_status' => 'error',
+                'notif_message' => 'Gagal menghapus data produsen.',
+            ]);
+        }
     }
 }
