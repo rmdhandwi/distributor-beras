@@ -17,16 +17,10 @@ class ProdusenModel extends Model
         'alamat',
         'no_telp',
         'email',
-        'jenis_beras',
-        'harga_beras',
-        'jml_stok',
-        'status_stok',
         'tgl_pendaftaran',
     ];
 
     protected $casts = [
-        'harga_beras' => 'integer',
-        'jml_stok' => 'integer',
         'tgl_pendaftaran' => 'string',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -36,7 +30,6 @@ class ProdusenModel extends Model
     protected static function booted(): void
     {
         static::creating(function ($model) {
-            $model->status_stok = $model->jml_stok > 0 ? 'Tersedia' : 'Kosong';
             if (empty($model->tgl_pendaftaran)) {
                 $model->tgl_pendaftaran = Carbon::now();
             }
@@ -47,5 +40,11 @@ class ProdusenModel extends Model
     public function daftarBeras()
     {
         return $this->hasMany(BerasModel::class, 'id_produsen');
+    }
+
+    // relasi produsen ke pemesanan
+    public function daftarPemesanan()
+    {
+        return $this->hasMany(PemesananModel::class, 'id_produsen');
     }
 }
