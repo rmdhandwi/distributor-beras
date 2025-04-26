@@ -17,6 +17,19 @@ const props = defineProps({
 
 const toast = useToast()
 
+
+const loginForm = useForm({
+    username: null,
+    password: null,
+    role: null,
+});
+
+const userRoles = [
+    { role : 'Admin'},
+    { role : 'Produsen'},
+    { role : 'Pemilik'},
+]
+
 const checkNotif = () =>
 {
     const notifStatus = loginForm.errors?'error':'success'
@@ -35,11 +48,6 @@ const checkNotif = () =>
         },1000)
     }
 }
-
-const loginForm = useForm({
-    username: null,
-    password: null,
-});
 
 const submitForm = () => {
     loginForm.post(route('login.submit'), {
@@ -68,6 +76,13 @@ const submitForm = () => {
                         <label for="password_label">Password</label>
                     </FloatLabel>
                     <span class="text-red-500" v-if="loginForm.errors.password"> {{ loginForm.errors.password }} </span>
+                </div>
+
+                <div>
+                    <FloatLabel variant="on">
+                        <Select v-model="loginForm.role" inputId="on_label" :options="userRoles" optionLabel="role" optionValue="role" fluid/>
+                        <label for="on_label">Pilih Role</label>
+                    </FloatLabel>
                 </div>
 
                 <Button type="submit" :label="loginForm.processing?null:'Login'" class="min-w-full" :disabled="loginForm.processing" :icon="loginForm.processing?'pi pi-spin pi-spinner':null" />
