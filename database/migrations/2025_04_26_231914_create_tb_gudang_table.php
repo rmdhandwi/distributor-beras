@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('rusak')->default(0);
             $table->integer('hilang')->default(0);
             $table->integer('stok_sisa')->default(0);
+            $table->timestamps();
         });
     }
 
