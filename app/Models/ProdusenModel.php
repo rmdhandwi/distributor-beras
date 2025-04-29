@@ -13,6 +13,7 @@ class ProdusenModel extends Model
     protected $keyType = 'int';
 
     protected $fillable = [
+        'user_id',
         'nama_produsen',
         'alamat',
         'no_telp',
