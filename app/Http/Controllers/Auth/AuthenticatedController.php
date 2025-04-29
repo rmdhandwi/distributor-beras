@@ -17,7 +17,7 @@ class AuthenticatedController extends Controller
 
     public function registerPage()
     {
-        Inertia::render('Auth/Register');
+        return Inertia::render('Auth/Register');
     }
 
     public function submitLogin(Request $req)
