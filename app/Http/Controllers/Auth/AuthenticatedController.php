@@ -15,6 +15,11 @@ use Inertia\Response;
 class AuthenticatedController extends Controller
 {
 
+    public function registerPage()
+    {
+        Inertia::render('Auth/Register');
+    }
+
     public function submitLogin(Request $req)
     {
         $loginForm = $req->validate([
