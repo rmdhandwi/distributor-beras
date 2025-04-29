@@ -17,9 +17,10 @@ class User extends Authenticatable
     $guarded = [],
     $table = 'users',
     $primaryKey = 'user_id',
-    $keyType = 'string',
+    $keyType = 'int',
     $fillable= [];
     // protected $keyType = 'string';
+    public $incrementing = true;
 
     // deteksi kolom pada tabel dinamis
     public function __construct(array $attributes = [])
@@ -46,6 +47,7 @@ class User extends Authenticatable
     {
         return [
             'password' => 'hashed',
+            'user_id' => 'string',
         ];
     }
 }
