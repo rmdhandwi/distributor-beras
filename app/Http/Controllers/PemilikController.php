@@ -3,9 +3,17 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class PemilikController extends Controller
 {
+
+    //
+    public function dashboardPage()
+    {
+        return Inertia::render('Pemilik/Dashboard');
+    }
+
     /**
      * Display a listing of the resource.
      */
