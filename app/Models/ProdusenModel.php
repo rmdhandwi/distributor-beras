@@ -18,6 +18,7 @@ class ProdusenModel extends Model
         'no_telp',
         'email',
         'tgl_pendaftaran',
+        'status'
     ];
 
     protected $casts = [
