@@ -91,7 +91,25 @@ class AuthenticatedController extends Controller
 
             $req->session()->regenerate();
 
-            switch(auth()->guard()->user()->role)
+
+            $user = auth()->guard()->user();
+
+            // Tambahan: Cek role = Produsen dan status = false
+            if ($user->role === 'Produsen') {
+                $produsen = ProdusenModel::where('user_id', $user->id)->first();
+
+                if (!$produsen || !$produsen->status) {
+                     $notification = [
+                        'notif_status' => 'error',
+                        'notif_message' => 'Login Gagal ! Akun anda belum diverifikasi',
+                    ];
+                    Auth::logout();
+                    return redirect()->route('login')->with($notification);
+                }
+            }
+
+
+            switch($user->role)
             {
                 case 'Admin' : return redirect()->route('admin.dashboard')->with($notification);
                 break;
