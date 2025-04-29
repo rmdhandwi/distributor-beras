@@ -8,3 +8,8 @@ export const adminMenu = reactive([
     { label: "Transaksi", icon: "pi pi-arrow-right-arrow-left", route: "admin.transaksi.index" },
     { label: "Users", icon: "pi pi-user", route: "admin.users" },
 ]);
+
+export const pemilikMenu = reactive([
+    { label: "Dashboard", icon: "pi pi-home", route: "pemilik.dashboard" },
+    { label: "Produsen", icon: "pi pi-truck", route: "pemilik.produsen.index" },
+]);
