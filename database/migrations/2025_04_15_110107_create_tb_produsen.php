@@ -13,15 +13,13 @@ return new class extends Migration
     {
         Schema::create('tb_produsen', function (Blueprint $table) {
             $table->id('id_produsen');
+            $table->foreignId('user_id')->references('user_id')->on('users')->onDelete('cascade');
             $table->string('nama_produsen')->unique();
             $table->text('alamat');
             $table->string('no_telp');
             $table->string('email')->unique();
-            $table->string('jenis_beras');
-            $table->integer('harga_beras');
-            $table->integer('jml_stok');
-            $table->string('status_stok');
-            $table->date('tgl_pendaftaran');
+            $table->date('tgl_pendaftaran')->nullable();
+            $table->boolean('status')->default(false);
             $table->dateTime('created_at');
             $table->dateTime('updated_at')->nullable();
         });
