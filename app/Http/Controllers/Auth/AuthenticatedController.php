@@ -20,6 +20,11 @@ class AuthenticatedController extends Controller
         return Inertia::render('Auth/Register');
     }
 
+    public function submitRegister(Request $req)
+    {
+        
+    }
+
     public function submitLogin(Request $req)
     {
         $loginForm = $req->validate([
