@@ -18,7 +18,7 @@ const props = defineProps({
 const toast = useToast()
 
 const registForm = useForm({
-    name : null,
+    nama : null,
     username : null,
     password : null,
     alamat : null,
@@ -61,10 +61,10 @@ const submitForm = () => {
             <!-- Nama -->
             <div>
                 <FloatLabel variant="on">
-                    <InputText id="name" v-model="registForm.name" fluid/>
-                    <label for="name">Nama Produsen</label>
+                    <InputText id="nama" v-model="registForm.nama" fluid/>
+                    <label for="nama">Nama Produsen</label>
                 </FloatLabel>
-                <span class="text-red-500" v-if="registForm.errors.name"> {{ registForm.errors.name }} </span>
+                <span class="text-red-500" v-if="registForm.errors.nama"> {{ registForm.errors.nama }} </span>
             </div>
 
             <!-- Username -->
