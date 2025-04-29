@@ -8,6 +8,7 @@ use App\Http\Controllers\ProdusenController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
+    Route::get('/Register', [AuthenticatedController::class, 'registerPage'])->name('register.page');
     Route::post('login', [AuthenticatedController::class, 'submitLogin'])->name('login.submit');
 
 });
