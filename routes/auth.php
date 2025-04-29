@@ -41,7 +41,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('admin/beras/destroy', [BerasController::class, 'destroy'])->name('admin.beras.destroy');
 
     // Route Pemesanan
-    // Route::resource('admin/pemesanan', PemesananController::class);
     Route::resource('admin/pemesanan', PemesananController::class)->names([
         'index'   => 'admin.pemesanan.index',
         'store'   => 'admin.pemesanan.store',
