@@ -42,7 +42,7 @@ const checkNotif = () =>
                 severity : props.flash.notif_status??notifStatus,
                 summary : 'Notifikasi',
                 detail : props.flash.notif_message??loginForm.errors.username??loginForm.errors.password,
-                life : 2000,
+                life : 4000,
                 group : 'tc'
             })
         },1000)
