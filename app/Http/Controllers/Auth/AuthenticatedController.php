@@ -84,11 +84,6 @@ class AuthenticatedController extends Controller
 
         if(Auth::attempt($loginForm))
         {
-            $notification = [
-                'notif_status' => 'success',
-                'notif_message' => 'Selamat Datang '.$req->username,
-            ];
-
             $req->session()->regenerate();
 
 
@@ -108,10 +103,16 @@ class AuthenticatedController extends Controller
                 }
             }
 
-
+            $notification = [
+                            'notif_status' => 'success',
+                            'notif_message' => 'Selamat Datang '.$req->username,
+            ];
+            
             switch($user->role)
             {
                 case 'Admin' : return redirect()->route('admin.dashboard')->with($notification);
+                break;
+                case 'Pemilik' : return redirect()->route('pemilik.dashboard')->with($notification);
                 break;
             }
 
