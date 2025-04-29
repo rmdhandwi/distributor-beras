@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted } from 'vue'
-import { Head, useForm } from '@inertiajs/vue3'
+import { Head, router, useForm } from '@inertiajs/vue3'
 
 import { useToast } from 'primevue'
 
@@ -114,7 +114,7 @@ const submitForm = () => {
 
             <Button @click="submitForm" :label="registForm.processing?null:'Buat Akun'" class="min-w-full" :disabled="registForm.processing" :icon="registForm.processing?'pi pi-spin pi-spinner':null" />
 
-            <Button label="Login" variant="link" class="underline"/>
+            <Button @click="router.visit(route('login'))" label="Login" variant="link" class="underline"/>
 
         </form>
 
