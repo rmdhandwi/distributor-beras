@@ -41,16 +41,17 @@ class AuthenticatedController extends Controller
             'max' => ':attribute tidak boleh lebih dari :max.',
         ]);
 
-        // Simpan ke tabel users
+        // Simpan ke tabel users dan tandai sebagai Produsen
         $user = User::create([
             'name'     => $validated['nama'],
             'username' => $validated['username'],
             'password' => Hash::make($validated['password']),
+            'role' => 'Produsen',
         ]);
 
+        // Simpan ke tb_produsen
         if($user)
         {
-            // Simpan ke tb_produsen
             ProdusenModel::create([
                 'user_id' => $user->user_id,
                 'nama_produsen' => $validated['nama'],
@@ -68,13 +69,6 @@ class AuthenticatedController extends Controller
             return redirect()->route('login')->with($notification);
 
         }
-
-        $notification = [
-                'notif_status' => 'error',
-                'notif_message' => 'Registrasi Gagal',
-            ];
-
-        return redirect()->back()->with($notification);
     }
 
     public function submitLogin(Request $req)
