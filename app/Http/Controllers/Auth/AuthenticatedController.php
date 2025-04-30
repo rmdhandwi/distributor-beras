@@ -87,7 +87,7 @@ class AuthenticatedController extends Controller
 
             // Tambahan: Cek role = Produsen dan status = false
             if ($user->role === 'Produsen') {
-                $produsen = ProdusenModel::where('user_id', $user->id)->first();
+                $produsen = ProdusenModel::where('user_id', $user->user_id)->first();
 
                 if (!$produsen || !$produsen->status) {
                      $notification = [
