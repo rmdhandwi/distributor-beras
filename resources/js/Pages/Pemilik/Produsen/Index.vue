@@ -2,7 +2,7 @@
 import { computed, defineAsyncComponent, onMounted, ref,} from 'vue'
 import { Head } from '@inertiajs/vue3'
 
-import { useConfirm, useToast } from 'primevue'
+import { useToast } from 'primevue'
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import LoadingSpinner from '@/Components/LoadingSpinner.vue'
@@ -17,8 +17,6 @@ const props = defineProps({
     flash : Object,
     dataProdusen : Object,
 })
-
-const confirm = useConfirm()
 
 const toast = useToast()
 
