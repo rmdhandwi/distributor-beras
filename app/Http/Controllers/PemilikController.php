@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ProdusenModel;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -12,6 +13,15 @@ class PemilikController extends Controller
     public function dashboardPage()
     {
         return Inertia::render('Pemilik/Dashboard');
+    }
+
+    public function produsenPage()
+    {
+        $dataProdusen = ProdusenModel::all();
+
+        return Inertia::render('Pemilik/DaftarProdusen',[
+            'dataProdusen' => $dataProdusen,
+        ]);
     }
 
     /**
