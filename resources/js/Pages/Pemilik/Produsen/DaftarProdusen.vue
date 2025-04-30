@@ -3,6 +3,10 @@ import { ref } from 'vue'
 
 import {FilterMatchMode} from '@primevue/core/api'
 
+const props = defineProps({
+    dataProdusen : Object,
+})
+
 const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     'nomor': { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -10,10 +14,6 @@ const filters = ref({
     'alamat': { value: null, matchMode: FilterMatchMode.CONTAINS },
     'no_telp': { value: null, matchMode: FilterMatchMode.CONTAINS },
     'email': { value: null, matchMode: FilterMatchMode.CONTAINS },
-})
-
-const props = defineProps({
-    dataProdusen : Object,
 })
 
 function formatTanggal(tanggal) {
