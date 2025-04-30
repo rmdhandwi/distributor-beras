@@ -24,6 +24,23 @@ class PemilikController extends Controller
         ]);
     }
 
+    public function validasiProdusen(Request $req)
+    {
+        $produsen = ProdusenModel::findOrFail($req->id_produsen);
+        $produsen->status = true;
+        $update = $produsen->save();
+
+        if($update)
+        {
+            $notification = [
+                'notif_status' => 'success',
+                'notif_message' => 'Validasi Berhasil !',
+            ];
+
+            return redirect()->back()->with($notification);
+        }
+    }
+
     /**
      * Display a listing of the resource.
      */
