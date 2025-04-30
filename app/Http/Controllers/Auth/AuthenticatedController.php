@@ -26,7 +26,7 @@ class AuthenticatedController extends Controller
     public function submitRegister(Request $req)
     {
          $validated = $req->validate([
-            'nama'     => 'required|string|max:255',
+            'nama'     => 'required|string|max:255|unique:users,name',
             'username' => 'required|string|max:255|unique:users,username',
             'password' => 'required|min:8',
             'alamat'   => 'required|string|max:255',
@@ -37,7 +37,7 @@ class AuthenticatedController extends Controller
             'unique' => ':attribute sudah terdaftar.',
             'exists' => ':attribute tidak valid.',
             'min' => ':attribute tidak boleh kurang dari :min.',
-            'min_digits' => ':attribute tidak boleh kurang dari :min_digits.',
+            'min_digits' => ':attribute tidak boleh kurang dari :min digit.',
             'max' => ':attribute tidak boleh lebih dari :max.',
         ]);
 
@@ -107,7 +107,7 @@ class AuthenticatedController extends Controller
                             'notif_status' => 'success',
                             'notif_message' => 'Selamat Datang '.$req->username,
             ];
-            
+
             switch($user->role)
             {
                 case 'Admin' : return redirect()->route('admin.dashboard')->with($notification);
