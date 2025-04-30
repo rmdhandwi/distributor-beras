@@ -36,10 +36,10 @@ const checkNotif = async () =>
                 severity : props.flash.notif_status,
                 summary : 'Notifikasi',
                 detail : props.flash.notif_message,
-                life : 2000,
+                life : 4000,
             })
 
-            setTimeout(() => { resolve()}, 2000)
+            setTimeout(() => { resolve()}, 4000)
         })
     }
 }
@@ -79,7 +79,7 @@ const componentProps = computed(() => {
 
         case 'ValidasiProdusen':
         return {
-            dataProdusen: props.dataProdusen?.map((p, i) => ({ nomor: i + 1, ...p })) ,
+            dataProdusen: props.dataProdusen?.filter( produsen => produsen.status === 0).map((p, i) => ({ nomor: i + 1, ...p })) ,
         };
 
         default:
