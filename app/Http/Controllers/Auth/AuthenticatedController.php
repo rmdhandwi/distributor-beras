@@ -61,7 +61,7 @@ class AuthenticatedController extends Controller
                 'status'  => false,
             ]);
 
-             $notification = [
+            $notification = [
                 'notif_status' => 'success',
                 'notif_message' => 'Berhasil Registrasi! Menunggu validasi Pemilik untuk Login.',
             ];
