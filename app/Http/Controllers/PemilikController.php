@@ -19,7 +19,7 @@ class PemilikController extends Controller
     {
         $dataProdusen = ProdusenModel::all();
 
-        return Inertia::render('Pemilik/DaftarProdusen',[
+        return Inertia::render('Pemilik/Produsen/Index',[
             'dataProdusen' => $dataProdusen,
         ]);
     }
