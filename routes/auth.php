@@ -51,4 +51,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
 Route::middleware(['auth', 'pemilik'])->group(function () {
     Route::get('pemilik/dashboard', [PemilikController::class, 'dashboardPage'])->name('pemilik.dashboard');
+
+    Route::get('pemilik/produsen', [PemilikController::class, 'produsenPage'])->name('pemilik.produsen.index');
 });
