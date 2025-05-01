@@ -110,6 +110,8 @@ class AuthenticatedController extends Controller
                 break;
                 case 'Pemilik' : return redirect()->route('pemilik.dashboard')->with($notification);
                 break;
+                case 'Produsen' : return redirect()->route('produsen.dashboard')->with($notification);
+                break;
             }
 
         }
