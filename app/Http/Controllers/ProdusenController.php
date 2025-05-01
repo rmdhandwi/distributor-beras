@@ -21,6 +21,11 @@ class ProdusenController extends Controller
         ]);
     }
 
+    public function dashboardPage()
+    {
+        return Inertia::render('Produsen/Dashboard');
+    }
+
     /**
      * Store a newly created resource in storage.
      */
