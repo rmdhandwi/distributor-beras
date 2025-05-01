@@ -15,13 +15,25 @@ class BerasController extends Controller
      */
     public function index()
     {
-        //
-        $dataProdusen = ProdusenModel::select('id_produsen','nama_produsen')->get();
-        $dataBeras = BerasModel::with(['produsen:id_produsen,nama_produsen'])->get();
-        return Inertia::render('Admin/Beras/Index', [
-            'dataProdusen' => $dataProdusen,
-            'dataBeras' => $dataBeras,
-        ]);
+        $loggedInUser = auth()->guard()->user();
+        if($loggedInUser->role === 'Admin')
+        {
+            $dataProdusen = ProdusenModel::select('id_produsen','nama_produsen')->get();
+            $dataBeras = BerasModel::with(['produsen:id_produsen,nama_produsen'])->get();
+            return Inertia::render('Admin/Beras/Index', [
+                'dataProdusen' => $dataProdusen,
+                'dataBeras' => $dataBeras,
+            ]);
+        }
+        else if($loggedInUser->role === 'Produsen')
+        {
+            $dataProdusen = ProdusenModel::where('user_id', $loggedInUser->user_id)->select('id_produsen','nama_produsen')->get();
+            $dataBeras = BerasModel::with(['produsen:id_produsen,nama_produsen'])->get();
+            return Inertia::render('Produsen/Beras/Index', [
+                'dataProdusen' => $dataProdusen,
+                'dataBeras' => $dataBeras,
+            ]);
+        }
     }
 
     /**
@@ -44,8 +56,8 @@ class BerasController extends Controller
             'stok_tersedia'    => 'required|integer|min:0',
             'tgl_produksi'     => 'required|date',
             'tgl_kadaluarsa'   => 'required|date|after_or_equal:tgl_produksi',
-            'kualitas_beras'   => 'nullable|string|max:255',
-            'sertifikat_beras' => 'nullable|string|max:255',
+            'kualitas_beras'   => 'required|string|max:255',
+            'sertifikat_beras' => 'required|string|max:255',
         ], [
             'required'               => ':attribute wajib diisi.',
             'unique'                 => ':attribute sudah terdaftar.',
