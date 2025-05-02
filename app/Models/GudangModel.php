@@ -34,7 +34,7 @@ class GudangModel extends Model
      */
     public function beras()
     {
-        return $this->belongsTo(BerasModel::class, 'id_beras', 'id_beras');
+        return $this->hasMany(BerasModel::class, 'id_beras');
     }
 
     /**
@@ -42,6 +42,6 @@ class GudangModel extends Model
      */
     public function produsen()
     {
-        return $this->belongsTo(ProdusenModel::class, 'id_produsen', 'id_produsen');
+        return $this->hasMany(ProdusenModel::class, 'id_produsen');
     }
 }
