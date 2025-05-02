@@ -10,8 +10,6 @@ const filters = ref({
     'alamat': { value: null, matchMode: FilterMatchMode.CONTAINS },
     'no_telp': { value: null, matchMode: FilterMatchMode.CONTAINS },
     'email': { value: null, matchMode: FilterMatchMode.CONTAINS },
-    'jenis_beras': { value: null, matchMode: FilterMatchMode.EQUALS },
-    'harga_beras': { value: null, matchMode: FilterMatchMode.EQUALS },
 })
 
 const props = defineProps({
@@ -48,7 +46,7 @@ const editProdusen = id_produsen =>
 
 <template>
     <div class="flex flex-col">
-        <DataTable :value="props.dataProdusen" dataKey="index" class="shadow border border-amber-500 rounded-lg overflow-hidden" showGridlines removable-sort striped-rows scrollable v-model:filters="filters" :global-filter-fields="['nomor','nama_produsen','alamat','no_telp','email','jenis_beras','harga_beras','jml_stok']">
+        <DataTable :value="props.dataProdusen" dataKey="index" class="shadow border border-amber-500 rounded-lg overflow-hidden" showGridlines removable-sort striped-rows scrollable v-model:filters="filters" :global-filter-fields="['nomor','nama_produsen','alamat','no_telp','email',]">
             <template #header>
                 <div class="flex justify-between items-center gap-x-2">
                     <IconField class="w-full">
@@ -74,28 +72,14 @@ const editProdusen = id_produsen =>
             <Column field="alamat" header="Alamat" style="min-width: 200px;"/>
             <Column field="no_telp" header="No Telp" style="min-width: 160px;"/>
             <Column field="email" header="Email" style="min-width: 200px;"/>
-            <Column field="jenis_beras" header="Jenis"/>
-            <Column sortable field="harga_beras" header="Harga">
-                <template #body="{data}">
-                    <span>{{ formatRupiah(data.harga_beras) }}</span>
-                </template>
-            </Column>
-            <Column sortable field="jml_stok" header="Jumlah"/>
             <Column header="Status">
                 <template #body="{data}">
-                    <Badge :value="data.status_stok" :severity="data.status_stok==='Tersedia'?'success':'danger'"/>
+                    <Tag :value="data.status?'Tervalidasi':'Menunggu Validasi'" :severity="data.status?'success':'danger'"/>
                 </template>
             </Column>
             <Column sortable header="Tanggal Pendaftaran" style="min-width: 240px;">
                 <template #body="{data}">
                     <span>{{ formatTanggal(data.tgl_pendaftaran) }}</span>
-                </template>
-            </Column>
-            <Column header="Action" frozen align-frozen="right">
-                <template #body="{data}">
-                    <div class="flex place-content-center gap-2">
-                        <Button @click="editProdusen(data.id_produsen)" severity="info" size="small" icon="pi pi-pen-to-square"/>
-                    </div>
                 </template>
             </Column>
         </DataTable>
