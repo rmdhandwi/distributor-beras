@@ -53,7 +53,7 @@ function formatTanggal(tanggal) {
             <Column field="email" header="Email" style="min-width: 200px;"/>
             <Column header="Status" style="min-width: 180px;">
                 <template #body="{data}">
-                    <Tag :value="data.status===1?'Tervalidasi':'Menunggu Validasi'" :severity="data.status===1?'success':'danger'"/>
+                    <Tag :value="data.status?'Tervalidasi':'Menunggu Validasi'" :severity="data.status?'success':'danger'"/>
                 </template>
             </Column>
             <Column sortable header="Tanggal Pendaftaran" style="min-width: 240px;">
