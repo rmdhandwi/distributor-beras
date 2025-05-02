@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\AuthenticatedController;
 use App\Http\Controllers\BerasController;
+use App\Http\Controllers\GudangController;
 use App\Http\Controllers\PemesananController;
 use App\Http\Controllers\PemilikController;
 use App\Http\Controllers\ProdusenController;
@@ -39,6 +40,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     // Route::post('admin/beras/tambah', [BerasController::class, 'store'])->name('admin.beras.store');
     // Route::post('admin/beras/update', [BerasController::class, 'update'])->name('admin.beras.update');
     // Route::post('admin/beras/destroy', [BerasController::class, 'destroy'])->name('admin.beras.destroy');
+
+    // Route Gudang
+    Route::get('admin/gudang', [GudangController::class, 'index'])->name('admin.gudang.index');
 
     // Route Pemesanan
     Route::resource('admin/pemesanan', PemesananController::class)->names([
