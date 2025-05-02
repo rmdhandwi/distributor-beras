@@ -58,6 +58,15 @@ const switchComponents = (component,title) =>
 // async component
 const loadComponent = componentName =>
 {
+    if(componentName === 'TambahStok' || componentName === 'EditStok')
+    {
+        return  defineAsyncComponent({
+        loader : () => import(`./FormStok.vue`),
+        loadingComponent : LoadingSpinner,
+        delay : 200,
+        timeout: 3000
+    })
+    }
     return  defineAsyncComponent({
         loader : () => import(`./${componentName}.vue`),
         loadingComponent : LoadingSpinner,
@@ -78,6 +87,12 @@ const componentProps = computed(() => {
             dataGudang: props.dataGudang?.map((p, i) => ({ nomor: i + 1, ...p })),
         };
 
+        case 'TambahStok':
+        return {
+            dataBeras : props.dataBeras,
+            formType  : 'Create'
+        };
+
         default:
         return {};
     }
@@ -91,9 +106,10 @@ const componentProps = computed(() => {
         <template #pageContent>
             <div class="flex gap-x-4">
                 <Button @click="switchComponents('DaftarStok','Daftar Stok')" label="Daftar Stok" :severity="currentTab==='DaftarStok'?'primary':'secondary'" icon="pi pi-list"/>
+                <Button @click="switchComponents('TambahStok','Tambah Stok')" label="Tambah Stok" :severity="currentTab==='TambahStok'?'primary':'secondary'" icon="pi pi-list"/>
             </div>
             <div class="flex flex-col mt-4">
-                <component :is="currentComponent" v-bind="componentProps" @refreshPage="refreshPage()"/>
+                <component :is="currentComponent" v-bind="componentProps"/>
             </div>
         </template>
     </AuthenticatedLayout>
