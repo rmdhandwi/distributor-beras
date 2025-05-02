@@ -44,6 +44,12 @@ class ProdusenModel extends Model
         return $this->hasMany(BerasModel::class, 'id_produsen');
     }
 
+    // relasi produsen ke gudang
+    public function gudang()
+    {
+        return $this->belongsTo(GudangModel::class, 'id_produsen');
+    }
+
     // relasi produsen ke pemesanan
     public function daftarPemesanan()
     {
