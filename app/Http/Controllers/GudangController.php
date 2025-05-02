@@ -18,7 +18,7 @@ class GudangController extends Controller
 
         if($loggedInUser->role === 'Admin')
         {
-            $dataBeras = BerasModel::all();
+            $dataBeras = BerasModel::whereDoesntHave('gudang')->with(['produsen:id_produsen,nama_produsen'])->get();
             $dataGudang = GudangModel::with(['beras:id_beras,nama_beras','produsen:id_produsen,nama_produsen'])->get();
             return Inertia::render('Admin/Gudang/Index', [
                 'dataBeras' => $dataBeras,
