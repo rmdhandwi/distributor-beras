@@ -90,7 +90,7 @@ class AuthenticatedController extends Controller
                 $produsen = ProdusenModel::where('user_id', $user->user_id)->first();
 
                 if (!$produsen || !$produsen->status) {
-                     $notification = [
+                    $notification = [
                         'notif_status' => 'error',
                         'notif_message' => 'Login Gagal ! Akun anda belum diverifikasi',
                     ];
