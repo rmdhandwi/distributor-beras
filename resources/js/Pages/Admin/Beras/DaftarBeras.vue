@@ -7,12 +7,9 @@ const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS }
 })
 
-
 const props = defineProps({
     dataBeras : Object,
 })
-
-const emit = defineEmits(['editData'])
 
 function formatRupiah(angka) {
   return new Intl.NumberFormat('id-ID', {
@@ -25,17 +22,6 @@ function formatRupiah(angka) {
 function formatTanggal(tanggal) {
   const [tahun, bulan, hari] = tanggal.split('-')
   return `${hari}/${bulan}/${tahun}`
-}
-
-const editBeras = id_beras =>
-{
-    const dataBeras = props.dataBeras.filter((beras) => beras.id_beras === id_beras).map(item => {
-        const copy = {...item}
-        delete copy.nomor
-        return copy
-    })
-
-    emit('editData', dataBeras)
 }
 </script>
 
@@ -88,13 +74,6 @@ const editBeras = id_beras =>
             <Column sortable header="Tanggal Kadaluarsa" style="min-width: 240px;">
                 <template #body="{data}">
                     <span>{{ formatTanggal(data.tgl_kadaluarsa) }}</span>
-                </template>
-            </Column>
-            <Column header="Action" frozen align-frozen="right">
-                <template #body="{data}">
-                    <div class="flex place-content-center gap-2">
-                        <Button @click="editBeras(data.id_beras)" severity="info" size="small" icon="pi pi-pen-to-square"/>
-                    </div>
                 </template>
             </Column>
         </DataTable>
