@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BerasModel;
+use App\Models\GudangModel;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -13,10 +14,17 @@ class GudangController extends Controller
      */
     public function index()
     {
-        $dataBeras = BerasModel::all();
-        return Inertia::render('Admin/Gudang/Index', [
-            'dataBeras' => $dataBeras,
-        ]);
+        $loggedInUser = auth()->guard()->user();
+
+        if($loggedInUser->role === 'Admin')
+        {
+            $dataBeras = BerasModel::all();
+            $dataGudang = GudangModel::with(['beras:id_beras,nama_beras','produsen:id_produsen,nama_produsen'])->get();
+            return Inertia::render('Admin/Gudang/Index', [
+                'dataBeras' => $dataBeras,
+                'dataGudang' => $dataGudang,
+            ]);
+        }
     }
 
     /**
