@@ -51,6 +51,14 @@ Route::middleware(['auth', 'admin'])->group(function () {
         'update'  => 'admin.pemesanan.update',
         'destroy' => 'admin.pemesanan.destroy',
     ]);
+
+    // Route Pemesanan
+    Route::resource('admin/gudang', GudangController::class)->names([
+        'index'   => 'admin.gudang.index',
+        'store'   => 'admin.gudang.store',
+        'update'  => 'admin.gudang.update',
+        'destroy' => 'admin.gudang.destroy',
+    ]);
 });
 
 Route::middleware(['auth', 'pemilik'])->group(function () {
