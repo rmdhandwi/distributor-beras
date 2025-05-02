@@ -100,8 +100,8 @@ class AuthenticatedController extends Controller
             }
 
             $notification = [
-                            'notif_status' => 'success',
-                            'notif_message' => 'Selamat Datang '.$req->username,
+                'notif_status' => 'success',
+                'notif_message' => 'Selamat Datang '.$req->username,
             ];
 
             switch($user->role)
