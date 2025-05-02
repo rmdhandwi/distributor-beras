@@ -41,10 +41,11 @@ class BerasController extends Controller
      */
     public function store(Request $req)
     {
+
         // Format ulang tanggal dari ISO menjadi Y-m-d
         $req->merge([
-            'tgl_produksi' => Carbon::parse($req->tgl_produksi)->format('Y-m-d'),
-            'tgl_kadaluarsa' => Carbon::parse($req->tgl_kadaluarsa)->format('Y-m-d'),
+            'tgl_produksi' => Carbon::parse($req->tgl_produksi)->timezone('Asia/Jayapura')->format('Y-m-d'),
+            'tgl_kadaluarsa' => Carbon::parse($req->tgl_kadaluarsa)->timezone('Asia/Jayapura')->format('Y-m-d'),
         ]);
 
         $validated = $req->validate([
@@ -90,8 +91,8 @@ class BerasController extends Controller
         $id = $req->id_beras;
         // Format tanggal ISO ke format MySQL
         $req->merge([
-            'tgl_produksi' => Carbon::parse($req->tgl_produksi)->format('Y-m-d'),
-            'tgl_kadaluarsa' => Carbon::parse($req->tgl_kadaluarsa)->format('Y-m-d'),
+            'tgl_produksi' => Carbon::parse($req->tgl_produksi)->timezone('Asia/Jayapura')->format('Y-m-d'),
+            'tgl_kadaluarsa' => Carbon::parse($req->tgl_kadaluarsa)->timezone('Asia/Jayapura')->format('Y-m-d'),
         ]);
 
         // Validasi input
