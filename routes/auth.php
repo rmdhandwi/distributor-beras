@@ -63,7 +63,7 @@ Route::middleware(['auth', 'produsen'])->group(function () {
     Route::post('produsen/beras/destroy', [BerasController::class, 'destroy'])->name('produsen.beras.destroy');
 
 
-    Route::get('/produsen/pemesanan/index', [PemesananController::class, 'index'])->name('produsen.pemesanan.index');
-    Route::get('/produsen/pemesanan/confirm', [PemesananController::class, 'confirm'])->name('produsen.pemesanan.confirm');
+    Route::get('/produsen/pemesanan/', [PemesananController::class, 'index'])->name('produsen.pemesanan.index');
+    Route::post('/produsen/pemesanan/confirm', [PemesananController::class, 'confirm'])->name('produsen.pemesanan.confirm');
 });
 
