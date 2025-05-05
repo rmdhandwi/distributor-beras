@@ -20,6 +20,7 @@ class GudangController extends Controller
         {
             $dataBeras = BerasModel::whereDoesntHave('gudang')->with(['produsen:id_produsen,nama_produsen'])->get();
             $dataGudang = GudangModel::with(['beras:id_beras,nama_beras','produsen:id_produsen,nama_produsen'])->get();
+
             return Inertia::render('Admin/Gudang/Index', [
                 'dataBeras' => $dataBeras,
                 'dataGudang' => $dataGudang,
@@ -41,7 +42,7 @@ class GudangController extends Controller
     public function store(Request $req)
     {
         //
-         $validated = $req->validate([
+        $validated = $req->validate([
             'id_beras'      => 'required|exists:tb_beras,id_beras',
             'id_produsen'      => 'required|exists:tb_produsen,id_produsen',
             'stok_awal'        => 'required|integer|min:0',
@@ -89,9 +90,38 @@ class GudangController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $req)
     {
         //
+        $validated = $req->validate([
+            'id_beras' => 'required|exists:tb_beras,id_beras',
+            'id_produsen' => 'required|exists:tb_produsen,id_produsen',
+            'stok_awal' => 'required|integer|min:0',
+            'rusak' => 'required|integer|min:0',
+            'hilang' => 'required|integer|min:0',
+            'stok_sisa' => 'required|integer|min:0',
+        ], [
+            'required' => ':attribute wajib diisi.',
+            'exists' => ':attribute tidak valid.',
+            'min' => ':attribute tidak boleh kurang dari :min.',
+            'max' => ':attribute terlalu panjang.',
+        ]);
+
+        $gudang = GudangModel::findOrFail($req->id_gudang);
+
+        $insert = $gudang->update($validated);
+
+        if ($insert) {
+            return redirect()->back()->with([
+                'notif_status' => 'success',
+                'notif_message' => 'Data stok berhasil diupdate!',
+            ]);
+        } else {
+            return redirect()->back()->with([
+                'notif_status' => 'error',
+                'notif_message' => 'Gagal update data stok :(',
+            ]);
+        }
     }
 
     /**
