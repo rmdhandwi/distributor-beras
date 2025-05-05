@@ -7,4 +7,25 @@ use Illuminate\Database\Eloquent\Model;
 class TransaksiModel extends Model
 {
     //
+    protected $table = 'tb_transaksi';
+    protected $primaryKey = 'id_transaksi';
+    public $incrementing = true;
+    protected $keyType = 'int';
+
+    protected $fillable = [
+        'id_pemesanan',
+        'tgl_transaksi',
+        'jmlh',
+        'harga_satuan',
+        'total_harga',
+        'bukti_bayar',
+        'status_pembayaran',
+        'tgl_pengiriman',
+        'catatan',
+    ];
+
+    protected $casts = [
+        'tgl_transaksi' => 'string',
+        'tgl_pengiriman' => 'string',
+    ];
 }
