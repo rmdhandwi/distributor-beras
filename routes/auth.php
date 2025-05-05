@@ -42,7 +42,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('admin/pemesanan', [PemesananController::class, 'index'])->name('admin.pemesanan.index');
     Route::post('admin/pemesanan/store', [PemesananController::class, 'store'])->name('admin.pemesanan.store');
     Route::post('admin/pemesanan/update', [PemesananController::class, 'update'])->name('admin.pemesanan.update');
-    Route::post('admin/pemesanan/destroy', [PemesananController::class, 'destroy'])->name('admin.pemesanan.update');
+    Route::post('admin/pemesanan/destroy', [PemesananController::class, 'destroy'])->name('admin.pemesanan.destroy');
 });
 
 Route::middleware(['auth', 'pemilik'])->group(function () {
