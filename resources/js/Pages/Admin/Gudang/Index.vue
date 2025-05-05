@@ -2,7 +2,7 @@
 import { computed, defineAsyncComponent, onMounted, ref} from 'vue'
 import { Head } from '@inertiajs/vue3'
 
-import { useToast } from 'primevue'
+import { useConfirm, useToast } from 'primevue'
 
 import LoadingSpinner from '@/Components/LoadingSpinner.vue'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
@@ -19,6 +19,7 @@ const props = defineProps({
     dataGudang : Object,
 })
 
+const confirm = useConfirm()
 const toast = useToast()
 
 const pageTitle = ref('Daftar Stok')
@@ -115,15 +116,44 @@ const editData = dataEmit =>
     switchComponents('EditStok','Edit Stok')
 }
 
+const batalkanEdit = () =>
+{
+    confirm.require({
+        message: 'Batal Edit Stok?',
+        header: 'Peringatan',
+        icon: 'pi pi-exclamation-triangle',
+        rejectProps: {
+            label: 'Lanjut',
+            severity: 'secondary',
+            outlined: true
+        },
+        acceptProps: {
+            label: 'Batalkan',
+            severity: 'danger'
+        },
+        accept : () => {
+            toast.add({ severity: 'info', summary: 'Notifikasi', detail: 'Membatalkan...', life: 2000 });
+            dataEdit.value = null
+            setTimeout(() =>
+                switchComponents('DaftarStok','Daftar Stok')
+            ,2000)
+        },
+    });
+}
+
 </script>
 
 <template>
     <Head :title="pageTitle" />
     <AuthenticatedLayout :page-title="pageTitle">
         <template #pageContent>
-            <div class="flex gap-x-4">
+            <div class="flex gap-x-4" v-if="currentTab!=='EditStok'">
                 <Button @click="switchComponents('DaftarStok','Daftar Stok')" label="Daftar Stok" :severity="currentTab==='DaftarStok'?'primary':'secondary'" icon="pi pi-list"/>
                 <Button @click="switchComponents('TambahStok','Tambah Stok')" label="Tambah Stok" :severity="currentTab==='TambahStok'?'primary':'secondary'" icon="pi pi-list"/>
+            </div>
+            <div class="flex gap-x-4" v-else>
+                <Button @click="batalkanEdit()" label="Batal" severity="danger" icon="pi pi-times"/>
+                <Button label="Edit Stok" icon="pi pi-pen-to-square"/>
             </div>
             <div class="flex flex-col mt-4">
                 <component :is="currentComponent" v-bind="componentProps" @refreshPage="refreshPage" @editData="editData"/>
