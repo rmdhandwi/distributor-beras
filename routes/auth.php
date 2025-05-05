@@ -43,6 +43,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     // Route Gudang
     Route::get('admin/gudang', [GudangController::class, 'index'])->name('admin.gudang.index');
+    Route::post('admin/gudang/store', [GudangController::class, 'store'])->name('admin.gudang.store');
+    Route::post('admin/gudang/update', [GudangController::class, 'update'])->name('admin.gudang.update');
 
     // Route Pemesanan
     Route::resource('admin/pemesanan', PemesananController::class)->names([
@@ -53,12 +55,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
     ]);
 
     // Route Pemesanan
-    Route::resource('admin/gudang', GudangController::class)->names([
-        'index'   => 'admin.gudang.index',
-        'store'   => 'admin.gudang.store',
-        'update'  => 'admin.gudang.update',
-        'destroy' => 'admin.gudang.destroy',
-    ]);
+    // Route::resource('admin/gudang', GudangController::class)->names([
+    //     'index'   => 'admin.gudang.index',
+    //     'store'   => 'admin.gudang.store',
+    //     'update'  => 'admin.gudang.update',
+    //     'destroy' => 'admin.gudang.destroy',
+    // ]);
 });
 
 Route::middleware(['auth', 'pemilik'])->group(function () {
