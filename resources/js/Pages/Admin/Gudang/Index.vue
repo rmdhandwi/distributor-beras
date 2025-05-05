@@ -24,6 +24,8 @@ const toast = useToast()
 const pageTitle = ref('Daftar Stok')
 const currentTab = ref('DaftarStok')
 
+const dataEdit = ref(null)
+
 const refreshPage = () =>
 {
     checkNotif()
@@ -95,10 +97,23 @@ const componentProps = computed(() => {
             formType  : 'Create'
         };
 
+        case 'EditStok':
+        return {
+            dataBeras : props.dataBeras,
+            dataGudang : dataEdit.value,
+            formType  : 'Edit'
+        };
+
         default:
         return {};
     }
 })
+
+const editData = dataEmit =>
+{
+    dataEdit.value = dataEmit
+    switchComponents('EditStok','Edit Stok')
+}
 
 </script>
 
@@ -111,7 +126,7 @@ const componentProps = computed(() => {
                 <Button @click="switchComponents('TambahStok','Tambah Stok')" label="Tambah Stok" :severity="currentTab==='TambahStok'?'primary':'secondary'" icon="pi pi-list"/>
             </div>
             <div class="flex flex-col mt-4">
-                <component :is="currentComponent" v-bind="componentProps" @refreshPage="refreshPage"/>
+                <component :is="currentComponent" v-bind="componentProps" @refreshPage="refreshPage" @editData="editData"/>
             </div>
         </template>
     </AuthenticatedLayout>
