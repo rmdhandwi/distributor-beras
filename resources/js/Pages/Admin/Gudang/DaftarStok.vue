@@ -17,7 +17,6 @@ const editStok = id_gudang =>
 {
     const dataFilter = props.dataGudang.filter((gudang) => gudang.id_gudang === id_gudang)
     emit('editData', dataFilter)
-    console.log('filter data : '+dataFilter)
 }
 
 </script>
