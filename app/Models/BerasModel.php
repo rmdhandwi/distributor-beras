@@ -60,6 +60,6 @@ class BerasModel extends Model
     // Relasi ke model gudang
     public function gudang()
     {
-        return $this->belongsTo(GudangModel::class, 'id_beras');
+        return $this->hasMany(GudangModel::class, 'id_beras');
     }
 }
