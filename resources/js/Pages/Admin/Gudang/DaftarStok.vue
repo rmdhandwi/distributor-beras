@@ -40,12 +40,12 @@ const props = defineProps({
             <Column sortable field="nomor" header="No" frozen/>
             <Column sortable header="Nama Beras" style="min-width: 180px;" frozen>
                 <template #body="{data}">
-                    {{ data.beras[0].nama_beras }}
+                    {{ data.beras[0]?.nama_beras }}
                 </template>
             </Column>
             <Column sortable header="Produsen" style="min-width: 180px;" frozen>
                 <template #body="{data}">
-                    {{ data.produsen[0].nama_produsen }}
+                    {{ data.produsen[0]?.nama_produsen }}
                 </template>
             </Column>
             <Column field="stok_awal" header="Stok Awal" style="min-width: 100px;"/>
