@@ -48,12 +48,17 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('admin/gudang/destroy', [GudangController::class, 'destroy'])->name('admin.gudang.destroy');
 
     // Route Pemesanan
-    Route::resource('admin/pemesanan', PemesananController::class)->names([
-        'index'   => 'admin.pemesanan.index',
-        'store'   => 'admin.pemesanan.store',
-        'update'  => 'admin.pemesanan.update',
-        'destroy' => 'admin.pemesanan.destroy',
-    ]);
+    Route::get('admin/pemesanan', [PemesananController::class, 'index'])->name('admin.pemesanan.index');
+    Route::post('admin/pemesanan/store', [PemesananController::class, 'store'])->name('admin.pemesanan.store');
+    Route::post('admin/pemesanan/update', [PemesananController::class, 'update'])->name('admin.pemesanan.update');
+    Route::post('admin/pemesanan/destroy', [PemesananController::class, 'destroy'])->name('admin.pemesanan.update');
+
+    // Route::resource('admin/pemesanan', PemesananController::class)->names([
+    //     'index'   => 'admin.pemesanan.index',
+    //     'store'   => 'admin.pemesanan.store',
+    //     'update'  => 'admin.pemesanan.update',
+    //     'destroy' => 'admin.pemesanan.destroy',
+    // ]);
 
     // Route Pemesanan
     // Route::resource('admin/gudang', GudangController::class)->names([
