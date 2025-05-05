@@ -61,5 +61,8 @@ Route::middleware(['auth', 'produsen'])->group(function () {
     Route::post('produsen/beras/tambah', [BerasController::class, 'store'])->name('produsen.beras.store');
     Route::post('produsen/beras/update', [BerasController::class, 'update'])->name('produsen.beras.update');
     Route::post('produsen/beras/destroy', [BerasController::class, 'destroy'])->name('produsen.beras.destroy');
+
+
+    Route::get('/produsen/pemesanan/index', [PemesananController::class, 'index'])->name('produsen.pemesanan.index');
 });
 
