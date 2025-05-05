@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\BerasModel;
 use App\Models\ProdusenModel;
+use App\Services\ImageValidation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class BerasController extends Controller
 {
+    private $file_path = 'upload/sertifikat_beras/';
     /**
      * Display a listing of the resource.
      */
@@ -41,7 +44,6 @@ class BerasController extends Controller
      */
     public function store(Request $req)
     {
-
         // Format ulang tanggal dari ISO menjadi Y-m-d
         $req->merge([
             'tgl_produksi' => Carbon::parse($req->tgl_produksi)->timezone('Asia/Jayapura')->format('Y-m-d'),
@@ -58,7 +60,7 @@ class BerasController extends Controller
             'tgl_produksi'     => 'required|date',
             'tgl_kadaluarsa'   => 'required|date|after_or_equal:tgl_produksi',
             'kualitas_beras'   => 'required|string|max:255',
-            'sertifikat_beras' => 'required|string|max:255',
+            'sertifikat_beras' => 'required',
         ], [
             'required'               => ':attribute wajib diisi.',
             'unique'                 => ':attribute sudah terdaftar.',
@@ -68,19 +70,37 @@ class BerasController extends Controller
             'after_or_equal'         => 'Tanggal kadaluarsa harus setelah atau sama dengan tanggal produksi.',
         ]);
 
-        $insert = BerasModel::create($validated);
+        $loggedInUser = auth()->guard()->user();
 
-        if ($insert) {
-            return redirect()->back()->with([
-                'notif_status' => 'success',
-                'notif_message' => 'Data beras berhasil ditambahkan!',
+        $filePathFix = $this->file_path . $loggedInUser->name .'/';
+
+        $imageValidation = new ImageValidation();
+
+        $fileNameFix = 'sertifikat-'.$req->nama_beras;
+
+        $linkFile = $imageValidation->validateImage($req, 'sertifikat_beras', $filePathFix, $fileNameFix);
+
+        if($linkFile)
+        {
+            $validatedData = array_merge($validated, [
+                'sertifikat_beras' => $linkFile,
             ]);
-        } else {
-            return redirect()->back()->with([
-                'notif_status' => 'error',
-                'notif_message' => 'Gagal menambahkan data beras :(',
-            ]);
+            $insert = BerasModel::create($validatedData);
+
+            if ($insert) {
+                return redirect()->back()->with([
+                    'notif_status' => 'success',
+                    'notif_message' => 'Data beras berhasil ditambahkan!',
+                ]);
+            } else {
+                return redirect()->back()->with([
+                    'notif_status' => 'error',
+                    'notif_message' => 'Gagal menambahkan data beras :(',
+                ]);
+            }
         }
+
+
     }
 
     /**
@@ -106,20 +126,46 @@ class BerasController extends Controller
             'tgl_produksi'     => 'required|date',
             'tgl_kadaluarsa'   => 'required|date|after_or_equal:tgl_produksi',
             'kualitas_beras'   => 'nullable|string|max:255',
-            'sertifikat_beras' => 'nullable|string|max:255',
+            'sertifikat_beras' => 'required',
             'status_beras'     => 'required|string|max:255',
         ]);
 
-        // Cari data berdasarkan ID
-        $beras = BerasModel::findOrFail($id);
+        $loggedInUser = auth()->guard()->user();
 
-        // Update data
-        $beras->update($validated);
+        $filePathFix = $this->file_path . $loggedInUser->name .'/';
 
-        return redirect()->back()->with([
-            'notif_status' => 'success',
-            'notif_message' => 'Data beras berhasil diperbarui.',
-        ]);
+        $imageValidation = new ImageValidation();
+
+        $fileNameFix = 'sertifikat-'.$req->nama_beras;
+
+        $linkFile = $imageValidation->validateImage($req, 'sertifikat_beras', $filePathFix, $fileNameFix);
+
+        if($linkFile)
+        {
+            $validatedData = array_merge($validated, [
+                'sertifikat_beras' => $linkFile,
+            ]);
+
+            // Cari data berdasarkan ID
+            $beras = BerasModel::findOrFail($id);
+
+            Storage::disk('public')->delete($filePathFix . basename($beras->sertifikat_beras));
+
+            // Update data
+            $update = $beras->update($validatedData);
+
+            if ($update) {
+                return redirect()->back()->with([
+                    'notif_status' => 'success',
+                    'notif_message' => 'Data beras berhasil diupdate!',
+                ]);
+            } else {
+                return redirect()->back()->with([
+                    'notif_status' => 'error',
+                    'notif_message' => 'Gagal update data beras :(',
+                ]);
+            }
+        }
     }
 
     /**
@@ -127,7 +173,12 @@ class BerasController extends Controller
      */
     public function destroy(Request $req)
     {
+        $loggedInUser = auth()->guard()->user();
+        $filePathFix = $this->file_path . $loggedInUser->name .'/';
+
         $beras = BerasModel::findOrFail($req->id_beras);
+        
+        Storage::disk('public')->delete($filePathFix . basename($beras->sertifikat_beras));
 
         if ($beras->delete()) {
             return redirect()->back()->with([
