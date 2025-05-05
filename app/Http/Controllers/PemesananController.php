@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BerasModel;
 use App\Models\PemesananModel;
 use App\Models\ProdusenModel;
+use App\Models\TransaksiModel;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -124,7 +125,44 @@ class PemesananController extends Controller
 
     public function confirm(Request $req)
     {
+        $pemesanan = PemesananModel::findOrFail($req->id_pemesanan);
+        $beras = BerasModel::findOrFail($pemesanan->id_beras);
 
+        $storeData = [
+            'id_pemesanan' => $req->id_pemesanan,
+            'tgl_transaksi' => NULL,
+            'jmlh' => $pemesanan->jmlh,
+            'harga_satuan' => $beras->harga_jual,
+            'total_harga' => $beras->harga_jual * $pemesanan->jmlh,
+            'bukti_bayar' => NULL,
+            'status_pembayaran' => 'Pending',
+            'status_pengiriman' => 'Pending',
+            'tgl_pengiriman' => NULL,
+            'catatan' => '-',
+        ];
+
+        $insert = TransaksiModel::create($storeData);
+
+        if ($insert)
+        {
+            $pemesanan->status_pesanan = 'Telah Dikonfirmasi';
+            $update = $pemesanan->save();
+
+            if($update)
+            {
+                return redirect()->back()->with([
+                    'notif_status' => 'success',
+                    'notif_message' => 'Pemesanan berhasil dikonfirmasi!',
+                ]);
+            }
+        }
+        else
+        {
+            return redirect()->back()->with([
+                'notif_status' => 'error',
+                'notif_message' => 'Gagal konfirmasi pemesanan :(',
+            ]);
+        }
     }
 
     /**
