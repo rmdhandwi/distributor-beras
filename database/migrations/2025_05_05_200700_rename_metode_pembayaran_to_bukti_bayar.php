@@ -15,6 +15,10 @@ return new class extends Migration
             //
             $table->renameColumn('metode_pembayaran', 'bukti_bayar');
         });
+
+        Schema::table('tb_transaksi', function (Blueprint $table) {
+            $table->string('bukti_bayar', 255)->nullable()->change();
+        });
     }
 
     /**
@@ -25,6 +29,9 @@ return new class extends Migration
         Schema::table('tb_transaksi', function (Blueprint $table) {
             //
             $table->renameColumn('bukti_bayar', 'metode_pembayaran');
+        });
+        Schema::table('tb_transaksi', function (Blueprint $table) {
+            $table->string('bukti_bayar', 255)->nullable()->change();
         });
     }
 };
