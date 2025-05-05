@@ -88,7 +88,7 @@ const switchStatus = status =>
             <Column header="Action" frozen align-frozen="right">
                 <template #body="{data}">
                     <div class="flex place-content-center gap-2">
-                        <Button @click="editPemesanan(data.id_pemesanan)" severity="info" size="small" icon="pi pi-pen-to-square"/>
+                        <Button @click="editPemesanan(data.id_pemesanan)" severity="info" size="small" icon="pi pi-pen-to-square" :disabled="!data.editable"/>
                     </div>
                 </template>
             </Column>
