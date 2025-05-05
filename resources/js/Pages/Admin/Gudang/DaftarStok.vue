@@ -11,6 +11,14 @@ const props = defineProps({
     dataGudang : Object,
 })
 
+const emit = defineEmits(['editData'])
+
+const editStok = id_gudang =>
+{
+    const dataFilter = props.dataGudang.filter((gudang) => gudang.id_gudang === id_gudang)
+    emit('editData', dataFilter)
+    console.log('filter data : '+dataFilter)
+}
 
 </script>
 
@@ -40,18 +48,25 @@ const props = defineProps({
             <Column sortable field="nomor" header="No" frozen/>
             <Column sortable header="Nama Beras" style="min-width: 180px;" frozen>
                 <template #body="{data}">
-                    {{ data.beras[0]?.nama_beras }}
+                    {{ data.beras?.nama_beras }}
                 </template>
             </Column>
             <Column sortable header="Produsen" style="min-width: 180px;" frozen>
                 <template #body="{data}">
-                    {{ data.produsen[0]?.nama_produsen }}
+                    {{ data.produsen?.nama_produsen }}
                 </template>
             </Column>
             <Column field="stok_awal" header="Stok Awal" style="min-width: 100px;"/>
             <Column field="rusak" header="Rusak" style="min-width: 100px;"/>
             <Column field="hilang" header="Hilang" style="min-width: 100px;"/>
             <Column field="stok_sisa" header="Stok Sisa" style="min-width: 100px;"/>
+            <Column header="Action" frozen align-frozen="right">
+                <template #body="{data}">
+                    <div class="flex place-content-center gap-2">
+                        <Button @click="editStok(data.id_gudang)" severity="info" size="small" icon="pi pi-pen-to-square"/>
+                    </div>
+                </template>
+            </Column>
         </DataTable>
     </div>
 </template>
