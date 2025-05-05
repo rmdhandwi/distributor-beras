@@ -45,6 +45,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('admin/gudang', [GudangController::class, 'index'])->name('admin.gudang.index');
     Route::post('admin/gudang/store', [GudangController::class, 'store'])->name('admin.gudang.store');
     Route::post('admin/gudang/update', [GudangController::class, 'update'])->name('admin.gudang.update');
+    Route::post('admin/gudang/destroy', [GudangController::class, 'destroy'])->name('admin.gudang.destroy');
 
     // Route Pemesanan
     Route::resource('admin/pemesanan', PemesananController::class)->names([
