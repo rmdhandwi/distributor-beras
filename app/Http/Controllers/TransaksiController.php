@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TransaksiModel;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class TransaksiController extends Controller
 {
@@ -11,7 +13,24 @@ class TransaksiController extends Controller
      */
     public function index()
     {
-        //
+        $loggedInUser = auth()->guard()->user();
+
+        if($loggedInUser->role === 'Admin')
+        {
+            $dataTransaksi = TransaksiModel::with([
+                'pemesanan:id_pemesanan,id_beras,id_produsen',
+                'pemesanan.produsen:id_produsen,nama_produsen',
+                'pemesanan.beras:id_beras,nama_beras'
+            ])->get();
+            
+            return Inertia::render('Admin/Transaksi/Index', [
+                'dataTransaksi' => $dataTransaksi,
+            ]);
+        }
+        else if($loggedInUser->role === 'Produsen')
+        {
+
+        }
     }
 
     /**
