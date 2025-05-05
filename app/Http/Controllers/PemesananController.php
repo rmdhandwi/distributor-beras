@@ -122,6 +122,11 @@ class PemesananController extends Controller
         }
     }
 
+    public function confirm(Request $req)
+    {
+
+    }
+
     /**
      * Remove the specified resource from storage.
      */
