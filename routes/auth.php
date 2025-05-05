@@ -64,5 +64,6 @@ Route::middleware(['auth', 'produsen'])->group(function () {
 
 
     Route::get('/produsen/pemesanan/index', [PemesananController::class, 'index'])->name('produsen.pemesanan.index');
+    Route::get('/produsen/pemesanan/confirm', [PemesananController::class, 'confirm'])->name('produsen.pemesanan.confirm');
 });
 
