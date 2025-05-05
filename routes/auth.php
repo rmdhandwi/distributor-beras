@@ -29,17 +29,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     // Route Produsen
     Route::get('admin/produsen', [ProdusenController::class, 'index'])->name('admin.produsen.index');
 
-    // Route::post('admin/produsen/tambah', [ProdusenController::class, 'store'])->name('admin.produsen.store');
-    // Route::post('admin/produsen/update', [ProdusenController::class, 'update'])->name('admin.produsen.update');
-    // Route::post('admin/produsen/destroy', [ProdusenController::class, 'destroy'])->name('admin.produsen.destroy');
-
-
     // Route Beras
     Route::get('admin/beras', [BerasController::class, 'index'])->name('admin.beras.index');
-
-    // Route::post('admin/beras/tambah', [BerasController::class, 'store'])->name('admin.beras.store');
-    // Route::post('admin/beras/update', [BerasController::class, 'update'])->name('admin.beras.update');
-    // Route::post('admin/beras/destroy', [BerasController::class, 'destroy'])->name('admin.beras.destroy');
 
     // Route Gudang
     Route::get('admin/gudang', [GudangController::class, 'index'])->name('admin.gudang.index');
@@ -52,21 +43,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('admin/pemesanan/store', [PemesananController::class, 'store'])->name('admin.pemesanan.store');
     Route::post('admin/pemesanan/update', [PemesananController::class, 'update'])->name('admin.pemesanan.update');
     Route::post('admin/pemesanan/destroy', [PemesananController::class, 'destroy'])->name('admin.pemesanan.update');
-
-    // Route::resource('admin/pemesanan', PemesananController::class)->names([
-    //     'index'   => 'admin.pemesanan.index',
-    //     'store'   => 'admin.pemesanan.store',
-    //     'update'  => 'admin.pemesanan.update',
-    //     'destroy' => 'admin.pemesanan.destroy',
-    // ]);
-
-    // Route Pemesanan
-    // Route::resource('admin/gudang', GudangController::class)->names([
-    //     'index'   => 'admin.gudang.index',
-    //     'store'   => 'admin.gudang.store',
-    //     'update'  => 'admin.gudang.update',
-    //     'destroy' => 'admin.gudang.destroy',
-    // ]);
 });
 
 Route::middleware(['auth', 'pemilik'])->group(function () {
