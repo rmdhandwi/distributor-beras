@@ -7,6 +7,7 @@ use App\Http\Controllers\GudangController;
 use App\Http\Controllers\PemesananController;
 use App\Http\Controllers\PemilikController;
 use App\Http\Controllers\ProdusenController;
+use App\Http\Controllers\TransaksiController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -43,6 +44,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('admin/pemesanan/store', [PemesananController::class, 'store'])->name('admin.pemesanan.store');
     Route::post('admin/pemesanan/update', [PemesananController::class, 'update'])->name('admin.pemesanan.update');
     Route::post('admin/pemesanan/destroy', [PemesananController::class, 'destroy'])->name('admin.pemesanan.destroy');
+
+    // Route Transaksi
+    Route::get('admin/transaksi', [TransaksiController::class, 'index'])->name('admin.transaksi.index');
 });
 
 Route::middleware(['auth', 'pemilik'])->group(function () {
