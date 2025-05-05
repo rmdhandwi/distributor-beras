@@ -1,11 +1,16 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3'
 import { useConfirm, useToast } from 'primevue'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
+
+onMounted(() =>
+{
+    console.log(props.dataPemesanan)
+})
 
 const props = defineProps({
-    formType : null,
+    formType : String,
     dataBeras : Object,
     dataPemesanan : Object,
     dataProdusen : Object,
@@ -19,6 +24,7 @@ const toast = useToast()
 const selectedBeras = ref(null)
 
 const pemesananForm = useForm({
+    id_pemesanan: props.dataPemesanan?.[0]?.id_pemesanan ?? null,
     id_produsen: props.dataPemesanan?.[0]?.id_produsen ?? null,
     id_beras: props.dataPemesanan?.[0]?.id_beras ?? null,
     jmlh: props.dataPemesanan?.[0]?.jmlh ?? null,
@@ -30,8 +36,6 @@ const pemesananForm = useForm({
 const selectIdProdusen = () =>
 {
     selectedBeras.value = props.dataBeras.find( (beras) => beras.id_beras === pemesananForm.id_beras)
-
-    console.log(selectedBeras.value)
 
     if (selectedBeras) {
         pemesananForm.id_produsen = selectedBeras.value.id_produsen
@@ -92,15 +96,58 @@ const submitPesan = Action =>
     })
 }
 
+const confirmHapus = () => {
+    confirm.require({
+        message: 'Hapus dan Batalkan Data pemesanan?',
+        header: 'Peringatan',
+        icon: 'pi pi-exclamation-triangle',
+        rejectProps: {
+            label: 'Batalkan',
+            severity: 'secondary',
+            outlined: true
+        },
+        acceptProps: {
+            label: 'Hapus',
+            severity: 'danger'
+        },
+        accept : () => {
+            toast.add({ severity: 'info', summary: 'Notifikasi', detail: 'Menghapus...', life: 2000 });
+            pemesananForm.post(route('admin.pemesanan.destroy'), {
+                onError : () => {
+                    toast.add({
+                        severity : 'error',
+                        summary : 'Notifikasi',
+                        detail : 'Terjadi kesalahan',
+                        life : 3000,
+                    })
+                },
+                onSuccess : () => {
+                    pemesananForm.reset()
+                    pemesananForm.clearErrors()
+                    emit('refreshPage')
+                }
+            })
+
+        },
+    });
+}
+
 </script>
 
 <template>
     <form @submit.prevent class="flex flex-col gap-4 mt-4" autocomplete="off">
         <!-- Beras -->
-        <div>
+        <div v-if="props.formType==='Create'">
             <FloatLabel variant="on">
                 <Select v-model="pemesananForm.id_beras" :options="props.dataBeras" option-label="nama_beras" option-value="id_beras" @change="selectIdProdusen" fluid />
                 <label>Pilih Beras</label>
+            </FloatLabel>
+            <span class="text-red-500" v-if="pemesananForm.errors.id_beras"> {{ pemesananForm.errors.id_beras }} </span>
+        </div>
+        <div v-else>
+            <FloatLabel variant="on">
+                <InputText id="nama_beras" :default-value="props.dataPemesanan[0]?.beras.nama_beras" fluid disabled/>
+                <label for="nama_beras">Pilih Beras</label>
             </FloatLabel>
             <span class="text-red-500" v-if="pemesananForm.errors.id_beras"> {{ pemesananForm.errors.id_beras }} </span>
         </div>
@@ -117,7 +164,7 @@ const submitPesan = Action =>
         <!-- tanggal pesan -->
         <div>
             <FloatLabel variant="on">
-                <DatePicker v-model="pemesananForm.tgl_pemesanan" inputId="on_label" showIcon iconDisplay="input" dateFormat="dd-mm-yy" fluid/>
+                <DatePicker :disabled="formType!=='Create'" v-model="pemesananForm.tgl_pemesanan" inputId="on_label" showIcon iconDisplay="input" dateFormat="dd-mm-yy" fluid/>
                 <label for="on_label">Tanggal Pemesanan</label>
             </FloatLabel>
             <span class="text-red-500" v-if="pemesananForm.errors.tgl_pemesanan"> {{ pemesananForm.errors.tgl_pemesanan }} </span>
@@ -132,6 +179,8 @@ const submitPesan = Action =>
         </div>
 
         <Button @click="submitPesan('Pesan')" label="Pesan Beras" v-if="props.formType==='Create'"/>
+        <Button @click="submitPesan('Update')" label="Update" v-if="props.formType==='Edit'"/>
+        <Button @click="confirmHapus"  label="Hapus" severity="danger" v-if="props.formType==='Edit'"/>
     </form>
 
 </template>
