@@ -47,7 +47,7 @@ class ProdusenModel extends Model
     // relasi produsen ke gudang
     public function gudang()
     {
-        return $this->belongsTo(GudangModel::class, 'id_produsen');
+        return $this->hasMany(GudangModel::class, 'id_produsen');
     }
 
     // relasi produsen ke pemesanan
