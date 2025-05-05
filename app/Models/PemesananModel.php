@@ -41,4 +41,9 @@ class PemesananModel extends Model
     {
         return $this->belongsTo(BerasModel::class, 'id_beras');
     }
+
+    public function transaksi()
+    {
+        return $this->hasMany(TransaksiModel::class, 'id_pemesanan');
+    }
 }
