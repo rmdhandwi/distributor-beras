@@ -20,11 +20,18 @@ class PemesananModel extends Model
         'catatan',
     ];
 
-    protected $appends = ['editable'];
+    protected $appends = ['editable', 'confirmed'];
 
     public function getEditableAttribute()
     {
         return !TransaksiModel::where('id_pemesanan', $this->id_pemesanan)->exists();
+    }
+
+    public function getConfirmedAttribute()
+    {
+        $transaksi = TransaksiModel::where('id_pemesanan', $this->id_pemesanan)->first();
+
+        return $transaksi && $transaksi->bukti_bayar === NULL;
     }
 
     protected $casts = [
