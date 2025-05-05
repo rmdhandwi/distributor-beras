@@ -126,7 +126,7 @@ const confirmPemesanan = confirmData =>
         },
         accept : () => {
             toast.add({ severity: 'info', summary: 'Notifikasi', detail: 'Memproses...', life: 4000 });
-            pemesananForm.post(route('admin.pemesanan.confirm'), {
+            pemesananForm.post(route('produsen.pemesanan.confirm'), {
                 onError : () => {
                     toast.add({
                         severity : 'error',
