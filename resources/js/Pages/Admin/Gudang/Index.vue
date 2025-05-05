@@ -11,7 +11,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 onMounted(() =>
 {
     checkNotif()
-    console.table(props.dataGudang)
 })
 
 const props = defineProps({
@@ -61,18 +60,21 @@ const loadComponent = componentName =>
     if(componentName === 'TambahStok' || componentName === 'EditStok')
     {
         return  defineAsyncComponent({
-        loader : () => import(`./FormStok.vue`),
-        loadingComponent : LoadingSpinner,
-        delay : 200,
-        timeout: 3000
-    })
+            loader : () => import(`./FormStok.vue`),
+            loadingComponent : LoadingSpinner,
+            delay : 200,
+            timeout: 3000
+        })
     }
-    return  defineAsyncComponent({
-        loader : () => import(`./${componentName}.vue`),
-        loadingComponent : LoadingSpinner,
-        delay : 200,
-        timeout: 3000
-    })
+    else
+    {
+        return  defineAsyncComponent({
+            loader : () => import(`./${componentName}.vue`),
+            loadingComponent : LoadingSpinner,
+            delay : 200,
+            timeout: 3000
+        })
+    }
 }
 
 const currentComponent = computed(() => {
@@ -109,7 +111,7 @@ const componentProps = computed(() => {
                 <Button @click="switchComponents('TambahStok','Tambah Stok')" label="Tambah Stok" :severity="currentTab==='TambahStok'?'primary':'secondary'" icon="pi pi-list"/>
             </div>
             <div class="flex flex-col mt-4">
-                <component :is="currentComponent" v-bind="componentProps"/>
+                <component :is="currentComponent" v-bind="componentProps" @refreshPage="refreshPage"/>
             </div>
         </template>
     </AuthenticatedLayout>
