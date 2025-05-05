@@ -20,6 +20,7 @@ class TransaksiModel extends Model
         'total_harga',
         'bukti_bayar',
         'status_pembayaran',
+        'status_pengiriman',
         'tgl_pengiriman',
         'catatan',
     ];
@@ -28,4 +29,10 @@ class TransaksiModel extends Model
         'tgl_transaksi' => 'string',
         'tgl_pengiriman' => 'string',
     ];
+
+    // relasi ke pemesanan
+    public function pemesanan()
+    {
+        return $this->belongsTo(PemesananModel::class, 'id_pemesanan');
+    }
 }
