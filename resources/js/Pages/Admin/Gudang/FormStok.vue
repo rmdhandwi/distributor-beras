@@ -6,7 +6,6 @@ import { useConfirm, useToast } from 'primevue'
 
 onMounted(() =>
 {
-    console.log(props.dataBeras)
     if(props.formType==='Create')
     {
         selectDataBeras.value = props.dataBeras?.map(item => ({
@@ -32,6 +31,7 @@ const selectProdusen = ref(null)
 const selectBeras = ref(null)
 
 const stokForm = useForm({
+    id_gudang : props.dataGudang?.[0]?.id_gudang ?? null,
     id_beras : props.dataGudang?.[0]?.id_beras ?? null,
     id_produsen : props.dataGudang?.[0]?.id_produsen ??null,
     stok_awal : props.dataGudang?.[0]?.stok_awal ??  null,
@@ -150,11 +150,26 @@ const confirmHapus = () => {
             </FloatLabel>
             <span class="text-red-500" v-if="stokForm.errors.id_beras"> {{ stokForm.errors.id_beras }} </span>
         </div>
+        <div v-else>
+            <FloatLabel variant="on">
+                <InputText id="nama_beras" :default-value="props.dataGudang[0].beras.nama_beras" fluid disabled/>
+                <label for="nama_beras">Beras</label>
+            </FloatLabel>
+            <span class="text-red-500" v-if="stokForm.errors.id_beras"> {{ stokForm.errors.id_beras }} </span>
+        </div>
 
         <!-- Nama produsen -->
-        <div>
+        <div v-if="props.formType==='Create'">
             <FloatLabel variant="on">
                 <InputText id="produsen" v-model="selectProdusen" fluid disabled/>
+                <label for="produsen">Produsen</label>
+            </FloatLabel>
+            <span class="text-red-500" v-if="stokForm.errors.id_produsen"> {{ stokForm.errors.id_produsen }} </span>
+
+        </div>
+        <div v-else>
+            <FloatLabel variant="on">
+                <InputText id="produsen" :default-value="props.dataGudang[0].produsen.nama_produsen" fluid disabled/>
                 <label for="produsen">Produsen</label>
             </FloatLabel>
             <span class="text-red-500" v-if="stokForm.errors.id_produsen"> {{ stokForm.errors.id_produsen }} </span>
