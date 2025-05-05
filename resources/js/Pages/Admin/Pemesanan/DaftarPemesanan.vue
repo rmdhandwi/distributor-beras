@@ -28,11 +28,11 @@ const switchStatus = status =>
 {
     switch(status)
     {
-        case 'Pending' : return 'Warn';
+        case 'Pending' : return 'warn';
 
-        case 'Upload Bukti' : return 'Info';
+        case 'Telah Dikonfirmasi' : return 'info';
 
-        case 'Bukti Diterima' : return 'Success';
+        case 'Bukti Diterima' : return 'success';
     }
 }
 
