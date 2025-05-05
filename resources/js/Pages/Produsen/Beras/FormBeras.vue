@@ -1,4 +1,5 @@
 <script setup>
+import { ref } from 'vue'
 import { useForm } from '@inertiajs/vue3'
 import { useConfirm, useToast } from 'primevue'
 
@@ -12,6 +13,9 @@ const emit = defineEmits(['refreshPage'])
 
 const confirm = useConfirm()
 const toast = useToast()
+
+const previewImg = ref(false)
+const lihatBukti = ref(false)
 
 const jenisBeras = [
     { value : 'A', label : 'A' },
@@ -34,6 +38,29 @@ const berasForm = useForm({
   sertifikat_beras: props.dataBeras?.[0]?.sertifikat_beras ?? null,
   status_beras: props.dataBeras?.[0]?.status_beras ?? null,
 })
+
+const onUpload = (e) =>
+{
+    berasForm.sertifikat_beras = e.files[0]
+
+    if(berasForm.sertifikat_beras?.size < 1000000)
+    {
+        berasForm.clearErrors('sertifikat_beras')
+        toast.add({ severity: 'info', summary: 'Notifikasi', detail: 'foto terupload!', life: 2000, group : 'tr' })
+    }
+    else
+    {
+        berasForm.errors.sertifikat_beras = 'Ukuran File melebihi 1Mb'
+        disableSubmit.value = true
+    }
+    const reader = new FileReader();
+
+    reader.onloadend = async (e) => {
+        previewImg.value = e.target.result;
+    };
+
+    reader.readAsDataURL(berasForm.sertifikat_beras);
+}
 
 const submitBeras = (Action) =>
 {
@@ -130,6 +157,16 @@ const confirmHapus = () => {
 
 <template>
     <form @submit.prevent class="flex flex-col gap-4 mt-4" autocomplete="off">
+        <!-- Dialog bukti -->
+        <Dialog header="Bukti" class="w-fit" v-model:visible="lihatBukti" modal>
+            <div class="w-full flex items-center justify-center">
+                <div class="size-80 overflow-hidden border">
+                    <img :src="previewImg" class="size-full">
+                </div>
+            </div>
+        </Dialog>
+
+        <!-- Dialog Tambah Permohonan -->
         <!-- Nama Beras -->
         <div>
             <FloatLabel variant="on">
@@ -215,13 +252,14 @@ const confirmHapus = () => {
         </div>
 
         <!-- sertifikat Beras -->
-        <div>
-            <FloatLabel variant="on">
-                <InputText id="on_label" v-model="berasForm.sertifikat_beras" fluid/>
-                <label for="on_label">Sertifikat Beras</label>
-            </FloatLabel>
-            <span class="text-red-500" v-if="berasForm.errors.sertifikat_beras"> {{ berasForm.errors.sertifikat_beras }} </span>
+        <div class="mb-10">
+            <FileUpload mode="basic" name="demo[]" accept=".jpg,.jpeg,.png"  invalidFileSizeMessage="Ukuran File Melebihi 1Mb" @uploader="onUpload($event)" auto customUpload chooseLabel="Upload Bukti" fluid/>
+            <span class="text-red-500" v-if="!!berasForm.errors.sertifikat_beras">
+                {{ berasForm.errors.sertifikat_beras }}
+            </span>
         </div>
+        <!-- button lihat bukti -->
+        <Button @click="lihatBukti=true" label="Lihat Bukti" icon="pi pi-eye" severity="success" v-if="previewImg"/>
 
         <Button @click="submitBeras('Tambah')" label="Submit" v-if="props.formType==='Create'"/>
         <Button @click="submitBeras('Update')" label="Update"  v-if="props.formType==='Edit'"/>
