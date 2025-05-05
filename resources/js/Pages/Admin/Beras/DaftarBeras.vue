@@ -65,7 +65,14 @@ function formatTanggal(tanggal) {
                 </template>
             </Column>
             <Column field="kualitas_beras" header="Kualitas" style="min-width: 240px;"/>
-            <Column field="sertifikat_beras" header="Sertifikat" style="min-width: 240px;"/>
+            <Column header="Sertifikat" style="min-width: 100px;">
+                <template #body="{data}">
+                    <div class="size-10 overflow-hidden border rounded" v-if="data?.sertifikat_beras">
+                        <Image :src="data?.sertifikat_beras" class="size-full" preview />
+                    </div>
+                    <span class="text-sm" v-else>Tidak ada sertifikat</span>
+                </template>
+            </Column>
             <Column sortable header="Tanggal Produksi" style="min-width: 240px;">
                 <template #body="{data}">
                     <span>{{ formatTanggal(data.tgl_produksi) }}</span>
