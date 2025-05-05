@@ -20,6 +20,13 @@ class PemesananModel extends Model
         'catatan',
     ];
 
+    protected $appends = ['editable'];
+
+    public function getEditableAttribute()
+    {
+        return !TransaksiModel::where('id_pemesanan', $this->id_pemesanan)->exists();
+    }
+
     protected $casts = [
         'tgl_pemesanan' => 'string',
     ];
