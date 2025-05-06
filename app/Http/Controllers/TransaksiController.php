@@ -89,6 +89,40 @@ class TransaksiController extends Controller
 
     }
 
+    public function konfirmJadwal(Request $req)
+    {
+         // Format ulang tanggal dari ISO menjadi Y-m-d
+        $req->merge([
+            'tgl_pengiriman' => Carbon::parse($req->tgl_produksi)->timezone('Asia/Jayapura')->format('Y-m-d'),
+        ]);
+
+        $validated = $req->validate([
+            'id_transaksi' => 'required',
+            'tgl_pengiriman' => 'required|date',
+            'status_pembayaran' => 'required|string',
+        ]);
+
+        $transaksi = TransaksiModel::findOrFail($req->id_transaksi);
+
+        $transaksi->tgl_pengiriman = $validated['tgl_pengiriman'];
+        $transaksi->status_pembayaran = $validated['status_pembayaran'];
+        $transaksi->status_pengiriman = 'Dijadwalkan';
+
+        $update = $transaksi->save();
+
+        if ($update) {
+            return redirect()->back()->with([
+                'notif_status' => 'success',
+                'notif_message' => 'Berhasil menjadwalkan pengiriman!',
+            ]);
+        } else {
+            return redirect()->back()->with([
+                'notif_status' => 'error',
+                'notif_message' => 'Gagal menjadwalkan pengiriman :(',
+            ]);
+        }
+    }
+
 
     /**
      * Show the form for creating a new resource.
