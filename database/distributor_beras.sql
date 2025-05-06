@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3000
--- Generation Time: Apr 29, 2025 at 03:41 PM
+-- Generation Time: May 06, 2025 at 06:55 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.7
 
@@ -45,7 +45,10 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (5, '2025_04_15_111605_create_tb_transaksi', 1),
 (6, '2025_04_26_231914_create_tb_gudang_table', 1),
 (7, '2025_04_26_233515_drop_columns_from_tb_produsen_table', 1),
-(8, '2025_04_29_191329_update_tb_produsen_table', 1);
+(8, '2025_04_29_191329_update_tb_produsen_table', 1),
+(9, '2025_05_05_200700_rename_metode_pembayaran_to_bukti_bayar', 2),
+(10, '2025_05_05_224322_make_tgl_transaksi_nullable', 3),
+(11, '2025_05_06_001414_make_tgl_pengiriman_nullable', 4);
 
 -- --------------------------------------------------------
 
@@ -67,7 +70,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('EZXFqaeavSJPf9WDklXNgpRuybkHZTqnhEFbeTmn', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoibG1haHRUeUxONElnQzBpcGpQS0hLYmFJNlFHTjE1ZFU0emdybHlXYSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9SZWdpc3RlciI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1745941114);
+('YsMS1KPYbL2UUJ830aM9Gm1t2Agl82DtTMKfUne6', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YToyOntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im5ldyI7YTowOnt9czozOiJvbGQiO2E6MDp7fX1zOjY6Il90b2tlbiI7czo0MDoiWTV1SmhtNFBuWWRQc2dIOFppbUY0SWo3SmtQazZxSmJ2eElyc0ZZRSI7fQ==', 1746557685);
 
 -- --------------------------------------------------------
 
@@ -92,6 +95,16 @@ CREATE TABLE `tb_beras` (
   `updated_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `tb_beras`
+--
+
+INSERT INTO `tb_beras` (`id_beras`, `nama_beras`, `id_produsen`, `jenis_beras`, `harga_jual`, `stok_awal`, `stok_tersedia`, `tgl_produksi`, `tgl_kadaluarsa`, `kualitas_beras`, `sertifikat_beras`, `status_beras`, `created_at`, `updated_at`) VALUES
+(1, 'Beras Putih 01', 1, 'D', 88000, 100, 100, '2025-05-02', '2026-05-02', 'Baik', '/storage/upload/sertifikat_beras/Produsen01/sertifikat-Beras Putih 01-05-05-2025.jpg', 'Tersedia', '2025-05-02 01:55:11', '2025-05-05 19:22:38'),
+(3, 'Beras Hitam 01', 1, 'B', 99000, 100, 80, '2025-05-02', '2026-05-02', 'Baik', '/storage/upload/sertifikat_beras/Produsen01/sertifikat-Beras Hitam 01-05-05-2025.jpg', 'Tersedia', '2025-05-03 00:21:24', '2025-05-05 19:22:52'),
+(4, 'Beras Merah ABCD', 1, 'A', 90000, 100, 100, '2025-05-05', '2026-05-05', 'Baik', '	/storage/upload/sertifikat_beras/Produsen01/sertifikat-Beras Merah ABCD-05-05-2025.jpg', 'Tersedia', '2025-05-05 19:01:31', '2025-05-05 19:01:31'),
+(5, 'Beras Putih Mahkota', 1, 'A', 98000, 100, 100, '2025-05-05', '2026-05-05', 'Baik', '	/storage/upload/sertifikat_beras/Produsen01/sertifikat-Beras Putih Mahkota-05-05-2025.jpg', 'Tersedia', '2025-05-05 19:16:09', '2025-05-05 19:16:09');
+
 -- --------------------------------------------------------
 
 --
@@ -110,6 +123,15 @@ CREATE TABLE `tb_gudang` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `tb_gudang`
+--
+
+INSERT INTO `tb_gudang` (`id_gudang`, `id_beras`, `id_produsen`, `stok_awal`, `rusak`, `hilang`, `stok_sisa`, `created_at`, `updated_at`) VALUES
+(1, 1, 1, 90, 5, 1, 84, '2025-05-02 17:46:58', '2025-05-05 09:04:44'),
+(3, 3, 1, 100, 15, 0, 85, '2025-05-05 08:38:32', '2025-05-05 09:05:01'),
+(4, 4, 1, 80, 5, 0, 25, '2025-05-06 06:41:15', '2025-05-06 06:41:15');
+
 -- --------------------------------------------------------
 
 --
@@ -127,6 +149,13 @@ CREATE TABLE `tb_pemesanan` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tb_pemesanan`
+--
+
+INSERT INTO `tb_pemesanan` (`id_pemesanan`, `id_produsen`, `id_beras`, `jmlh`, `tgl_pemesanan`, `status_pesanan`, `catatan`, `created_at`, `updated_at`) VALUES
+(2, 1, 4, 80, '2025-05-05', 'Telah Dikonfirmasi', 'Stok di gudang menipis', '2025-05-05 21:35:48', '2025-05-06 00:34:17');
 
 -- --------------------------------------------------------
 
@@ -152,7 +181,7 @@ CREATE TABLE `tb_produsen` (
 --
 
 INSERT INTO `tb_produsen` (`id_produsen`, `user_id`, `nama_produsen`, `alamat`, `no_telp`, `email`, `tgl_pendaftaran`, `status`, `created_at`, `updated_at`) VALUES
-(1, 3, 'Produsen01', 'Jl. ABC No. 01, Kota Jayapura', '081234567801', 'Produsen01@example.net', '2025-04-30', 0, '2025-04-30 00:34:31', '2025-04-30 00:34:31'),
+(1, 3, 'Produsen01', 'Jl. ABC No. 01, Kota Jayapura', '081234567801', 'Produsen01@example.net', '2025-04-30', 1, '2025-04-30 00:34:31', '2025-04-30 23:58:12'),
 (2, 4, 'Produsen02', 'Jl. ABC No. 02, Kota Jayapura', '081234567802', 'Produsen02@example.net', '2025-04-30', 0, '2025-04-30 00:36:21', '2025-04-30 00:36:21');
 
 -- --------------------------------------------------------
@@ -164,18 +193,25 @@ INSERT INTO `tb_produsen` (`id_produsen`, `user_id`, `nama_produsen`, `alamat`, 
 CREATE TABLE `tb_transaksi` (
   `id_transaksi` bigint UNSIGNED NOT NULL,
   `id_pemesanan` bigint UNSIGNED NOT NULL,
-  `tgl_transaksi` date NOT NULL,
+  `tgl_transaksi` date DEFAULT NULL,
   `jmlh` int NOT NULL,
   `harga_satuan` int NOT NULL,
   `total_harga` int NOT NULL,
-  `metode_pembayaran` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `bukti_bayar` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `status_pembayaran` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `status_pengiriman` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tgl_pengiriman` date NOT NULL,
+  `tgl_pengiriman` date DEFAULT NULL,
   `catatan` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tb_transaksi`
+--
+
+INSERT INTO `tb_transaksi` (`id_transaksi`, `id_pemesanan`, `tgl_transaksi`, `jmlh`, `harga_satuan`, `total_harga`, `bukti_bayar`, `status_pembayaran`, `status_pengiriman`, `tgl_pengiriman`, `catatan`, `created_at`, `updated_at`) VALUES
+(1, 2, '2025-05-06', 80, 90000, 7200000, '/storage/upload/bukti_bayar_/06-05-2025/1-06-05-2025-06-05-2025.jpg', 'Selesai', 'Dijadwalkan', '2025-05-07', '-', '2025-05-06 00:34:16', '2025-05-07 00:43:43');
 
 -- --------------------------------------------------------
 
@@ -276,25 +312,25 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `tb_beras`
 --
 ALTER TABLE `tb_beras`
-  MODIFY `id_beras` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id_beras` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tb_gudang`
 --
 ALTER TABLE `tb_gudang`
-  MODIFY `id_gudang` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id_gudang` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `tb_pemesanan`
 --
 ALTER TABLE `tb_pemesanan`
-  MODIFY `id_pemesanan` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id_pemesanan` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tb_produsen`
@@ -306,7 +342,7 @@ ALTER TABLE `tb_produsen`
 -- AUTO_INCREMENT for table `tb_transaksi`
 --
 ALTER TABLE `tb_transaksi`
-  MODIFY `id_transaksi` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id_transaksi` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `users`
