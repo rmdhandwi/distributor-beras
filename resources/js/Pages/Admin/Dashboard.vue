@@ -10,10 +10,14 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 onMounted(() =>
 {
     checkNotif()
+    console.log(props.dataTransaksi)
 })
 
 const props = defineProps({
     flash : Object,
+    dataGudang : Object,
+    dataProdusen : Object,
+    dataTransaksi : Object,
 })
 
 const toast = useToast()
@@ -43,10 +47,113 @@ const checkNotif = async () =>
     <Head :title="pageTitle"/>
     <AuthenticatedLayout :pageTitle="pageTitle">
         <template #pageContent>
-            <h1>Hello World!</h1>
+            <div class="flex gap-x-4">
+                <!-- Card Stok Gudang -->
+                <Card class="p-2 w-[18rem] border border-slate-50 hover:border-amber-500">
+                    <template #title>
+                        <div class="flex gap-x-2 items-center">
+                            <i class="pi pi-warehouse" style="font-size: 1.2rem"></i>
+                            <span>Stok Gudang</span>
+                        </div>
+                    </template>
+                    <template #content>
+                        <div class="flex flex-col mt-4">
+                            <div>
+                                <span>Tersedia : </span>
+                                <span class="text-green-500">
+                                    {{ props.dataGudang?.total_stok_awal ?? 0 }}
+                                </span>
+                            </div>
+                            <div>
+                                <span>Rusak : </span>
+                                <span class="text-red-500">
+                                    {{ props.dataGudang?.total_rusak ?? 0 }}
+                                </span>
+                            </div>
+                            <div>
+                                <span>Hilang : </span>
+                                <span class="text-red-500">
+                                    {{ props.dataGudang?.total_hilang ?? 0 }}
+                                </span>
+                            </div>
+                        </div>
+                    </template>
+                    <template #footer>
+                        <div class="border-t">
+                            <span>Tersisa : </span>
+                            <span>
+                                {{ props.dataGudang?.total_stok_sisa ?? 0 }}
+                            </span>
+                        </div>
+                    </template>
+                </Card>
+                <!-- Card Produsen -->
+                <Card class="p-2 w-[18rem] border border-slate-50 hover:border-amber-500">
+                    <template #title>
+                        <div class="flex gap-x-2 items-center">
+                            <i class="pi pi-users" style="font-size: 1.2rem"></i>
+                            <span>Produsen</span>
+                        </div>
+                    </template>
+                    <template #content>
+                        <div class="flex flex-col mt-4">
+                            <div>
+                                <span>Terverifikasi : </span>
+                                <span class="text-green-500">
+                                    {{ props.dataProdusen?.verified ?? 0 }}
+                                </span>
+                            </div>
+                            <div>
+                                <span>Belum verifikasi : </span>
+                                <span class="text-red-500">
+                                    {{ props.dataProdusen?.unverified?? 0 }}
+                                </span>
+                            </div>
+                        </div>
+                    </template>
+                    <template #footer>
+                        <div class="border-t">
+                            <span>Total : </span>
+                            <span>
+                                {{ props.dataProdusen?.total ?? 0 }}
+                            </span>
+                        </div>
+                    </template>
+                </Card>
+                <!-- Card Transaksi -->
+                <Card class="p-2 w-[18rem] border border-slate-50 hover:border-amber-500">
+                    <template #title>
+                        <div class="flex gap-x-2 items-center">
+                            <i class="pi pi-arrow-right-arrow-left" style="font-size: 1.2rem"></i>
+                            <span>Transaksi</span>
+                        </div>
+                    </template>
+                    <template #content>
+                        <div class="flex flex-col mt-4">
+                            <div>
+                                <span>Dijadwalkan : </span>
+                                <span class="text-green-500">
+                                    {{ props.dataTransaksi?.find(item => item.status_pengiriman==='Dijadwalkan').jumlah ?? 0 }}
+                                </span>
+                            </div>
+                            <div>
+                                <span>Menunggu : </span>
+                                <span class="text-amber-500">
+                                    {{ props.dataTransaksi?.find(item => item.status_pengiriman==='Menunggu')?.jumlah ?? 0 }}
+                                </span>
+                            </div>
+                        </div>
+                    </template>
+                    <template #footer>
+                        <div class="border-t">
+                            <span>Total : </span>
+                            <span>
+                                {{ props.dataTransaksi?.length ?? 0 }}
+                            </span>
+                        </div>
+                    </template>
+                </Card>
+            </div>
         </template>
     </AuthenticatedLayout>
 </template>
-
-<style scoped>
-</style>
