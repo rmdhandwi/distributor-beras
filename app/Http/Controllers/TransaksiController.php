@@ -3,11 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\TransaksiModel;
+use App\Services\ImageValidation;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class TransaksiController extends Controller
 {
+    private $file_path = 'upload/bukti_bayar_/';
+
     /**
      * Display a listing of the resource.
      */
@@ -22,16 +26,69 @@ class TransaksiController extends Controller
                 'pemesanan.produsen:id_produsen,nama_produsen',
                 'pemesanan.beras:id_beras,nama_beras'
             ])->get();
-            
+
             return Inertia::render('Admin/Transaksi/Index', [
                 'dataTransaksi' => $dataTransaksi,
             ]);
         }
         else if($loggedInUser->role === 'Produsen')
         {
+            $dataTransaksi = TransaksiModel::with([
+                'pemesanan:id_pemesanan,id_beras,id_produsen',
+                'pemesanan.produsen:id_produsen,nama_produsen',
+                'pemesanan.beras:id_beras,nama_beras'
+            ])->get();
 
+            return Inertia::render('Produsen/Transaksi/Index', [
+                'dataTransaksi' => $dataTransaksi,
+            ]);
         }
     }
+
+    public function uploadBukti(Request $req)
+    {
+        $req->validate([
+            'id_transaksi' => 'required',
+            'bukti_bayar' => 'required',
+        ]);
+
+        $today = Carbon::now()->format('d-m-Y');
+
+        $filePathFix = $this->file_path.$today.'/';
+
+        $imageValidation = new ImageValidation();
+
+        $fileNameFix = $req->id_transaksi.'-'.$today;
+
+        $linkFile = $imageValidation->validateImage($req, 'bukti_bayar', $filePathFix, $fileNameFix);
+
+        if($linkFile)
+        {
+
+            $transaksi = transaksiModel::findOrFail($req->id_transaksi);
+            $transaksi->tgl_transaksi = Carbon::now()->format('Y-m-d');
+            $transaksi->bukti_bayar = $linkFile;
+
+            $update = $transaksi->save();
+
+            if ($update)
+            {
+                return redirect()->back()->with([
+                    'notif_status' => 'success',
+                    'notif_message' => 'Berhasil upload bukti bayar!',
+                ]);
+            } else {
+                return redirect()->back()->with([
+                    'notif_status' => 'error',
+                    'notif_message' => 'Gagal upload bukti bayar :(',
+                ]);
+            }
+        }
+
+
+
+    }
+
 
     /**
      * Show the form for creating a new resource.
