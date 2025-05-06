@@ -72,5 +72,6 @@ Route::middleware(['auth', 'produsen'])->group(function () {
     Route::post('/produsen/pemesanan/confirm', [PemesananController::class, 'confirm'])->name('produsen.pemesanan.confirm');
 
     Route::get('/produsen/transaksi/', [TransaksiController::class, 'index'])->name('produsen.transaksi.index');
+    Route::post('/produsen/transaksi/konfirmJadwal', [TransaksiController::class, 'konfirmJadwal'])->name('produsen.transaksi.konfirmJadwal');
 });
 
