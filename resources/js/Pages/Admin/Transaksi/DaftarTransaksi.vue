@@ -100,7 +100,7 @@ const switchStatus = status =>
     {
         case 'Pending' : return 'warn';
 
-        case 'Pengiriman Dijadwalkan' : return 'info';
+        case 'Dijadwalkan' : return 'info';
 
         case 'Dalam Pengiriman' : return 'info';
 
@@ -114,7 +114,7 @@ const switchStatusBayar = status =>
     {
         case 'Pending' : return 'warn';
 
-        case 'Berhasil Upload' : return 'Success';
+        case 'Selesai' : return 'success';
     }
 }
 
