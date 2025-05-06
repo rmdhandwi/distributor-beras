@@ -47,6 +47,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     // Route Transaksi
     Route::get('admin/transaksi', [TransaksiController::class, 'index'])->name('admin.transaksi.index');
+    Route::post('admin/transaksi/uploadBukti', [TransaksiController::class, 'uploadBukti'])->name('admin.transaksi.uploadBukti');
 });
 
 Route::middleware(['auth', 'pemilik'])->group(function () {
@@ -69,5 +70,7 @@ Route::middleware(['auth', 'produsen'])->group(function () {
 
     Route::get('/produsen/pemesanan/', [PemesananController::class, 'index'])->name('produsen.pemesanan.index');
     Route::post('/produsen/pemesanan/confirm', [PemesananController::class, 'confirm'])->name('produsen.pemesanan.confirm');
+
+    Route::get('/produsen/transaksi/', [TransaksiController::class, 'index'])->name('produsen.transaksi.index');
 });
 
