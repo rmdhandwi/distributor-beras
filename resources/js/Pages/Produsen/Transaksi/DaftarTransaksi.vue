@@ -291,7 +291,7 @@ const confirmJadwal = () =>
                         <OverlayBadge severity="info" v-if="data.bukti_bayar&&!data.tgl_pengiriman">
                             <Button @click="setJadwal(data.id_transaksi)" severity="info" variant="outlined" size="small" icon="pi pi-truck"/>
                         </OverlayBadge>
-                        <!-- <Tag icon="pi pi-check" severity="success" v-else/> -->
+                        <Tag value="Selesai" icon="pi pi-check" severity="success" v-else-if="data.bukti_bayar&&data.tgl_pengiriman"/>
                     </div>
                 </template>
             </Column>
