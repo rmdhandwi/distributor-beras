@@ -31,7 +31,7 @@ class BerasController extends Controller
         else if($loggedInUser->role === 'Produsen')
         {
             $dataProdusen = ProdusenModel::where('user_id', $loggedInUser->user_id)->select('id_produsen','nama_produsen')->get();
-            $dataBeras = BerasModel::with(['produsen:id_produsen,nama_produsen'])->get();
+            $dataBeras = BerasModel::where('id_produsen', $dataProdusen[0]->id_produsen)->with(['produsen:id_produsen,nama_produsen'])->get();
             return Inertia::render('Produsen/Beras/Index', [
                 'dataProdusen' => $dataProdusen,
                 'dataBeras' => $dataBeras,
@@ -126,45 +126,65 @@ class BerasController extends Controller
             'tgl_produksi'     => 'required|date',
             'tgl_kadaluarsa'   => 'required|date|after_or_equal:tgl_produksi',
             'kualitas_beras'   => 'nullable|string|max:255',
-            'sertifikat_beras' => 'required',
             'status_beras'     => 'required|string|max:255',
         ]);
 
-        $loggedInUser = auth()->guard()->user();
+        // Cari data berdasarkan ID
+        $beras = BerasModel::findOrFail($id);
 
-        $filePathFix = $this->file_path . $loggedInUser->name .'/';
-
-        $imageValidation = new ImageValidation();
-
-        $fileNameFix = 'sertifikat-'.$req->nama_beras;
-
-        $linkFile = $imageValidation->validateImage($req, 'sertifikat_beras', $filePathFix, $fileNameFix);
-
-        if($linkFile)
+        if($req->hasFile('sertifikat_beras'))
         {
-            $validatedData = array_merge($validated, [
-                'sertifikat_beras' => $linkFile,
-            ]);
+            $loggedInUser = auth()->guard()->user();
 
-            // Cari data berdasarkan ID
-            $beras = BerasModel::findOrFail($id);
+            $filePathFix = $this->file_path . $loggedInUser->name .'/';
 
-            Storage::disk('public')->delete($filePathFix . basename($beras->sertifikat_beras));
+            $imageValidation = new ImageValidation();
 
-            // Update data
-            $update = $beras->update($validatedData);
+            $fileNameFix = 'sertifikat-'.$req->nama_beras;
 
-            if ($update) {
-                return redirect()->back()->with([
-                    'notif_status' => 'success',
-                    'notif_message' => 'Data beras berhasil diupdate!',
+            $linkFile = $imageValidation->validateImage($req, 'sertifikat_beras', $filePathFix, $fileNameFix);
+
+            if($linkFile)
+            {
+                $validatedData = array_merge($validated, [
+                    'sertifikat_beras' => $linkFile,
                 ]);
-            } else {
-                return redirect()->back()->with([
-                    'notif_status' => 'error',
-                    'notif_message' => 'Gagal update data beras :(',
-                ]);
+
+                Storage::disk('public')->delete($filePathFix . basename($beras->sertifikat_beras));
+
+                $update = $beras->update($validatedData);
+
+                if ($update)
+                {
+                    return redirect()->back()->with([
+                        'notif_status' => 'success',
+                        'notif_message' => 'Data beras berhasil diupdate!',
+                    ]);
+                }
+                else
+                {
+                    return redirect()->back()->with([
+                        'notif_status' => 'error',
+                        'notif_message' => 'Gagal update data beras :(',
+                    ]);
+                }
+
             }
+        }
+
+        // Update data
+        $update = $beras->update($validated);
+
+        if ($update) {
+            return redirect()->back()->with([
+                'notif_status' => 'success',
+                'notif_message' => 'Data beras berhasil diupdate!',
+            ]);
+        } else {
+            return redirect()->back()->with([
+                'notif_status' => 'error',
+                'notif_message' => 'Gagal update data beras :(',
+            ]);
         }
     }
 
@@ -177,7 +197,7 @@ class BerasController extends Controller
         $filePathFix = $this->file_path . $loggedInUser->name .'/';
 
         $beras = BerasModel::findOrFail($req->id_beras);
-        
+
         Storage::disk('public')->delete($filePathFix . basename($beras->sertifikat_beras));
 
         if ($beras->delete()) {
