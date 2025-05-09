@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\GudangModel;
 use App\Models\ProdusenModel;
 use App\Models\TransaksiModel;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class AdminController extends Controller
