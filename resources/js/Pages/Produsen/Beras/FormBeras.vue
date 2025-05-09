@@ -15,7 +15,7 @@ const confirm = useConfirm()
 const toast = useToast()
 
 const previewImg = ref(false)
-const lihatBukti = ref(false)
+const lihatSerti = ref(false)
 
 const jenisBeras = [
     { value : 'A', label : 'A' },
@@ -157,8 +157,8 @@ const confirmHapus = () => {
 
 <template>
     <form @submit.prevent class="flex flex-col gap-4 mt-4" autocomplete="off">
-        <!-- Dialog bukti -->
-        <Dialog header="Bukti" class="w-fit" v-model:visible="lihatBukti" modal>
+        <!-- Dialog Sertifikat -->
+        <Dialog header="Sertifikat" class="w-fit" v-model:visible="lihatSerti" modal>
             <div class="w-full flex items-center justify-center">
                 <div class="size-80 overflow-hidden border">
                     <img :src="previewImg" class="size-full">
@@ -209,7 +209,7 @@ const confirmHapus = () => {
         <!-- Stok Awal -->
         <div>
             <FloatLabel variant="on">
-                <InputNumber mode="decimal" showButtons :min="0" :max="100" id="on_label" v-model="berasForm.stok_awal" fluid/>
+                <InputNumber mode="decimal" showButtons :min="0" :max="1000" id="on_label" v-model="berasForm.stok_awal" fluid/>
                 <label for="on_label">Stok Awal</label>
             </FloatLabel>
             <span class="text-red-500" v-if="berasForm.errors.stok_awal"> {{ berasForm.errors.stok_awal }} </span>
@@ -218,7 +218,7 @@ const confirmHapus = () => {
         <!-- Stok Tersedia -->
         <div>
             <FloatLabel variant="on">
-                <InputNumber mode="decimal" showButtons :min="0" :max="100" id="on_label" v-model="berasForm.stok_tersedia" fluid/>
+                <InputNumber mode="decimal" showButtons :min="0" :max="berasForm.stok_awal ?? 0" id="on_label" v-model="berasForm.stok_tersedia" fluid/>
                 <label for="on_label">Stok Tersedia</label>
             </FloatLabel>
             <span class="text-red-500" v-if="berasForm.errors.stok_tersedia"> {{ berasForm.errors.stok_tersedia }} </span>
@@ -253,13 +253,13 @@ const confirmHapus = () => {
 
         <!-- sertifikat Beras -->
         <div class="mb-10">
-            <FileUpload mode="basic" name="demo[]" accept=".jpg,.jpeg,.png"  invalidFileSizeMessage="Ukuran File Melebihi 1Mb" @uploader="onUpload($event)" auto customUpload chooseLabel="Upload Bukti" fluid/>
+            <FileUpload mode="basic" name="demo[]" accept=".jpg,.jpeg,.png"  invalidFileSizeMessage="Ukuran File Melebihi 1Mb" @uploader="onUpload($event)" auto customUpload chooseLabel="Upload Sertifikat Beras" fluid/>
             <span class="text-red-500" v-if="!!berasForm.errors.sertifikat_beras">
                 {{ berasForm.errors.sertifikat_beras }}
             </span>
         </div>
         <!-- button lihat bukti -->
-        <Button @click="lihatBukti=true" label="Lihat Bukti" icon="pi pi-eye" severity="success" v-if="previewImg"/>
+        <Button @click="lihatSerti=true" label="Lihat Sertifikat" icon="pi pi-eye" severity="success" v-if="previewImg"/>
 
         <Button @click="submitBeras('Tambah')" label="Submit" v-if="props.formType==='Create'"/>
         <Button @click="submitBeras('Update')" label="Update"  v-if="props.formType==='Edit'"/>
