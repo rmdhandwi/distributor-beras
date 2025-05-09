@@ -49,23 +49,24 @@ const confirmValidasi = id =>
             severity: 'success'
         },
         accept : () => {
-            toast.add({ severity: 'info', summary: 'Notifikasi', detail: 'Memvalidasi Produsen...', life: 4000 });
-            produsenForm.post(route('pemilik.produsen.validasi'), {
-                onError : () => {
-                    toast.add({
-                        severity : 'error',
-                        summary : 'Notifikasi',
-                        detail : 'Terjadi kesalahan',
-                        life : 3000,
-                    })
-                },
-                onSuccess : () => {
-                    produsenForm.reset()
-                    produsenForm.clearErrors()
-                    emit('refreshPage')
-                }
-            })
-
+            toast.add({ severity: 'info', summary: 'Notifikasi', detail: 'Memvalidasi Produsen...', life: 3000 });
+            setTimeout(() => {
+                produsenForm.post(route('pemilik.produsen.validasi'), {
+                    onError : () => {
+                        toast.add({
+                            severity : 'error',
+                            summary : 'Notifikasi',
+                            detail : 'Terjadi kesalahan',
+                            life : 3000,
+                        })
+                    },
+                    onSuccess : () => {
+                        produsenForm.reset()
+                        produsenForm.clearErrors()
+                        emit('refreshPage')
+                    }
+                })
+            }, 3000)
         },
     });
 }
