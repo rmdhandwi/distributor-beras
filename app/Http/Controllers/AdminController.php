@@ -33,7 +33,6 @@ class AdminController extends Controller
         $dataTransaksi = TransaksiModel::select('status_pengiriman')
         ->selectRaw('COUNT(*) as jumlah')
         ->groupBy('status_pengiriman')
-        // ->pluck('jumlah', 'status_pengiriman');
         ->get();
 
         return Inertia::render('Admin/Dashboard', [
