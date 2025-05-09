@@ -34,7 +34,8 @@ class PemesananController extends Controller
         }
         else if($loggedInUser->role === 'Produsen')
         {
-            $dataPemesanan = PemesananModel::with(['beras:id_beras,nama_beras','produsen:id_produsen,nama_produsen'])->get();
+            $produsen = ProdusenModel::where('user_id', $loggedInUser->user_id)->first();
+            $dataPemesanan = PemesananModel::where('id_produsen', $produsen->id_produsen)->with(['beras:id_beras,nama_beras','produsen:id_produsen,nama_produsen'])->get();
 
             return Inertia::render('Produsen/Pemesanan/Index', [
                 'dataPemesanan' => $dataPemesanan,
