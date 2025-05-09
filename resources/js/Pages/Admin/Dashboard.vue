@@ -15,6 +15,7 @@ onMounted(() =>
 
 const props = defineProps({
     flash : Object,
+    dataBeras : Object,
     dataGudang : Object,
     dataProdusen : Object,
     dataTransaksi : Object,
@@ -41,6 +42,14 @@ const checkNotif = async () =>
         })
     }
 }
+
+function formatRupiah(angka) {
+    return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0
+    }).format(angka);
+}
 </script>
 
 <template>
@@ -48,6 +57,45 @@ const checkNotif = async () =>
     <AuthenticatedLayout :pageTitle="pageTitle">
         <template #pageContent>
             <div class="flex gap-x-4">
+                <!-- Card Stok Beras -->
+                <Card class="p-2 w-[18rem] border border-slate-50 hover:border-amber-500">
+                    <template #title>
+                        <div class="flex gap-x-2 items-center">
+                            <i class="pi pi-box" style="font-size: 1.2rem"></i>
+                            <span>Stok Beras</span>
+                        </div>
+                    </template>
+                    <template #content>
+                        <div class="flex flex-col mt-4">
+                            <div>
+                                <span>Harga Rata-rata : </span>
+                                <span class="text-green-500">
+                                    {{ formatRupiah(props.dataBeras[0]?.avg_harga_jual) ?? 0 }}
+                                </span>
+                            </div>
+                            <div>
+                                <span>Harga Termurah : </span>
+                                <span class="text-green-500">
+                                    {{ formatRupiah(props.dataBeras[0]?.min_harga_jual) ?? 0 }}
+                                </span>
+                            </div>
+                            <div>
+                                <span>Harga Termahal : </span>
+                                <span class="text-green-500">
+                                    {{ formatRupiah(props.dataBeras[0]?.max_harga_jual) ?? 0 }}
+                                </span>
+                            </div>
+                        </div>
+                    </template>
+                    <template #footer>
+                        <div class="border-t">
+                            <span>Beras Tersedia : </span>
+                            <span>
+                                {{ props.dataBeras[0]?.total_stok_tersedia ?? 0}}
+                            </span>
+                        </div>
+                    </template>
+                </Card>
                 <!-- Card Stok Gudang -->
                 <Card class="p-2 w-[18rem] border border-slate-50 hover:border-amber-500">
                     <template #title>
