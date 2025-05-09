@@ -6,6 +6,7 @@ use App\Models\BerasModel;
 use App\Models\GudangModel;
 use App\Models\ProdusenModel;
 use App\Models\TransaksiModel;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class AdminController extends Controller
@@ -35,8 +36,19 @@ class AdminController extends Controller
         ->groupBy('status_pengiriman')
         ->get();
 
+        $dataBerasChart = DB::table('tb_produsen')
+        ->leftJoin('tb_beras', 'tb_beras.id_produsen', '=', 'tb_produsen.id_produsen')
+        ->select(
+            'tb_produsen.nama_produsen',
+            DB::raw('COALESCE(SUM(tb_beras.stok_tersedia), 0) as total_stok')
+        )
+        ->groupBy('tb_produsen.id_produsen', 'tb_produsen.nama_produsen')
+        ->orderBy('nama_produsen','ASC')
+        ->get();
+
         return Inertia::render('Admin/Dashboard', [
             'dataBeras' => $dataBeras,
+            'dataBerasChart' => $dataBerasChart,
             'dataGudang' => $dataGudang,
             'dataProdusen' => $dataProdusen,
             'dataTransaksi' => $dataTransaksi,
