@@ -18,10 +18,10 @@ const previewImg = ref(false)
 const lihatSerti = ref(false)
 
 const jenisBeras = [
-    { value : 'A', label : 'A' },
-    { value : 'B', label : 'B' },
-    { value : 'C', label : 'C' },
-    { value : 'D', label : 'D' },
+    { value : 'Putih', label : 'Putih' },
+    { value : 'Merah', label : 'Merah' },
+    { value : 'Hitam', label : 'Hitam' },
+    { value : 'Ketan', label : 'Ketan' },
 ]
 
 const berasForm = useForm({
