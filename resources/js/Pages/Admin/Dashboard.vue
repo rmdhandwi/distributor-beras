@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { Head } from '@inertiajs/vue3'
 
 import { useToast } from 'primevue'
@@ -10,11 +10,12 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 onMounted(() =>
 {
     checkNotif()
-    console.log(props.dataTransaksi)
+    pieData.value = setPieData()
 })
 
 const props = defineProps({
     flash : Object,
+    dataBerasChart : Object,
     dataBeras : Object,
     dataGudang : Object,
     dataProdusen : Object,
@@ -24,6 +25,8 @@ const props = defineProps({
 const toast = useToast()
 
 const pageTitle = "Dashboard"
+
+const pieData = ref()
 
 const checkNotif = async () =>
 {
@@ -50,6 +53,46 @@ function formatRupiah(angka) {
         minimumFractionDigits: 0
     }).format(angka);
 }
+
+const setPieData = () =>
+{
+    const documentStyle = getComputedStyle(document.body);
+
+    return {
+        labels: props.dataBerasChart?.map(item => item.nama_produsen),
+        datasets: [
+            {
+                data: props.dataBerasChart?.map(item => item.total_stok),
+
+                backgroundColor: props.dataBerasChart?.map(item => {
+                    const stok = item.total_stok;
+
+                    if (stok === 0) return documentStyle.getPropertyValue('--p-slate-500');           // Tidak ada stok
+                    if (stok <= 50) return documentStyle.getPropertyValue('--p-red-500');            // Stok rendah
+                    if (stok <= 100) return documentStyle.getPropertyValue('--p-yellow-400');        // Stok sedang
+                    if (stok <= 200) return documentStyle.getPropertyValue('--p-yellow-500');        // Stok sedang
+                    if (stok <= 300) return documentStyle.getPropertyValue('--p-amber-400');        // Stok sedang
+                    if (stok <= 400) return documentStyle.getPropertyValue('--p-amber-500');        // Stok sedang
+                    if (stok <= 500) return documentStyle.getPropertyValue('--p-blue-500');        // Stok sedang
+                    return documentStyle.getPropertyValue('--p-green-600');                          // Stok tinggi
+                }),
+
+                hoverBackgroundColor: props.dataBerasChart?.map(item => {
+                    const stok = item.total_stok;
+
+                    if (stok === 0) return documentStyle.getPropertyValue('--p-slate-400');           // Tidak ada stok
+                    if (stok <= 50) return documentStyle.getPropertyValue('--p-red-400');            // Stok rendah
+                    if (stok <= 100) return documentStyle.getPropertyValue('--p-yellow-300');        // Stok sedang
+                    if (stok <= 200) return documentStyle.getPropertyValue('--p-yellow-400');        // Stok sedang
+                    if (stok <= 300) return documentStyle.getPropertyValue('--p-amber-300');        // Stok sedang
+                    if (stok <= 400) return documentStyle.getPropertyValue('--p-amber-400');        // Stok sedang
+                    if (stok <= 500) return documentStyle.getPropertyValue('--p-blue-400');        // Stok sedang
+                    return documentStyle.getPropertyValue('--p-green-500');                         // Stok tinggi
+                }),
+            }
+        ]
+    };
+}
 </script>
 
 <template>
@@ -57,6 +100,7 @@ function formatRupiah(angka) {
     <AuthenticatedLayout :pageTitle="pageTitle">
         <template #pageContent>
             <div class="flex gap-x-4">
+                <!-- Cards -->
                 <!-- Card Stok Beras -->
                 <Card class="p-2 w-[18rem] border border-slate-50 hover:border-amber-500">
                     <template #title>
@@ -199,6 +243,19 @@ function formatRupiah(angka) {
                                 {{ props.dataTransaksi?.length ?? 0 }}
                             </span>
                         </div>
+                    </template>
+                </Card>
+            </div>
+            <!-- Diagram and Table -->
+            <div class="flex mt-8">
+                <Card class="p-2 border border-slate-50 hover:border-amber-500">
+                    <template #title>
+                        <div class="flex gap-x-2 items-center">
+                            <span>Stok Beras Tersedia</span>
+                        </div>
+                    </template>
+                    <template #content>
+                        <Chart type="pie" :data="pieData"  class="w-full md:w-[24rem]"/>
                     </template>
                 </Card>
             </div>
