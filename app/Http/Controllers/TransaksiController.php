@@ -36,11 +36,7 @@ class TransaksiController extends Controller
         else if($loggedInUser->role === 'Produsen')
         {
             $produsen = ProdusenModel::where('user_id', $loggedInUser->user_id)->first();
-            // $dataTransaksi = PemesananModel::where('id_produsen', $produsen->id_produsen)->with([
-            //     'transaksi',
-            //     'produsen:id_produsen,nama_produsen',
-            //     'beras:id_beras,nama_beras'
-            // ])->get();
+
             $idProdusen = $produsen->id_produsen;
 
             $dataTransaksi = TransaksiModel::with([
@@ -50,14 +46,6 @@ class TransaksiController extends Controller
             ])->whereHas('pemesanan', function ($query) use ($idProdusen) {
                 $query->where('id_produsen', $idProdusen);
             })->get();
-
-            // dd($dataPemesanan);
-
-            // $dataTransaksi = TransaksiModel::where('id_produsen', $produsen->id_produsen)->with([
-            //     'pemesanan:id_pemesanan,id_beras,id_produsen',
-            //     'pemesanan.produsen:id_produsen,nama_produsen',
-            //     'pemesanan.beras:id_beras,nama_beras'
-            // ])->get();
 
             return Inertia::render('Produsen/Transaksi/Index', [
                 'dataTransaksi' => $dataTransaksi,
