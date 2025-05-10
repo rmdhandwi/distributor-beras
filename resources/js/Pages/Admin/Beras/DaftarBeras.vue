@@ -190,10 +190,10 @@ const termahalFilter = () =>
                             </template>
                         </Select>
                         <!-- filter by tanggal -->
-                        <!-- <FloatLabel variant="on">
+                        <FloatLabel variant="on">
                             <DatePicker class="w-[20rem]" show-button-bar @clear-click="resetData()" @date-select="filterByDateProduksiRange" showIcon iconDisplay="input" inputId="filterTanggal" v-model="selectedDateProduksiRange" selectionMode="range" :manual-input="false" date-format="yy-mm-dd"  fluid/>
                             <label for="filterTanggal">Filter Tanggal Produksi</label>
-                        </FloatLabel> -->
+                        </FloatLabel>
 
                     </div>
                 </div>
