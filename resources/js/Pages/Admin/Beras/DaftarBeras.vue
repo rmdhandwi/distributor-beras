@@ -184,11 +184,11 @@ const termahalFilter = () =>
                             </template>
                         </Select>
                         <!-- filter by harga -->
-                        <!-- <Select :show-clear="true" @change="filterByPrice()" v-model="selectedDataFilter" placeholder="Filter Harga" :options="priceFilterData" optionLabel="label" optionValue="value" fluid>
+                        <Select :show-clear="true" @change="filterByPrice()" v-model="selectedDataFilter" placeholder="Filter Harga" :options="priceFilterData" optionLabel="label" optionValue="value" fluid>
                             <template #dropdownicon>
                                 <i class="pi pi-filter-fill" />
                             </template>
-                        </Select> -->
+                        </Select>
                         <!-- filter by tanggal -->
                         <!-- <FloatLabel variant="on">
                             <DatePicker class="w-[20rem]" show-button-bar @clear-click="resetData()" @date-select="filterByDateProduksiRange" showIcon iconDisplay="input" inputId="filterTanggal" v-model="selectedDateProduksiRange" selectionMode="range" :manual-input="false" date-format="yy-mm-dd"  fluid/>
