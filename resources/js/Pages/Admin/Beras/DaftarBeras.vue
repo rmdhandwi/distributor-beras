@@ -162,7 +162,7 @@ const termahalFilter = () =>
 
 <template>
      <div class="flex flex-col">
-        <DataTable :loading="isLoading" ref="dt" :value="dataBerasFix" paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]" dataKey="index" class="shadow border border-amber-500 rounded-lg overflow-hidden" showGridlines removable-sort striped-rows scrollable v-model:filters="filters">
+        <DataTable :loading="isLoading" ref="dt" :value="dataBerasFix" paginator :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]" dataKey="index" class="shadow border border-amber-500 rounded-lg overflow-hidden" showGridlines removable-sort striped-rows scrollable v-model:filters="filters">
             <template #header>
                 <div class="flex flex-col gap-y-2">
                     <!-- basic filter -->
