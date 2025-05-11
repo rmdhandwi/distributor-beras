@@ -49,7 +49,6 @@ const filterByNamaProdusen = () =>
     {
         const sorted = props.dataGudang?.filter(item => item.produsen.id_produsen === selectedNamaProdusen.value).map((p, i) => ({ ...p, nomor: i + 1}))
         dataGudangFix.value = sorted
-        console.log(sorted)
     }
 }
 
