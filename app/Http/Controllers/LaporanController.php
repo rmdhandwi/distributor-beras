@@ -17,4 +17,13 @@ class LaporanController extends Controller
             'backRoute' => $req->fromRoute,
         ]);
     }
+
+    public function gudang(Request $req)
+    {
+        return Inertia::render('Laporan/Gudang', [
+            'dataCetak' => $req->data,
+            'tanggalCetak' => Carbon::now()->format('d-m-Y'),
+            'backRoute' => $req->fromRoute,
+        ]);
+    }
 }
