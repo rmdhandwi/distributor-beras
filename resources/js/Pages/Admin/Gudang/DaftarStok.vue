@@ -34,6 +34,11 @@ const editStok = id_gudang =>
     emit('editData', dataFilter)
 }
 
+const resetData = () =>
+{
+    dataGudangFix.value = props.dataGudang
+}
+
 const filterByNamaBeras = () =>
 {
     if(selectedNamaBeras.value)
