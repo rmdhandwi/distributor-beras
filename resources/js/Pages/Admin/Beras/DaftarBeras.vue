@@ -1,5 +1,5 @@
 <script setup>
-import { computed, nextTick, onMounted, ref } from 'vue'
+import { nextTick, onMounted, ref } from 'vue'
 
 import {FilterMatchMode} from '@primevue/core/api'
 
@@ -114,7 +114,7 @@ const filterByDateProduksiRange = () =>
         dataBerasFix.value = sorted
         filterByPrice()
     })
-    
+
     isLoading.value = false
 
 
