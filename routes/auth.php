@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\AuthenticatedController;
 use App\Http\Controllers\BerasController;
 use App\Http\Controllers\GudangController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PemesananController;
 use App\Http\Controllers\PemilikController;
 use App\Http\Controllers\ProdusenController;
@@ -21,6 +22,9 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('logout', [AuthenticatedController::class, 'logout'])->name('logout');
+
+    // Laporan
+    Route::post('/beras/laporan/cetak', [LaporanController::class, 'beras'])->name('beras.laporan.cetak');
 });
 
 // admin routes
