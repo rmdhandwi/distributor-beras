@@ -183,7 +183,10 @@ const cetakLaporan = () =>
                 detail : 'Memproses',
                 life : 2000,
             })
-           router.post(route('beras.laporan.cetak'), {data : dataBerasFix.value})
+            router.post(route('beras.laporan.cetak'), {
+                data : dataBerasFix.value,
+                fromRoute : route().current(),
+            })
         },
     })
 }
@@ -275,6 +278,3 @@ const cetakLaporan = () =>
 
     </div>
 </template>
-
-<style scoped>
-</style>
