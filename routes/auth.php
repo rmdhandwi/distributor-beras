@@ -25,6 +25,7 @@ Route::middleware('auth')->group(function () {
 
     // Laporan
     Route::post('/beras/laporan/cetak', [LaporanController::class, 'beras'])->name('beras.laporan.cetak');
+    Route::post('/gudang/laporan/cetak', [LaporanController::class, 'gudang'])->name('gudang.laporan.cetak');
 });
 
 // admin routes
