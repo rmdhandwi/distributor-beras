@@ -101,7 +101,7 @@ const setDaftarProdusen = () =>
                             </InputIcon>
                             <InputText v-model="filters['global'].value" placeholder="Cari Data Gudang" size="small" fluid/>
                         </IconField>
-                        <Button icon="pi pi-print" severity="contrast" variant="outlined" label="CSV" size="small" />
+                        <Button icon="pi pi-print" severity="danger" variant="outlined" label="PDF" size="small" />
                     </div>
                     <!-- Custom Filter -->
                     <div class="flex items-center gap-x-2">
@@ -126,7 +126,7 @@ const setDaftarProdusen = () =>
                     {{ data.beras?.nama_beras }}
                 </template>
             </Column>
-            <Column header="Produsen" style="min-width: 180px;" frozen>
+            <Column header="Produsen" filter-field="produsen.nama_produsen" style="min-width: 180px;" frozen>
                 <template #body="{data}">
                     {{ data.produsen?.nama_produsen }}
                 </template>
