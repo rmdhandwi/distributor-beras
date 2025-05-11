@@ -109,14 +109,14 @@ const filterByDateProduksiRange = () =>
 
     const sorted  = props.dataBeras.filter(item => normalizeDate(item.tgl_produksi) >= start && normalizeDate(item.tgl_produksi) <= end).map((p, i) => ({...p, nomor: i + 1}))
 
-    console.log(sorted)
-
     nextTick(() =>
     {
         dataBerasFix.value = sorted
         filterByPrice()
-        isLoading.value = false
     })
+    
+    isLoading.value = false
+
 
 }
 
