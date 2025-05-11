@@ -97,9 +97,9 @@ const setDaftarProdusen = () =>
                     </div>
                     <!-- Custom Filter -->
                     <div class="flex items-center gap-x-2">
-                        <Select @value-change="filterByNamaBeras()" placeholder="Nama Beras" v-model="selectedNamaBeras" :options="daftarNamaBeras" option-label="nama_beras" option-value="id_beras" fluid/>
+                        <Select :show-clear="true" @value-change="filterByNamaBeras()" placeholder="Nama Beras" v-model="selectedNamaBeras" :options="daftarNamaBeras" option-label="nama_beras" option-value="id_beras" fluid/>
 
-                        <Select @value-change="filterByNamaProdusen()" placeholder="Nama Produsen" v-model="selectedNamaProdusen" :options="daftarNamaProdusen" option-label="nama_produsen" option-value="id_produsen" fluid/>
+                        <Select :show-clear="true" @value-change="filterByNamaProdusen()" placeholder="Nama Produsen" v-model="selectedNamaProdusen" :options="daftarNamaProdusen" option-label="nama_produsen" option-value="id_produsen" fluid/>
                     </div>
                 </div>
             </template>
