@@ -16,7 +16,7 @@ const props = defineProps({
 const toast = useToast()
 const confirm = useConfirm()
 
-const emit = defineEmits(['editData'])
+const emit = defineEmits(['editData', 'refreshPage'])
 
 const previewImg = ref(null)
 const showPreviewBukti = ref(false)
