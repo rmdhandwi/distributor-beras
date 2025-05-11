@@ -3,12 +3,6 @@ import { useForm } from '@inertiajs/vue3'
 import { useConfirm, useToast } from 'primevue'
 import { onMounted, ref } from 'vue'
 
-
-onMounted(() =>
-{
-    console.log(props.dataPemesanan)
-})
-
 const props = defineProps({
     formType : String,
     dataBeras : Object,
