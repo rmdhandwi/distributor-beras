@@ -1,5 +1,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
+import { useConfirm, useToast } from 'primevue'
+import { router } from '@inertiajs/vue3'
 
 import {FilterMatchMode} from '@primevue/core/api'
 
@@ -8,6 +10,7 @@ onMounted(() =>
     dataGudangFix.value = props.dataGudang
     setDaftarBeras()
     setDaftarProdusen()
+    setDataStats()
 })
 
 const filters = ref({
@@ -18,6 +21,9 @@ const props = defineProps({
     dataGudang : Object,
 })
 
+const confirm = useConfirm()
+const toast = useToast()
+
 const dataGudangFix = ref([])
 
 const daftarNamaBeras = ref([])
@@ -25,6 +31,13 @@ const daftarNamaProdusen = ref([])
 
 const selectedNamaBeras = ref(null)
 const selectedNamaProdusen = ref(null)
+
+const dataStats = ref({
+    stok_awal : null,
+    rusak : null,
+    hilang : null,
+    stok_sisa : null,
+})
 
 const emit = defineEmits(['editData'])
 
@@ -36,15 +49,20 @@ const editStok = id_gudang =>
 
 const resetData = () =>
 {
+    resetDataStats()
     dataGudangFix.value = props.dataGudang
+    setDataStats()
+
 }
 
 const filterByNamaBeras = () =>
 {
     if(selectedNamaBeras.value)
     {
+        resetDataStats()
         const sorted = props.dataGudang?.filter(item => item.beras.id_beras === selectedNamaBeras.value).map((p, i) => ({ ...p, nomor: i + 1}))
         dataGudangFix.value = sorted
+        setDataStats()
     }
     else resetData()
 
@@ -54,8 +72,11 @@ const filterByNamaProdusen = () =>
 {
     if(selectedNamaProdusen.value)
     {
+        resetDataStats()
         const sorted = props.dataGudang?.filter(item => item.produsen.id_produsen === selectedNamaProdusen.value).map((p, i) => ({ ...p, nomor: i + 1}))
         dataGudangFix.value = sorted
+        setDataStats()
+
     }
     else resetData()
 }
@@ -86,6 +107,55 @@ const setDaftarProdusen = () =>
     }));
 }
 
+const resetDataStats = () =>
+{
+    dataStats.value = {
+        stok_awal: null,
+        rusak: null,
+        hilang: null,
+        stok_sisa: null,
+    }
+}
+
+const setDataStats = () =>
+{
+    dataGudangFix.value.forEach(item => {
+        dataStats.value.stok_awal += item.stok_awal
+        dataStats.value.rusak += item.rusak
+        dataStats.value.hilang += item.hilang
+        dataStats.value.stok_sisa += item.stok_sisa
+    })
+}
+
+const cetakLaporan = () =>
+{
+    confirm.require({
+        message: `Cetak Laporan ?`,
+        header: 'Peringatan',
+        icon: 'pi pi-exclamation-triangle',
+        rejectProps: {
+            label: 'Batal',
+            severity: 'secondary',
+            outlined: true,
+        },
+        acceptProps: {
+            label: `Cetak`,
+        },
+        accept: () => {
+            toast.add({
+                severity : 'info',
+                summary : 'Notifikasi',
+                detail : 'Memproses',
+                life : 2000,
+            })
+            router.post(route('gudang.laporan.cetak'), {
+                data : dataGudangFix.value,
+                fromRoute : route().current(),
+            })
+        },
+    })
+}
+
 </script>
 
 <template>
@@ -101,7 +171,7 @@ const setDaftarProdusen = () =>
                             </InputIcon>
                             <InputText v-model="filters['global'].value" placeholder="Cari Data Gudang" size="small" fluid/>
                         </IconField>
-                        <Button icon="pi pi-print" severity="danger" variant="outlined" label="PDF" size="small" />
+                        <Button @click="cetakLaporan" icon="pi pi-print" severity="danger" variant="outlined" label="PDF" size="small" />
                     </div>
                     <!-- Custom Filter -->
                     <div class="flex items-center gap-x-2">
@@ -112,7 +182,7 @@ const setDaftarProdusen = () =>
                 </div>
             </template>
             <template #footer>
-                <span>Jumlah Data Gudang ({{ props.dataGudang.length }})</span>
+                <span>Jumlah Data Gudang ({{ dataGudangFix.length }})</span>
             </template>
             <template #loading>
                 <span class="flex justify-center">Sedang Memuat Data...</span>
@@ -120,13 +190,13 @@ const setDaftarProdusen = () =>
             <template #empty>
                 <span class="flex justify-center">Tidak Ada Gudang</span>
             </template>
-            <Column sortable field="nomor" header="No" frozen/>
-            <Column header="Nama Beras" filter-field="beras.nama_beras" style="min-width: 180px;" frozen>
+            <Column sortable field="nomor" header="No"/>
+            <Column header="Nama Beras" filter-field="beras.nama_beras" style="min-width: 180px;">
                 <template #body="{data}">
                     {{ data.beras?.nama_beras }}
                 </template>
             </Column>
-            <Column header="Produsen" filter-field="produsen.nama_produsen" style="min-width: 180px;" frozen>
+            <Column header="Produsen" filter-field="produsen.nama_produsen" style="min-width: 180px;">
                 <template #body="{data}">
                     {{ data.produsen?.nama_produsen }}
                 </template>
@@ -142,6 +212,15 @@ const setDaftarProdusen = () =>
                     </div>
                 </template>
             </Column>
+            <ColumnGroup type="footer">
+                <Row>
+                    <Column footer="Total :" colspan="3" footerStyle="text-align:right"/>
+                    <Column :footer="dataStats.stok_awal"/>
+                    <Column :footer="dataStats.rusak"/>
+                    <Column :footer="dataStats.hilang"/>
+                    <Column :footer="dataStats.stok_sisa" colspan="2"/>
+                </Row>
+            </ColumnGroup>
         </DataTable>
     </div>
 </template>
