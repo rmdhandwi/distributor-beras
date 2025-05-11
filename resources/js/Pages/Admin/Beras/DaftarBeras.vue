@@ -1,7 +1,9 @@
 <script setup>
 import { nextTick, onMounted, ref } from 'vue'
+import { router } from '@inertiajs/vue3'
 
 import {FilterMatchMode} from '@primevue/core/api'
+import { useConfirm, useToast } from 'primevue'
 
 onMounted(() =>
 {
@@ -13,12 +15,15 @@ const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS }
 })
 
-
 const props = defineProps({
     dataBeras : Object,
 })
 
 const dt = ref()
+
+const confirm = useConfirm()
+
+const toast = useToast()
 
 const dataBerasFix = ref([])
 
@@ -116,8 +121,6 @@ const filterByDateProduksiRange = () =>
     })
 
     isLoading.value = false
-
-
 }
 
 const filterByPrice = () =>
@@ -158,6 +161,32 @@ const termahalFilter = () =>
         isLoading.value = false
     })
 }
+
+const cetakLaporan = () =>
+{
+    confirm.require({
+        message: `Cetak Laporan ?`,
+        header: 'Peringatan',
+        icon: 'pi pi-exclamation-triangle',
+        rejectProps: {
+            label: 'Batal',
+            severity: 'secondary',
+            outlined: true,
+        },
+        acceptProps: {
+            label: `Cetak`,
+        },
+        accept: () => {
+            toast.add({
+                severity : 'info',
+                summary : 'Notifikasi',
+                detail : 'Memproses',
+                life : 2000,
+            })
+           router.post(route('beras.laporan.cetak'), {data : dataBerasFix.value})
+        },
+    })
+}
 </script>
 
 <template>
@@ -173,7 +202,7 @@ const termahalFilter = () =>
                             </InputIcon>
                             <InputText v-model="filters['global'].value" placeholder="Cari Data Beras" size="small" fluid/>
                         </IconField>
-                        <Button icon="pi pi-print" severity="contrast" variant="outlined" label="CSV" size="small" />
+                        <Button @click="cetakLaporan" icon="pi pi-print" severity="danger" variant="outlined" label="PDF" size="small" />
                     </div>
                     <!-- custom filter -->
                     <div class="flex items-center gap-x-2">
