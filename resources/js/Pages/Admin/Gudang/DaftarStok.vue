@@ -46,6 +46,8 @@ const filterByNamaBeras = () =>
         const sorted = props.dataGudang?.filter(item => item.beras.id_beras === selectedNamaBeras.value).map((p, i) => ({ ...p, nomor: i + 1}))
         dataGudangFix.value = sorted
     }
+    else resetData()
+
 }
 
 const filterByNamaProdusen = () =>
@@ -55,6 +57,7 @@ const filterByNamaProdusen = () =>
         const sorted = props.dataGudang?.filter(item => item.produsen.id_produsen === selectedNamaProdusen.value).map((p, i) => ({ ...p, nomor: i + 1}))
         dataGudangFix.value = sorted
     }
+    else resetData()
 }
 
 const setDaftarBeras = () =>
