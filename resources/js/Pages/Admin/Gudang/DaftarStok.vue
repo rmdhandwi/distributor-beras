@@ -11,7 +11,7 @@ onMounted(() =>
 })
 
 const filters = ref({
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS }
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 })
 
 const props = defineProps({
@@ -121,12 +121,12 @@ const setDaftarProdusen = () =>
                 <span class="flex justify-center">Tidak Ada Gudang</span>
             </template>
             <Column sortable field="nomor" header="No" frozen/>
-            <Column sortable header="Nama Beras" style="min-width: 180px;" frozen>
+            <Column header="Nama Beras" filter-field="beras.nama_beras" style="min-width: 180px;" frozen>
                 <template #body="{data}">
                     {{ data.beras?.nama_beras }}
                 </template>
             </Column>
-            <Column sortable header="Produsen" style="min-width: 180px;" frozen>
+            <Column header="Produsen" style="min-width: 180px;" frozen>
                 <template #body="{data}">
                     {{ data.produsen?.nama_produsen }}
                 </template>
