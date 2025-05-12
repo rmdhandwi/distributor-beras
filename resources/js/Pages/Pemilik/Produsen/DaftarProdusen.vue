@@ -34,7 +34,7 @@ function formatTanggal(tanggal) {
                         </InputIcon>
                         <InputText v-model="filters['global'].value" placeholder="Cari Data Produsen" size="small" fluid/>
                     </IconField>
-                    <Button icon="pi pi-print" severity="contrast" variant="outlined" label="CSV" size="small" />
+                    <!-- <Button icon="pi pi-print" severity="contrast" variant="outlined" label="CSV" size="small" /> -->
                 </div>
             </template>
             <template #footer>
