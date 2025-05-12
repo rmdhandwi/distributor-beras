@@ -62,6 +62,11 @@ Route::middleware(['auth', 'pemilik'])->group(function () {
     Route::get('pemilik/produsen', [PemilikController::class, 'produsenPage'])->name('pemilik.produsen.index');
 
     Route::post('pemilik/produsen', [PemilikController::class, 'validasiProdusen'])->name('pemilik.produsen.validasi');
+
+    Route::get('pemilik/beras', [BerasController::class, 'index'])->name('pemilik.beras.index');
+    Route::get('pemilik/gudang', [GudangController::class, 'index'])->name('pemilik.gudang.index');
+    Route::get('pemilik/transaksi', [TransaksiController::class, 'index'])->name('pemilik.transaksi.index');
+
 });
 
 Route::middleware(['auth', 'produsen'])->group(function () {
