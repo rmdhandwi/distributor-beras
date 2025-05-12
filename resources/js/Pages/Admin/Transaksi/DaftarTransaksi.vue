@@ -93,6 +93,7 @@ const resetData = () =>
 
 const filterByTransaksiDate = () =>
 {
+    totalStats.value = 0
     isLoading.value = true
 
     const start = normalizeDate(selectedTransaksiDate.value[0])
@@ -104,6 +105,7 @@ const filterByTransaksiDate = () =>
     nextTick(() =>
     {
         dataTransaksiFix.value = sorted
+        setDataStats()
     })
 
     isLoading.value = false
@@ -111,6 +113,7 @@ const filterByTransaksiDate = () =>
 
 const filterByPengirimanDate = () =>
 {
+    totalStats.value = 0
     isLoading.value = true
 
     const start = normalizeDate(selectedPengirimanDate.value[0])
@@ -119,9 +122,11 @@ const filterByPengirimanDate = () =>
 
     const sorted  = props.dataTransaksi.filter(item => normalizeDate(item.tgl_pengiriman) >= start && normalizeDate(item.tgl_pengiriman) <= end).map((p, i) => ({...p, nomor: i + 1}))
 
+
     nextTick(() =>
     {
         dataTransaksiFix.value = sorted
+        setDataStats()
     })
 
     isLoading.value = false
