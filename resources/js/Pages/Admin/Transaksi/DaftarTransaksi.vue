@@ -85,6 +85,7 @@ const resetData = () =>
     dataTransaksiFix.value = props.dataTransaksi.map((p, i) => ({...p, nomor: i + 1}))
 
     nextTick(() => {
+        setDataStats()
         isLoading.value = false
     })
 }
