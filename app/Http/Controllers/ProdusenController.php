@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BerasModel;
 use App\Models\ProdusenModel;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -13,7 +14,6 @@ class ProdusenController extends Controller
      */
     public function index()
     {
-        //
         $dataProdusen = ProdusenModel::all();
 
         return Inertia::render('Admin/Produsen/Index', [
@@ -23,7 +23,25 @@ class ProdusenController extends Controller
 
     public function dashboardPage()
     {
-        return Inertia::render('Produsen/Dashboard');
+        $loggedInUser = auth()->guard()->user();
+
+        $produsen = ProdusenModel::where('user_id', $loggedInUser->user_id)->get('id_produsen');
+        $idProdusen = $produsen[0]->id_produsen;
+
+        $dataBeras = BerasModel::where('id_produsen', $idProdusen)->selectRaw('
+            MIN(harga_jual) as min_harga_jual,
+            AVG(harga_jual) as avg_harga_jual,
+            MAX(harga_jual) as max_harga_jual,
+            SUM(stok_tersedia) as total_stok_tersedia,
+            COUNT(DISTINCT jenis_beras) as jenis_beras
+        ')->get();
+
+        $dataBerasChart = BerasModel::where('id_produsen', $idProdusen)->select('nama_beras','stok_tersedia')->get();
+
+        return Inertia::render('Produsen/Dashboard',[
+            'dataBeras' => $dataBeras,
+            'dataBerasChart' => $dataBerasChart,
+        ]);
     }
 
     /**
