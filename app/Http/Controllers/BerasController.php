@@ -37,6 +37,15 @@ class BerasController extends Controller
                 'dataBeras' => $dataBeras,
             ]);
         }
+        else if($loggedInUser->role === 'Pemilik')
+        {
+            $dataProdusen = ProdusenModel::select('id_produsen','nama_produsen')->get();
+            $dataBeras = BerasModel::with(['produsen:id_produsen,nama_produsen'])->get();
+            return Inertia::render('Pemilik/Beras/Index', [
+                'dataProdusen' => $dataProdusen,
+                'dataBeras' => $dataBeras,
+            ]);
+        }
     }
 
     /**
