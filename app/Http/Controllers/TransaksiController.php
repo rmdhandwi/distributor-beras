@@ -33,6 +33,18 @@ class TransaksiController extends Controller
                 'dataTransaksi' => $dataTransaksi,
             ]);
         }
+        else if($loggedInUser->role === 'Pemilik')
+        {
+            $dataTransaksi = TransaksiModel::with([
+                'pemesanan:id_pemesanan,id_beras,id_produsen',
+                'pemesanan.produsen:id_produsen,nama_produsen',
+                'pemesanan.beras:id_beras,nama_beras'
+            ])->get();
+
+            return Inertia::render('Pemilik/Transaksi/Index', [
+                'dataTransaksi' => $dataTransaksi,
+            ]);
+        }
         else if($loggedInUser->role === 'Produsen')
         {
             $produsen = ProdusenModel::where('user_id', $loggedInUser->user_id)->first();
