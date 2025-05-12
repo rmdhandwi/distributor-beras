@@ -82,6 +82,11 @@ const normalizeDate = (date) => {
 
 const resetData = () =>
 {
+    selectedIdBeras.value = null
+    selectedIdProdusen.value = null
+    selectedTransaksiDate.value = null
+    selectedPengirimanDate.value = null
+
     isLoading.value = true
     dataTransaksiFix.value = props.dataTransaksi.map((p, i) => ({...p, nomor: i + 1}))
 
@@ -135,7 +140,9 @@ const filterByPengirimanDate = () =>
 const setDaftarBeras = () =>
 {
     const seen = new Set();
-    daftarBeras.value =  props.dataTransaksi.filter(item => {
+    const dataSource = dataTransaksiFix.value ?? props.dataTransaksi
+
+    daftarBeras.value =  dataSource.filter(item => {
         if (seen.has(item.pemesanan.beras.id_beras)) return false;
         seen.add(item.pemesanan.beras.id_beras);
         return true;
@@ -143,7 +150,6 @@ const setDaftarBeras = () =>
         id_beras: item.pemesanan.beras.id_beras,
         nama_beras: item.pemesanan.beras.nama_beras
     }));
-
 }
 
 const setDaftarProdusen = () =>
@@ -157,7 +163,6 @@ const setDaftarProdusen = () =>
         id_produsen: item.pemesanan.produsen.id_produsen,
         nama_produsen: item.pemesanan.produsen.nama_produsen
     }));
-
 }
 
 const filterByBeras = () =>
@@ -193,6 +198,7 @@ const filterByProdusen = () =>
         nextTick(() => {
             dataTransaksiFix.value = sorted
             setDataStats()
+            setDaftarBeras()
             isLoading.value = false
         })
     }
