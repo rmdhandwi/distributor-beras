@@ -26,4 +26,13 @@ class LaporanController extends Controller
             'backRoute' => $req->fromRoute,
         ]);
     }
+
+    public function transaksi(Request $req)
+    {
+        return Inertia::render('Laporan/Transaksi', [
+            'dataCetak' => $req->data,
+            'tanggalCetak' => Carbon::now()->format('d-m-Y'),
+            'backRoute' => $req->fromRoute,
+        ]);
+    }
 }
