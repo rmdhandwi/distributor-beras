@@ -356,23 +356,23 @@ const cancelUpload = () =>
                 <span class="flex justify-center">Tidak Ada Transaksi</span>
             </template>
             <Column sortable field="nomor" header="No" frozen/>
-            <Column sortable header="Nama Beras" style="min-width: 150px;" frozen>
+            <Column filter-field="pemesanan.beras.nama_beras" header="Nama Beras" style="min-width: 150px;" frozen>
                 <template #body="{data}">
                     {{ data.pemesanan?.beras?.nama_beras }}
                 </template>
             </Column>
-            <Column sortable header="Produsen" style="min-width: 150px;">
+            <Column filter-field="pemesanan.produsen.nama_produsen" header="Produsen" style="min-width: 150px;">
                 <template #body="{data}">
                     {{ data.pemesanan?.produsen?.nama_produsen }}
                 </template>
             </Column>
-            <Column sortable header="Tanggal Transaksi" style="min-width: 100px;">
+            <Column header="Tanggal Transaksi" style="min-width: 100px;">
                 <template #body="{data}">
                     <span>{{ formatTanggal(data.tgl_transaksi) ?? 'Belum dijadwalkan' }}</span>
                 </template>
             </Column>
             <Column field="jmlh" header="Jumlah Pesan" style="min-width: 100px;"/>
-            <Column header="Harga Satuan" style="min-width: 100px;">
+            <Column filter-field="harga_satuan" header="Harga Satuan" style="min-width: 100px;">
                 <template #body="{data}">
                     {{ formatRupiah(data.harga_satuan) }}
                 </template>
@@ -400,7 +400,7 @@ const cancelUpload = () =>
                     <Tag :value="data.status_pengiriman" :severity="switchStatus(data.status_pengiriman)"/>
                 </template>
             </Column>
-            <Column sortable header="Tanggal Pengiriman" style="min-width: 100px;">
+            <Column header="Tanggal Pengiriman" style="min-width: 100px;">
                 <template #body="{data}">
                     <span>{{ formatTanggal(data.tgl_pengiriman) ??'Belum dijadwalkan'  }}</span>
                 </template>
