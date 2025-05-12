@@ -26,6 +26,16 @@ class GudangController extends Controller
                 'dataGudang' => $dataGudang,
             ]);
         }
+        if($loggedInUser->role === 'Pemilik')
+        {
+            $dataBeras = BerasModel::whereDoesntHave('gudang')->with(['produsen:id_produsen,nama_produsen'])->get();
+            $dataGudang = GudangModel::with(['beras:id_beras,nama_beras','produsen:id_produsen,nama_produsen'])->get();
+
+            return Inertia::render('Pemilik/Gudang/Index', [
+                'dataBeras' => $dataBeras,
+                'dataGudang' => $dataGudang,
+            ]);
+        }
     }
 
     /**
