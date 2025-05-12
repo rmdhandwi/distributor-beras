@@ -66,7 +66,7 @@ function formatTanggal(tanggal) {
 const setDataStats = () =>
 {
     dataTransaksiFix.value.forEach(item => {
-        dataStats.value += item.total_harga
+        totalStats.value += item.total_harga
     })
 }
 
@@ -115,10 +115,13 @@ const setDaftarProdusen = () =>
         id_produsen: item.pemesanan.produsen.id_produsen,
         nama_produsen: item.pemesanan.produsen.nama_produsen
     }));
+
 }
 
 const filterByProdusen = () =>
 {
+    totalStats.value = 0
+
     isLoading.value = true
 
     if(selectedIdProdusen.value)
@@ -127,6 +130,7 @@ const filterByProdusen = () =>
 
         nextTick(() => {
             dataTransaksiFix.value = sorted
+            setDataStats()
             isLoading.value = false
         })
     }
@@ -366,6 +370,12 @@ const cancelUpload = () =>
                     </div>
                 </template>
             </Column>
+             <ColumnGroup type="footer">
+                <Row>
+                    <Column footer="Total :" colspan="6" footerStyle="text-align:right"/>
+                    <Column :footer="formatRupiah(totalStats)" colspan="7"/>
+                </Row>
+            </ColumnGroup>
         </DataTable>
     </div>
 </template>
