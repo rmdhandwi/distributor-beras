@@ -12,6 +12,9 @@ export const adminMenu = reactive([
 export const pemilikMenu = reactive([
     { label: "Dashboard", icon: "pi pi-home", route: "pemilik.dashboard" },
     { label: "Produsen", icon: "pi pi-truck", route: "pemilik.produsen.index" },
+    { label: "Beras", icon: "pi pi-box", route: "pemilik.beras.index" },
+    { label: "Gudang", icon: "pi pi-warehouse", route: "pemilik.gudang.index" },
+    { label: "Transaksi", icon: "pi pi-arrow-right-arrow-left", route: "pemilik.transaksi.index" },
 ]);
 
 export const produsenMenu = reactive([
