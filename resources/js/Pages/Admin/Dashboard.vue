@@ -11,6 +11,7 @@ onMounted(() =>
 {
     checkNotif()
     pieData.value = setPieData()
+    barData.value = setBarData()
 })
 
 const props = defineProps({
@@ -27,6 +28,7 @@ const toast = useToast()
 const pageTitle = "Dashboard"
 
 const pieData = ref()
+const barData = ref()
 
 const checkNotif = async () =>
 {
@@ -88,6 +90,38 @@ const setPieData = () =>
                     if (stok <= 400) return documentStyle.getPropertyValue('--p-amber-400');        // Stok sedang
                     if (stok <= 500) return documentStyle.getPropertyValue('--p-blue-400');        // Stok sedang
                     return documentStyle.getPropertyValue('--p-green-500');                         // Stok tinggi
+                }),
+            }
+        ]
+    };
+}
+
+const setBarData = () =>
+{
+    const documentStyle = getComputedStyle(document.body);
+
+    return {
+        labels: ['Stok Awal','Rusak','Hilang','Stok Sisa'],
+        datasets: [
+            {
+                label : 'Data Gudang',
+                labelColor : '--p-slate-50',
+                data: Object.values(props.dataGudang),
+
+                backgroundColor: Object.keys(props.dataGudang)?.map((col) => {
+                    const column = col;
+                    if (column === 'total_stok_awal') return documentStyle.getPropertyValue('--p-blue-400');
+                    if (column === 'total_rusak') return documentStyle.getPropertyValue('--p-red-400');
+                    if (column === 'total_hilang') return documentStyle.getPropertyValue('--p-slate-400');
+                    if (column === 'total_stok_sisa') return documentStyle.getPropertyValue('--p-green-400');
+                }),
+
+                hoverBackgroundColor: Object.keys(props.dataGudang)?.map((col) => {
+                    const column = col;
+                    if (column === 'total_stok_awal') return documentStyle.getPropertyValue('--p-blue-500');
+                    if (column === 'total_rusak') return documentStyle.getPropertyValue('--p-red-500');
+                    if (column === 'total_hilang') return documentStyle.getPropertyValue('--p-slate-500');
+                    if (column === 'total_stok_sisa') return documentStyle.getPropertyValue('--p-green-500');
                 }),
             }
         ]
@@ -247,15 +281,26 @@ const setPieData = () =>
                 </Card>
             </div>
             <!-- Diagram and Table -->
-            <div class="flex mt-8">
+            <div class="flex gap-6 mt-8">
                 <Card class="p-2 border border-slate-50 hover:border-amber-500">
                     <template #title>
                         <div class="flex gap-x-2 items-center">
-                            <span>Stok Beras Tersedia</span>
+                            <span>Stok Beras Produsen</span>
                         </div>
                     </template>
                     <template #content>
                         <Chart type="pie" :data="pieData"  class="w-full md:w-[24rem]"/>
+                    </template>
+                </Card>
+
+                <Card class="p-2 border border-slate-50 hover:border-amber-500">
+                    <template #title>
+                        <div class="flex gap-x-2 items-center">
+                            <span>Stok Beras Gudang</span>
+                        </div>
+                    </template>
+                    <template #content>
+                        <Chart type="bar" :data="barData"  class="w-full md:w-[36rem]"/>
                     </template>
                 </Card>
             </div>
