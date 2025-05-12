@@ -7,7 +7,6 @@ export const adminMenu = reactive([
     { label: "Gudang", icon: "pi pi-warehouse", route: "admin.gudang.index" },
     { label: "Pemesanan", icon: "pi pi-shopping-cart", route: "admin.pemesanan.index" },
     { label: "Transaksi", icon: "pi pi-arrow-right-arrow-left", route: "admin.transaksi.index" },
-    { label: "Users", icon: "pi pi-user", route: "admin.users" },
 ]);
 
 export const pemilikMenu = reactive([
