@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { nextTick, onMounted, ref } from 'vue'
 import { useForm } from '@inertiajs/vue3'
 
 import {FilterMatchMode} from '@primevue/core/api'
@@ -22,6 +22,8 @@ const toast = useToast()
 const confirm = useConfirm()
 
 const isLoading = ref(false)
+
+const selectedTransaksiDate = ref(null)
 
 const emit = defineEmits(['editData', 'refreshPage'])
 
@@ -50,6 +52,40 @@ function formatTanggal(tanggal) {
         const [tahun, bulan, hari] = tanggal.split('-')
         return `${hari}/${bulan}/${tahun}`
     }
+}
+
+const normalizeDate = (date) => {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  return d;
+};
+
+const resetData = () =>
+{
+    isLoading.value = true
+    dataTransaksiFix.value = props.dataTransaksi.map((p, i) => ({...p, nomor: i + 1}))
+
+    nextTick(() => {
+        isLoading.value = false
+    })
+}
+
+const filterByTransaksiDate = () =>
+{
+    isLoading.value = true
+
+    const start = normalizeDate(selectedTransaksiDate.value[0])
+
+    const end = normalizeDate(selectedTransaksiDate.value[1]) ?? start
+
+    const sorted  = props.dataTransaksi.filter(item => normalizeDate(item.tgl_transaksi) >= start && normalizeDate(item.tgl_transaksi) <= end).map((p, i) => ({...p, nomor: i + 1}))
+
+    nextTick(() =>
+    {
+        dataTransaksiFix.value = sorted
+    })
+
+    isLoading.value = false
 }
 
 const uploadBukti = id_transaksi =>
@@ -189,14 +225,25 @@ const cancelUpload = () =>
     <div class="flex flex-col">
         <DataTable :loading="isLoading" :value="dataTransaksiFix" dataKey="index" class="shadow border border-amber-500 rounded-lg overflow-hidden" showGridlines removable-sort striped-rows scrollable v-model:filters="filters">
             <template #header>
-                <div class="flex justify-between items-center gap-x-2">
-                    <IconField class="w-full">
-                        <InputIcon>
-                            <i class="pi pi-search me-4" />
-                        </InputIcon>
-                        <InputText v-model="filters['global'].value" placeholder="Cari Data Transaksi" size="small" fluid/>
-                    </IconField>
-                    <Button icon="pi pi-print" severity="contrast" variant="outlined" label="CSV" size="small" />
+                <div class="flex flex-col gap-y-2">
+                    <!-- basic filter -->
+                    <div class="flex justify-between items-center gap-x-2">
+                        <IconField class="w-full">
+                            <InputIcon>
+                                <i class="pi pi-search me-4" />
+                            </InputIcon>
+                            <InputText v-model="filters['global'].value" placeholder="Cari Data Transaksi" size="small" fluid/>
+                        </IconField>
+                        <Button icon="pi pi-print" severity="contrast" variant="outlined" label="CSV" size="small" />
+                    </div>
+                    <!-- custom filter -->
+                    <div class="flex items-center gap-x-2">
+                        <!-- filter by tanggal -->
+                        <FloatLabel variant="on">
+                            <DatePicker class="w-[20rem]" show-button-bar @clear-click="resetData()" @date-select="filterByTransaksiDate" showIcon iconDisplay="input" inputId="filterTanggal" v-model="selectedTransaksiDate" selectionMode="range" :manual-input="false" date-format="yy-mm-dd"  fluid/>
+                            <label for="filterTanggal">Filter Tanggal Produksi</label>
+                        </FloatLabel>
+                    </div>
                 </div>
             </template>
             <template #footer>
