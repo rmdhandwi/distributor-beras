@@ -8,9 +8,10 @@ import { useConfirm, useToast } from 'primevue'
 onMounted(() =>
 {
     dataTransaksiFix.value = props.dataTransaksi
+    setDaftarBeras()
     setDaftarProdusen()
     setDataStats()
-    console.log(props.dataTransaksi)
+    // console.log(props.dataTransaksi)
 })
 
 const filters = ref({
@@ -28,8 +29,10 @@ const totalStats = ref(0)
 
 const isLoading = ref(false)
 
+const daftarBeras = ref([])
 const daftarProdusen = ref([])
 
+const selectedIdBeras = ref(null)
 const selectedIdProdusen = ref(null)
 
 const selectedTransaksiDate = ref(null)
@@ -104,6 +107,20 @@ const filterByTransaksiDate = () =>
     isLoading.value = false
 }
 
+const setDaftarBeras = () =>
+{
+    const seen = new Set();
+    daftarBeras.value =  props.dataTransaksi.filter(item => {
+        if (seen.has(item.pemesanan.beras.id_beras)) return false;
+        seen.add(item.pemesanan.beras.id_beras);
+        return true;
+    }).map(item => ({
+        id_beras: item.pemesanan.beras.id_beras,
+        nama_beras: item.pemesanan.beras.nama_beras
+    }));
+
+}
+
 const setDaftarProdusen = () =>
 {
     const seen = new Set();
@@ -116,6 +133,26 @@ const setDaftarProdusen = () =>
         nama_produsen: item.pemesanan.produsen.nama_produsen
     }));
 
+}
+
+const filterByBeras = () =>
+{
+    totalStats.value = 0
+
+    isLoading.value = true
+
+    if(selectedIdBeras.value)
+    {
+        const sorted = props.dataTransaksi.filter(item => item.pemesanan.beras.id_beras === selectedIdBeras.value).map((p, i) => ({...p, nomor: i + 1}))
+
+        nextTick(() => {
+            dataTransaksiFix.value = sorted
+            setDataStats()
+            isLoading.value = false
+        })
+    }
+
+    else resetData()
 }
 
 const filterByProdusen = () =>
@@ -288,6 +325,12 @@ const cancelUpload = () =>
                     </div>
                     <!-- custom filter -->
                     <div class="flex items-center gap-x-2">
+                        <!-- filter by beras -->
+                        <Select :show-clear="true" @value-change="filterByBeras()" v-model="selectedIdBeras" placeholder="Filter Beras" :options="daftarBeras" optionLabel="nama_beras" optionValue="id_beras" fluid>
+                            <template #dropdownicon>
+                                <i class="pi pi-box" />
+                            </template>
+                        </Select>
                         <!-- filter by produsen -->
                         <Select :show-clear="true" @value-change="filterByProdusen()" v-model="selectedIdProdusen" placeholder="Filter Produsen" :options="daftarProdusen" optionLabel="nama_produsen" optionValue="id_produsen" fluid>
                             <template #dropdownicon>
@@ -297,7 +340,7 @@ const cancelUpload = () =>
                         <!-- filter by tanggal -->
                         <FloatLabel variant="on">
                             <DatePicker class="w-[20rem]" show-button-bar @clear-click="resetData()" @date-select="filterByTransaksiDate" showIcon iconDisplay="input" inputId="filterTanggal" v-model="selectedTransaksiDate" selectionMode="range" :manual-input="false" date-format="yy-mm-dd"  fluid/>
-                            <label for="filterTanggal">Filter Tanggal Produksi</label>
+                            <label for="filterTanggal">Filter Tanggal Transaksi</label>
                         </FloatLabel>
                     </div>
                 </div>
