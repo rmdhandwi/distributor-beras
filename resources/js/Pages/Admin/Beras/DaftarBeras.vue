@@ -97,7 +97,7 @@ const filterByProdusen = () =>
 const resetData = () =>
 {
     isLoading.value = true
-    dataBerasFix.value = props.dataBeras
+    dataBerasFix.value = props.dataBeras.map((p, i) => ({...p, nomor: i + 1}))
 
     nextTick(() => {
         isLoading.value = false
