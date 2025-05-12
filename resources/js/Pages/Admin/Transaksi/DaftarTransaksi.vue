@@ -352,7 +352,7 @@ const cancelUpload = () =>
                             </InputIcon>
                             <InputText v-model="filters['global'].value" placeholder="Cari Data Transaksi" size="small" fluid/>
                         </IconField>
-                        <Button icon="pi pi-print" severity="contrast" variant="outlined" label="CSV" size="small" />
+                        <Button icon="pi pi-print" severity="danger" variant="outlined" label="PDF" size="small" />
                     </div>
                     <!-- custom filter -->
                     <div class="flex items-center gap-x-2">
