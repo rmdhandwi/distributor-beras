@@ -21,6 +21,8 @@ const props = defineProps({
 const toast = useToast()
 const confirm = useConfirm()
 
+const isLoading = ref(false)
+
 const emit = defineEmits(['editData', 'refreshPage'])
 
 const dataTransaksiFix = ref([])
@@ -185,7 +187,7 @@ const cancelUpload = () =>
     </Dialog>
     <!-- Dialog preview Bukti Selesai -->
     <div class="flex flex-col">
-        <DataTable :value="dataTransaksiFix" dataKey="index" class="shadow border border-amber-500 rounded-lg overflow-hidden" showGridlines removable-sort striped-rows scrollable v-model:filters="filters">
+        <DataTable :loading="isLoading" :value="dataTransaksiFix" dataKey="index" class="shadow border border-amber-500 rounded-lg overflow-hidden" showGridlines removable-sort striped-rows scrollable v-model:filters="filters">
             <template #header>
                 <div class="flex justify-between items-center gap-x-2">
                     <IconField class="w-full">
