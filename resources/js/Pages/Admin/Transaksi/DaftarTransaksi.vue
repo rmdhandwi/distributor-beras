@@ -1,6 +1,6 @@
 <script setup>
 import { nextTick, onMounted, ref } from 'vue'
-import { useForm } from '@inertiajs/vue3'
+import { router, useForm } from '@inertiajs/vue3'
 
 import {FilterMatchMode} from '@primevue/core/api'
 import { useConfirm, useToast } from 'primevue'
@@ -11,7 +11,6 @@ onMounted(() =>
     setDaftarBeras()
     setDaftarProdusen()
     setDataStats()
-    // console.log(props.dataTransaksi)
 })
 
 const filters = ref({
@@ -325,6 +324,35 @@ const cancelUpload = () =>
     transaksiForm.reset()
 }
 
+const cetakLaporan = () =>
+{
+    confirm.require({
+        message: `Cetak Laporan ?`,
+        header: 'Peringatan',
+        icon: 'pi pi-exclamation-triangle',
+        rejectProps: {
+            label: 'Batal',
+            severity: 'secondary',
+            outlined: true,
+        },
+        acceptProps: {
+            label: `Cetak`,
+        },
+        accept: () => {
+            toast.add({
+                severity : 'info',
+                summary : 'Notifikasi',
+                detail : 'Memproses',
+                life : 2000,
+            })
+            router.post(route('transaksi.laporan.cetak'), {
+                data : dataTransaksiFix.value,
+                fromRoute : route().current(),
+            })
+        },
+    })
+}
+
 </script>
 
 <template>
@@ -352,7 +380,7 @@ const cancelUpload = () =>
                             </InputIcon>
                             <InputText v-model="filters['global'].value" placeholder="Cari Data Transaksi" size="small" fluid/>
                         </IconField>
-                        <Button icon="pi pi-print" severity="danger" variant="outlined" label="PDF" size="small" />
+                        <Button @click="cetakLaporan" icon="pi pi-print" severity="danger" variant="outlined" label="PDF" size="small" />
                     </div>
                     <!-- custom filter -->
                     <div class="flex items-center gap-x-2">
@@ -448,7 +476,7 @@ const cancelUpload = () =>
                     </div>
                 </template>
             </Column>
-             <ColumnGroup type="footer">
+            <ColumnGroup type="footer">
                 <Row>
                     <Column footer="Total :" colspan="6" footerStyle="text-align:right"/>
                     <Column :footer="formatRupiah(totalStats)" colspan="7"/>
