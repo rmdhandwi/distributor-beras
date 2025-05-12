@@ -36,6 +36,7 @@ const selectedIdBeras = ref(null)
 const selectedIdProdusen = ref(null)
 
 const selectedTransaksiDate = ref(null)
+const selectedPengirimanDate = ref(null)
 
 const emit = defineEmits(['editData', 'refreshPage'])
 
@@ -99,6 +100,24 @@ const filterByTransaksiDate = () =>
     const end = normalizeDate(selectedTransaksiDate.value[1]) ?? start
 
     const sorted  = props.dataTransaksi.filter(item => normalizeDate(item.tgl_transaksi) >= start && normalizeDate(item.tgl_transaksi) <= end).map((p, i) => ({...p, nomor: i + 1}))
+
+    nextTick(() =>
+    {
+        dataTransaksiFix.value = sorted
+    })
+
+    isLoading.value = false
+}
+
+const filterByPengirimanDate = () =>
+{
+    isLoading.value = true
+
+    const start = normalizeDate(selectedPengirimanDate.value[0])
+
+    const end = normalizeDate(selectedPengirimanDate.value[1]) ?? start
+
+    const sorted  = props.dataTransaksi.filter(item => normalizeDate(item.tgl_pengiriman) >= start && normalizeDate(item.tgl_pengiriman) <= end).map((p, i) => ({...p, nomor: i + 1}))
 
     nextTick(() =>
     {
@@ -340,8 +359,12 @@ const cancelUpload = () =>
                         </Select>
                         <!-- filter by tanggal -->
                         <FloatLabel variant="on">
-                            <DatePicker class="w-[20rem]" show-button-bar @clear-click="resetData()" @date-select="filterByTransaksiDate" showIcon iconDisplay="input" inputId="filterTanggal" v-model="selectedTransaksiDate" selectionMode="range" :manual-input="false" date-format="yy-mm-dd"  fluid/>
+                            <DatePicker class="w-[18rem]" show-button-bar @clear-click="resetData()" @date-select="filterByTransaksiDate" showIcon iconDisplay="input" inputId="filterTanggal" v-model="selectedTransaksiDate" selectionMode="range" :manual-input="false" date-format="yy-mm-dd"  fluid/>
                             <label for="filterTanggal">Filter Tanggal Transaksi</label>
+                        </FloatLabel>
+                        <FloatLabel variant="on">
+                            <DatePicker class="w-[18rem]" show-button-bar @clear-click="resetData()" @date-select="filterByPengirimanDate" showIcon iconDisplay="input" inputId="filterTanggalPengiriman" v-model="selectedPengirimanDate" selectionMode="range" :manual-input="false" date-format="yy-mm-dd"  fluid/>
+                            <label for="filterTanggalPengiriman">Filter Tanggal Pengiriman</label>
                         </FloatLabel>
                     </div>
                 </div>
