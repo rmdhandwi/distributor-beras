@@ -1,9 +1,14 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import { useForm } from '@inertiajs/vue3'
 
 import {FilterMatchMode} from '@primevue/core/api'
-import { useForm } from '@inertiajs/vue3'
 import { useConfirm, useToast } from 'primevue'
+
+onMounted(() =>
+{
+    dataTransaksiFix.value = props.dataTransaksi
+})
 
 const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS }
@@ -17,6 +22,8 @@ const toast = useToast()
 const confirm = useConfirm()
 
 const emit = defineEmits(['editData', 'refreshPage'])
+
+const dataTransaksiFix = ref([])
 
 const previewImg = ref(null)
 const showPreviewBukti = ref(false)
@@ -178,7 +185,7 @@ const cancelUpload = () =>
     </Dialog>
     <!-- Dialog preview Bukti Selesai -->
     <div class="flex flex-col">
-        <DataTable :value="props.dataTransaksi" dataKey="index" class="shadow border border-amber-500 rounded-lg overflow-hidden" showGridlines removable-sort striped-rows scrollable v-model:filters="filters">
+        <DataTable :value="dataTransaksiFix" dataKey="index" class="shadow border border-amber-500 rounded-lg overflow-hidden" showGridlines removable-sort striped-rows scrollable v-model:filters="filters">
             <template #header>
                 <div class="flex justify-between items-center gap-x-2">
                     <IconField class="w-full">
@@ -191,7 +198,7 @@ const cancelUpload = () =>
                 </div>
             </template>
             <template #footer>
-                <span>Jumlah Data Transaksi ({{ props.dataTransaksi?.length }})</span>
+                <span>Jumlah Data Transaksi ({{ dataTransaksiFix?.length }})</span>
             </template>
             <template #loading>
                 <span class="flex justify-center">Sedang Memuat Data...</span>
