@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::table('tb_beras', function (Blueprint $table){
             $table->dropColumn('harga_jual');
             $table->dropColumn('tgl_kadaluarsa');
+            $table->dropColumn('stok_awal');
         });
 
         Schema::create('tb_detail_beras', function (Blueprint $table) {
-            $table->id();
+            $table->id('id_detail');
             $table->foreignId('id_beras')->constrained('tb_beras', 'id_beras')->onDelete('cascade');
             $table->string('berat');
             $table->integer('jumlah');
