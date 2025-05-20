@@ -24,4 +24,10 @@ class DetailBerasModel extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    // relasi ke model beras
+    public function beras()
+    {
+        return $this->belongsTo(BerasModel::class, 'id_beras');
+    }
 }
