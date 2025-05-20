@@ -62,4 +62,10 @@ class BerasModel extends Model
     {
         return $this->hasMany(GudangModel::class, 'id_beras');
     }
+
+    // Relasi ke model detaul_beras
+    public function detail()
+    {
+        return $this->hasMany(DetailBerasModel::class, 'id_beras');
+    }
 }
