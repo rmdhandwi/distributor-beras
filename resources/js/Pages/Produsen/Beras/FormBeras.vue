@@ -29,11 +29,9 @@ const berasForm = useForm({
   nama_beras: props.dataBeras?.[0]?.nama_beras ?? null,
   id_produsen: props.dataBeras?.[0]?.id_produsen ?? null,
   jenis_beras: props.dataBeras?.[0]?.jenis_beras ?? null,
-  harga_jual: props.dataBeras?.[0]?.harga_jual ?? null,
   stok_awal: props.dataBeras?.[0]?.stok_awal ?? null,
   stok_tersedia: props.dataBeras?.[0]?.stok_tersedia ?? null,
   tgl_produksi: props.dataBeras?.[0]?.tgl_produksi ?? null,
-  tgl_kadaluarsa: props.dataBeras?.[0]?.tgl_kadaluarsa ?? null,
   kualitas_beras: props.dataBeras?.[0]?.kualitas_beras ?? null,
   sertifikat_beras: props.dataBeras?.[0]?.sertifikat_beras ?? null,
   status_beras: props.dataBeras?.[0]?.status_beras ?? null,
@@ -176,15 +174,6 @@ const confirmHapus = () => {
             <span class="text-red-500" v-if="berasForm.errors.nama_beras"> {{ berasForm.errors.nama_beras }} </span>
         </div>
 
-        <!-- Pilih produsen -->
-        <div>
-            <FloatLabel variant="on">
-                <Select v-model="berasForm.id_produsen" inputId="on_label" :options="props.dataProdusen" optionLabel="nama_produsen" optionValue="id_produsen" fluid/>
-                <label for="on_label">Pilih Produsen</label>
-            </FloatLabel>
-            <span class="text-red-500" v-if="berasForm.errors.id_produsen"> {{ berasForm.errors.id_produsen }} </span>
-        </div>
-
         <!-- Jenis Beras -->
         <div>
             <div class="flex flex-wrap gap-4">
@@ -198,28 +187,19 @@ const confirmHapus = () => {
         </div>
 
         <!-- Harga Beras -->
-        <div>
+        <!-- <div>
             <FloatLabel variant="on">
                 <InputNumber id="on_label" v-model="berasForm.harga_jual" locale="id-ID" prefix="Rp" fluid/>
                 <label for="on_label">Harga Jual</label>
             </FloatLabel>
             <span class="text-red-500" v-if="berasForm.errors.harga_jual"> {{ berasForm.errors.harga_jual }} </span>
-        </div>
-
-        <!-- Stok Awal -->
-        <div>
-            <FloatLabel variant="on">
-                <InputNumber mode="decimal" showButtons :min="0" :max="1000" id="on_label" v-model="berasForm.stok_awal" fluid/>
-                <label for="on_label">Stok Awal</label>
-            </FloatLabel>
-            <span class="text-red-500" v-if="berasForm.errors.stok_awal"> {{ berasForm.errors.stok_awal }} </span>
-        </div>
+        </div> -->
 
         <!-- Stok Tersedia -->
         <div>
             <FloatLabel variant="on">
                 <InputNumber mode="decimal" showButtons :min="0" :max="berasForm.stok_awal ?? 0" id="on_label" v-model="berasForm.stok_tersedia" fluid/>
-                <label for="on_label">Stok Tersedia</label>
+                <label for="on_label">Stok Tersedia (Kg)</label>
             </FloatLabel>
             <span class="text-red-500" v-if="berasForm.errors.stok_tersedia"> {{ berasForm.errors.stok_tersedia }} </span>
         </div>
@@ -231,15 +211,6 @@ const confirmHapus = () => {
                 <label for="on_label">Tanggal Produksi</label>
             </FloatLabel>
             <span class="text-red-500" v-if="berasForm.errors.tgl_produksi"> {{ berasForm.errors.tgl_produksi }} </span>
-        </div>
-
-        <!-- tanggal kadaluarsa -->
-        <div>
-            <FloatLabel variant="on">
-                <DatePicker v-model="berasForm.tgl_kadaluarsa" inputId="on_label" showIcon iconDisplay="input" dateFormat="dd-mm-yy" fluid/>
-                <label for="on_label">Tanggal Kadaluarsa</label>
-            </FloatLabel>
-            <span class="text-red-500" v-if="berasForm.errors.tgl_kadaluarsa"> {{ berasForm.errors.tgl_kadaluarsa }} </span>
         </div>
 
         <!-- kualitas Beras -->
