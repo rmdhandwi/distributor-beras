@@ -240,8 +240,11 @@ const cetakLaporan = () =>
             <Column field="nama_beras" header="Nama Beras" style="min-width: 180px;" frozen/>
             <Column field="produsen.nama_produsen" header="Produsen" style="min-width: 180px;"/>
             <Column field="jenis_beras" header="Jenis Beras" style="min-width: 140px;"/>
-            <Column field="stok_awal" header="Stok Awal" style="min-width: 140px;"/>
-            <Column field="stok_tersedia" header="Stok Tersedia" style="min-width: 160px;"/>
+            <Column field="stok_tersedia" header="Stok Tersedia" style="min-width: 160px;">
+                <template #body="{data}">
+                    {{ data.stok_tersedia+'kg'}}
+                </template>
+            </Column>
             <Column header="Status">
                 <template #body="{data}">
                     <Badge :value="data.status_beras" :severity="data.status_beras==='Tersedia'?'success':'danger'"/>
