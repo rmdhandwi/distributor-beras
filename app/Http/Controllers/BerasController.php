@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BerasModel;
+use App\Models\DetailBerasModel;
 use App\Models\ProdusenModel;
 use App\Services\ImageValidation;
 use Carbon\Carbon;
@@ -60,23 +61,23 @@ class BerasController extends Controller
         ]);
 
         $validated = $req->validate([
-            'nama_beras'       => 'required|string|max:255|unique:tb_beras,nama_beras',
-            'id_produsen'      => 'required|exists:tb_produsen,id_produsen',
-            'jenis_beras'      => 'required|string|max:255',
-            'harga_jual'       => 'required|integer|min:0',
-            'stok_awal'        => 'required|integer|min:0',
-            'stok_tersedia'    => 'required|integer|min:0',
-            'tgl_produksi'     => 'required|date',
-            'tgl_kadaluarsa'   => 'required|date|after_or_equal:tgl_produksi',
-            'kualitas_beras'   => 'required|string|max:255',
+            'nama_beras' => 'required|string|max:255|unique:tb_beras,nama_beras',
+            'id_produsen' => 'required|exists:tb_produsen,id_produsen',
+            'jenis_beras' => 'required|string|max:255',
+            'stok_tersedia' => 'required|integer|min:0',
+            'tgl_produksi' => 'required|date',
+            'kualitas_beras' => 'required|string|max:255',
             'sertifikat_beras' => 'required',
+            'detail' => 'required|array',
+            'detail.stok10kg.jumlah' => 'integer|min:0',
+            'detail.stok20kg.jumlah' => 'integer|min:0',
+            'detail.stok50kg.jumlah' => 'integer|min:0',
         ], [
-            'required'               => ':attribute wajib diisi.',
-            'unique'                 => ':attribute sudah terdaftar.',
-            'exists'                 => ':attribute tidak valid.',
-            'min'                    => ':attribute tidak boleh kurang dari :min.',
-            'max'                    => ':attribute terlalu panjang.',
-            'after_or_equal'         => 'Tanggal kadaluarsa harus setelah atau sama dengan tanggal produksi.',
+            'required' => ':attribute wajib diisi.',
+            'unique' => ':attribute sudah terdaftar.',
+            'exists' => ':attribute tidak valid.',
+            'min' => ':attribute tidak boleh kurang dari :min.',
+            'max' => ':attribute terlalu panjang.',
         ]);
 
         $loggedInUser = auth()->guard()->user();
@@ -94,21 +95,37 @@ class BerasController extends Controller
             $validatedData = array_merge($validated, [
                 'sertifikat_beras' => $linkFile,
             ]);
+
             $insert = BerasModel::create($validatedData);
 
-            if ($insert) {
+            $idBeras = $insert->id_beras;
+
+            if($idBeras)
+            {
+                foreach ($req->detail as $stok) {
+                    if ((int)$stok['jumlah'] > 0) {
+                        DetailBerasModel::create([
+                            'id_beras' => $idBeras,
+                            'berat' => $stok['berat'],
+                            'jumlah' => $stok['jumlah'],
+                            'harga' => $stok['harga'],
+                        ]);
+                    }
+                }
+
                 return redirect()->back()->with([
                     'notif_status' => 'success',
                     'notif_message' => 'Data beras berhasil ditambahkan!',
                 ]);
-            } else {
+            }
+
+            else {
                 return redirect()->back()->with([
                     'notif_status' => 'error',
                     'notif_message' => 'Gagal menambahkan data beras :(',
                 ]);
             }
         }
-
 
     }
 
