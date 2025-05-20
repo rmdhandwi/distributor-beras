@@ -240,11 +240,6 @@ const cetakLaporan = () =>
             <Column field="nama_beras" header="Nama Beras" style="min-width: 180px;" frozen/>
             <Column field="produsen.nama_produsen" header="Produsen" style="min-width: 180px;"/>
             <Column field="jenis_beras" header="Jenis Beras" style="min-width: 140px;"/>
-            <Column field="harga_jual" header="Harga Jual" style="min-width: 180px;">
-                <template #body="{data}">
-                    <span>{{ formatRupiah(data.harga_jual) }}</span>
-                </template>
-            </Column>
             <Column field="stok_awal" header="Stok Awal" style="min-width: 140px;"/>
             <Column field="stok_tersedia" header="Stok Tersedia" style="min-width: 160px;"/>
             <Column header="Status">
@@ -264,11 +259,6 @@ const cetakLaporan = () =>
             <Column header="Tanggal Produksi" style="min-width: 240px;">
                 <template #body="{data}">
                     <span>{{ formatTanggal(data.tgl_produksi) }}</span>
-                </template>
-            </Column>
-            <Column header="Tanggal Kadaluarsa" style="min-width: 240px;">
-                <template #body="{data}">
-                    <span>{{ formatTanggal(data.tgl_kadaluarsa) }}</span>
                 </template>
             </Column>
             <Column header="Action" frozen align-frozen="right">
