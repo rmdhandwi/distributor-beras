@@ -29,9 +29,6 @@ class ProdusenController extends Controller
         $idProdusen = $produsen[0]->id_produsen;
 
         $dataBeras = BerasModel::where('id_produsen', $idProdusen)->selectRaw('
-            MIN(harga_jual) as min_harga_jual,
-            AVG(harga_jual) as avg_harga_jual,
-            MAX(harga_jual) as max_harga_jual,
             SUM(stok_tersedia) as total_stok_tersedia,
             COUNT(DISTINCT jenis_beras) as jenis_beras
         ')->get();
