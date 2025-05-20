@@ -15,22 +15,18 @@ class BerasModel extends Model
         'nama_beras',
         'id_produsen',
         'jenis_beras',
-        'harga_jual',
         'stok_awal',
         'stok_tersedia',
         'tgl_produksi',
-        'tgl_kadaluarsa',
         'kualitas_beras',
         'sertifikat_beras',
         'status_beras',
     ];
 
     protected $casts = [
-        'harga_jual' => 'integer',
         'stok_awal' => 'integer',
         'stok_tersedia' => 'integer',
         'tgl_produksi' => 'string',
-        'tgl_kadaluarsa' => 'string',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
