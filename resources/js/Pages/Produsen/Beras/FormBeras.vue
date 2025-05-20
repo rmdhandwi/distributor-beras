@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useForm } from '@inertiajs/vue3'
 import { useConfirm, useToast } from 'primevue'
 
@@ -29,13 +29,40 @@ const berasForm = useForm({
   nama_beras: props.dataBeras?.[0]?.nama_beras ?? null,
   id_produsen: props.dataBeras?.[0]?.id_produsen ?? null,
   jenis_beras: props.dataBeras?.[0]?.jenis_beras ?? null,
-  stok_awal: props.dataBeras?.[0]?.stok_awal ?? null,
-  stok_tersedia: props.dataBeras?.[0]?.stok_tersedia ?? null,
+  stok_tersedia: props.dataBeras?.[0]?.stok_tersedia ?? 0,
   tgl_produksi: props.dataBeras?.[0]?.tgl_produksi ?? null,
   kualitas_beras: props.dataBeras?.[0]?.kualitas_beras ?? null,
   sertifikat_beras: props.dataBeras?.[0]?.sertifikat_beras ?? null,
   status_beras: props.dataBeras?.[0]?.status_beras ?? null,
+  detail : {
+    stok10kg : { berat : '10', jumlah : 0, harga : 0},
+    stok20kg : { berat : '20', jumlah : 0, harga : 0},
+    stok50kg : { berat : '50', jumlah : 0, harga : 0},
+  }
 })
+
+// Fungsi untuk menghitung total stok
+const hitungStokTersedia = () => {
+  const d = berasForm.detail
+  return (
+    d.stok10kg.jumlah * Number(d.stok10kg.berat) +
+    d.stok20kg.jumlah * Number(d.stok20kg.berat) +
+    d.stok50kg.jumlah * Number(d.stok50kg.berat)
+  )
+}
+
+// Watcher agar stok_tersedia selalu ter-update
+watch(
+  () => [
+    berasForm.detail.stok10kg.jumlah,
+    berasForm.detail.stok20kg.jumlah,
+    berasForm.detail.stok50kg.jumlah,
+  ],
+  () => {
+    berasForm.stok_tersedia = hitungStokTersedia()
+  },
+  { immediate: true }
+)
 
 const onUpload = (e) =>
 {
@@ -168,8 +195,8 @@ const confirmHapus = () => {
         <!-- Nama Beras -->
         <div>
             <FloatLabel variant="on">
-                <InputText id="on_label" v-model="berasForm.nama_beras" fluid/>
-                <label for="on_label">Nama Beras</label>
+                <InputText id="nama_beras" v-model="berasForm.nama_beras" fluid/>
+                <label for="nama_beras">Nama Beras</label>
             </FloatLabel>
             <span class="text-red-500" v-if="berasForm.errors.nama_beras"> {{ berasForm.errors.nama_beras }} </span>
         </div>
@@ -177,7 +204,7 @@ const confirmHapus = () => {
         <!-- Jenis Beras -->
         <div>
             <div class="flex flex-wrap gap-4">
-                <span>Jenis Beras :</span>
+                <Tag value="Jenis Beras"/>
                 <div class="flex items-center gap-2" v-for="item in jenisBeras" key="index">
                     <RadioButton v-model="berasForm.jenis_beras" :inputId="item.label" :value="item.value" />
                     <label :for="item.label">{{ item.label }}</label>
@@ -186,20 +213,74 @@ const confirmHapus = () => {
             <span class="text-red-500" v-if="berasForm.errors.jenis_beras"> {{ berasForm.errors.jenis_beras }} </span>
         </div>
 
-        <!-- Harga Beras -->
-        <!-- <div>
-            <FloatLabel variant="on">
-                <InputNumber id="on_label" v-model="berasForm.harga_jual" locale="id-ID" prefix="Rp" fluid/>
-                <label for="on_label">Harga Jual</label>
-            </FloatLabel>
-            <span class="text-red-500" v-if="berasForm.errors.harga_jual"> {{ berasForm.errors.harga_jual }} </span>
-        </div> -->
+        <!-- 10kg -->
+        <div class="flex items-center gap-x-12">
+            <Tag value="10kg"/>
+
+            <div>
+                <FloatLabel variant="on">
+                    <InputNumber mode="decimal" showButtons :min="0" id="jumlah_10kg" v-model="berasForm.detail.stok10kg.jumlah" fluid/>
+                    <label for="jumlah_10kg">Jumlah</label>
+                </FloatLabel>
+                <span class="text-red-500" v-if="berasForm.errors['detail.stok10kg.jumlah']"> {{ berasForm.errors['detail.stok10kg.jumlah'] }} </span>
+            </div>
+
+            <div>
+                <FloatLabel variant="on">
+                    <InputNumber id="harga_10kg" v-model="berasForm.detail.stok10kg.harga" locale="id-ID" prefix="Rp" fluid/>
+                    <label for="harga_10kg">Harga Jual</label>
+                </FloatLabel>
+                <span class="text-red-500" v-if="berasForm.errors['detail.stok10kg.harga']"> {{ berasForm.errors['detail.stok10kg.harga'] }} </span>
+            </div>
+        </div>
+
+        <!-- 20kg -->
+        <div class="flex items-center gap-x-12">
+            <Tag value="20kg"/>
+
+            <div>
+                <FloatLabel variant="on">
+                    <InputNumber mode="decimal" showButtons :min="0" id="jumlah_20kg" v-model="berasForm.detail.stok20kg.jumlah" fluid/>
+                    <label for="jumlah_20kg">Jumlah</label>
+                </FloatLabel>
+                <span class="text-red-500" v-if="berasForm.errors['detail.stok20kg.jumlah']"> {{ berasForm.errors['detail.stok20kg.jumlah'] }} </span>
+            </div>
+
+            <div>
+                <FloatLabel variant="on">
+                    <InputNumber id="harga_20kg" v-model="berasForm.detail.stok20kg.harga" locale="id-ID" prefix="Rp" fluid/>
+                    <label for="harga_20kg">Harga Jual</label>
+                </FloatLabel>
+                <span class="text-red-500" v-if="berasForm.errors['detail.stok20kg.harga']"> {{ berasForm.errors['detail.stok20kg.harga'] }} </span>
+            </div>
+        </div>
+
+        <!-- 50kg -->
+        <div class="flex items-center gap-x-12">
+            <Tag value="50kg"/>
+
+            <div>
+                <FloatLabel variant="on">
+                    <InputNumber mode="decimal" showButtons :min="0" id="jumlah_50kg" v-model="berasForm.detail.stok50kg.jumlah" fluid/>
+                    <label for="jumlah_50kg">Jumlah</label>
+                </FloatLabel>
+                <span class="text-red-500" v-if="berasForm.errors['detail.stok50kg.jumlah']"> {{ berasForm.errors['detail.stok50kg.jumlah'] }} </span>
+            </div>
+
+            <div>
+                <FloatLabel variant="on">
+                    <InputNumber id="harga_50kg" v-model="berasForm.detail.stok50kg.harga" locale="id-ID" prefix="Rp" fluid/>
+                    <label for="harga_50kg">Harga Jual</label>
+                </FloatLabel>
+                <span class="text-red-500" v-if="berasForm.errors['detail.stok50kg.harga']"> {{ berasForm.errors['detail.stok50kg.harga'] }} </span>
+            </div>
+        </div>
 
         <!-- Stok Tersedia -->
         <div>
             <FloatLabel variant="on">
-                <InputNumber mode="decimal" showButtons :min="0" :max="berasForm.stok_awal ?? 0" id="on_label" v-model="berasForm.stok_tersedia" fluid/>
-                <label for="on_label">Stok Tersedia (Kg)</label>
+                <InputNumber disabled mode="decimal" :min="0" id="stok_tersedia" v-model="berasForm.stok_tersedia" fluid/>
+                <label for="stok_tersedia">Stok Tersedia (Kg)</label>
             </FloatLabel>
             <span class="text-red-500" v-if="berasForm.errors.stok_tersedia"> {{ berasForm.errors.stok_tersedia }} </span>
         </div>
@@ -207,8 +288,8 @@ const confirmHapus = () => {
         <!-- tanggal produksi -->
         <div>
             <FloatLabel variant="on">
-                <DatePicker v-model="berasForm.tgl_produksi" inputId="on_label" showIcon iconDisplay="input" dateFormat="dd-mm-yy" fluid/>
-                <label for="on_label">Tanggal Produksi</label>
+                <DatePicker v-model="berasForm.tgl_produksi" inputId="tgl_produksi" showIcon iconDisplay="input" dateFormat="dd-mm-yy" fluid/>
+                <label for="tgl_produksi">Tanggal Produksi</label>
             </FloatLabel>
             <span class="text-red-500" v-if="berasForm.errors.tgl_produksi"> {{ berasForm.errors.tgl_produksi }} </span>
         </div>
@@ -216,8 +297,8 @@ const confirmHapus = () => {
         <!-- kualitas Beras -->
         <div>
             <FloatLabel variant="on">
-                <InputText id="on_label" v-model="berasForm.kualitas_beras" fluid/>
-                <label for="on_label">Kualitas Beras</label>
+                <InputText id="kualitas_beras" v-model="berasForm.kualitas_beras" fluid/>
+                <label for="kualitas_beras">Kualitas Beras</label>
             </FloatLabel>
             <span class="text-red-500" v-if="berasForm.errors.kualitas_beras"> {{ berasForm.errors.kualitas_beras }} </span>
         </div>
