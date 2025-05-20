@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('tb_beras', function (Blueprint $table){
             $table->dropColumn('harga_jual');
+            $table->dropColumn('tgl_kadaluarsa');
         });
 
         Schema::create('tb_detail_beras', function (Blueprint $table) {
@@ -21,7 +22,8 @@ return new class extends Migration
             $table->string('berat');
             $table->integer('jumlah');
             $table->integer('harga');
-            $table->timestamps();
+            $table->dateTime('created_at');
+            $table->dateTime('updated_at')->nullable();
         });
     }
 
