@@ -1,7 +1,12 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useForm } from '@inertiajs/vue3'
 import { useConfirm, useToast } from 'primevue'
+
+onMounted(() =>
+{
+    berasForm.id_produsen = props.dataProdusen[0].id_produsen
+})
 
 const props = defineProps({
     formType : String,
@@ -27,7 +32,7 @@ const jenisBeras = [
 const berasForm = useForm({
   id_beras: props.dataBeras?.[0]?.id_beras ?? null,
   nama_beras: props.dataBeras?.[0]?.nama_beras ?? null,
-  id_produsen: props.dataBeras?.[0]?.id_produsen ?? null,
+  id_produsen: null,
   jenis_beras: props.dataBeras?.[0]?.jenis_beras ?? null,
   stok_tersedia: props.dataBeras?.[0]?.stok_tersedia ?? 0,
   tgl_produksi: props.dataBeras?.[0]?.tgl_produksi ?? null,
