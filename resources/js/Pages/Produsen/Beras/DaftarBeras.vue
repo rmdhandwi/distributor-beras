@@ -7,6 +7,7 @@ import { useConfirm, useToast } from 'primevue'
 
 onMounted(() =>
 {
+    console.log(props.dataBeras)
     dataBerasFix.value = [...props.dataBeras]
 })
 
@@ -236,22 +237,77 @@ const cetakLaporan = () =>
             <template #empty>
                 <span class="flex justify-center">Tidak Ada Beras</span>
             </template>
-            <Column sortable field="nomor" header="No" frozen/>
-            <Column field="nama_beras" header="Nama Beras" style="min-width: 180px;" frozen/>
-            <Column field="produsen.nama_produsen" header="Produsen" style="min-width: 180px;"/>
-            <Column field="jenis_beras" header="Jenis Beras" style="min-width: 140px;"/>
-            <Column field="stok_tersedia" header="Stok Tersedia" style="min-width: 160px;">
+            <ColumnGroup type="header">
+                <Row>
+                    <Column sortable header="No" frozen rowspan="2"/>
+                    <Column  header="Nama Beras" style="min-width: 180px;" frozen rowspan="2"/>
+                    <Column  header="Produsen" style="min-width: 180px;" rowspan="2"/>
+                    <Column  header="Jenis Beras" style="min-width: 140px;" rowspan="2"/>
+                    <Column  header="Stok Tersedia" style="min-width: 160px;" rowspan="2"/>
+                    <Column header="Status" rowspan="2"/>
+                    <Column field="kualitas_beras" header="Kualitas" rowspan="2"/>
+                    <Column header="10kg" colspan="2"/>
+                    <Column header="20kg" colspan="2"/>
+                    <Column header="50kg" colspan="2"/>
+                    <Column header="Sertifikat" style="min-width: 100px;" rowspan="2"/>
+                    <Column header="Tanggal Produksi" style="min-width: 160px;" rowspan="2"/>
+                    <Column header="Action" frozen align-frozen="right" rowspan="2"/>
+                </Row>
+                <Row>
+                    <Column header="Jumlah"/>
+                    <Column header="Harga"/>
+                    <Column header="Jumlah"/>
+                    <Column header="Harga"/>
+                    <Column header="Jumlah"/>
+                    <Column header="Harga"/>
+                </Row>
+            </ColumnGroup>
+            <Column field="nomor" frozen/>
+            <Column field="nama_beras" style="min-width: 180px;" frozen/>
+            <Column field="produsen.nama_produsen"  style="min-width: 180px;"/>
+            <Column field="jenis_beras" style="min-width: 140px;"/>
+            <Column field="stok_tersedia" style="min-width: 160px;">
                 <template #body="{data}">
                     {{ data.stok_tersedia+'kg'}}
                 </template>
             </Column>
-            <Column header="Status">
+            <Column >
                 <template #body="{data}">
                     <Badge :value="data.status_beras" :severity="data.status_beras==='Tersedia'?'success':'danger'"/>
                 </template>
             </Column>
-            <Column field="kualitas_beras" header="Kualitas" style="min-width: 240px;"/>
-            <Column header="Sertifikat" style="min-width: 100px;">
+            <Column field="kualitas_beras"/>
+            <Column>
+                <template #body="{data}">
+                    {{ data.detail[0].jumlah ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ formatRupiah(data.detail[0].harga) ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ data.detail[1].jumlah ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ formatRupiah(data.detail[1].harga) ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ data.detail[2].jumlah ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ formatRupiah(data.detail[2].harga) ?? '-' }}
+                </template>
+            </Column>
+            <Column>
                 <template #body="{data}">
                     <div class="size-10 overflow-hidden border rounded" v-if="data?.sertifikat_beras">
                         <Image :src="data?.sertifikat_beras" class="size-full" preview />
@@ -259,12 +315,12 @@ const cetakLaporan = () =>
                     <span class="text-sm" v-else>Tidak ada sertifikat</span>
                 </template>
             </Column>
-            <Column header="Tanggal Produksi" style="min-width: 240px;">
+            <Column>
                 <template #body="{data}">
                     <span>{{ formatTanggal(data.tgl_produksi) }}</span>
                 </template>
             </Column>
-            <Column header="Action" frozen align-frozen="right">
+            <Column frozen align-frozen="right">
                 <template #body="{data}">
                     <div class="flex place-content-center gap-2">
                         <Button @click="editBeras(data.id_beras)" severity="info" size="small" icon="pi pi-pen-to-square"/>
