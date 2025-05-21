@@ -35,8 +35,6 @@ const selectedDataFilter = ref(null)
 
 const selectedDateProduksiRange = ref(null)
 
-const selectedDateExpireRange = ref(null)
-
 const priceFilterData = [
     {label : 'Termurah', value : 'ASC'},
     {label : 'Termahal', value : 'DESC'},
@@ -92,25 +90,6 @@ const filterByDateProduksiRange = () =>
     const end = normalizeDate(selectedDateProduksiRange.value[1]) ?? start
 
     const sorted  = props.dataBeras.filter(item => normalizeDate(item.tgl_produksi) >= start && normalizeDate(item.tgl_produksi) <= end).map((p, i) => ({...p, nomor: i + 1}))
-
-    nextTick(() =>
-    {
-        dataBerasFix.value = sorted
-        filterByPrice()
-    })
-
-    isLoading.value = false
-}
-
-const filterByDateExpireRange = () =>
-{
-    isLoading.value = true
-
-    const start = normalizeDate(selectedDateExpireRange.value[0])
-
-    const end = normalizeDate(selectedDateExpireRange.value[1]) ?? start
-
-    const sorted  = props.dataBeras.filter(item => normalizeDate(item.tgl_kadaluarsa) >= start && normalizeDate(item.tgl_kadaluarsa) <= end).map((p, i) => ({...p, nomor: i + 1}))
 
     nextTick(() =>
     {
@@ -218,12 +197,6 @@ const cetakLaporan = () =>
                             <DatePicker class="w-[20rem]" show-button-bar @clear-click="resetData()" @date-select="filterByDateProduksiRange" showIcon iconDisplay="input" inputId="filterTanggal" v-model="selectedDateProduksiRange" selectionMode="range" :manual-input="false" date-format="yy-mm-dd"  fluid/>
                             <label for="filterTanggal">Filter Tanggal Produksi</label>
                         </FloatLabel>
-                        <!-- filter by tanggal -->
-                        <FloatLabel variant="on">
-                            <DatePicker class="w-[20rem]" show-button-bar @clear-click="resetData()" @date-select="filterByDateExpireRange" showIcon iconDisplay="input" inputId="filterTanggal" v-model="selectedDateExpireRange" selectionMode="range" :manual-input="false" date-format="yy-mm-dd"  fluid/>
-                            <label for="filterTanggal">Filter Tanggal Kadaluarsa</label>
-                        </FloatLabel>
-
                     </div>
                 </div>
             </template>
