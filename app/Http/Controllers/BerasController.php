@@ -23,7 +23,7 @@ class BerasController extends Controller
         if($loggedInUser->role === 'Admin')
         {
             $dataProdusen = ProdusenModel::select('id_produsen','nama_produsen')->get();
-            $dataBeras = BerasModel::with(['produsen:id_produsen,nama_produsen'])->get();
+            $dataBeras = BerasModel::with(['produsen:id_produsen,nama_produsen', 'detail:id_beras,berat,jumlah,harga'])->get();
             return Inertia::render('Admin/Beras/Index', [
                 'dataProdusen' => $dataProdusen,
                 'dataBeras' => $dataBeras,
@@ -32,7 +32,10 @@ class BerasController extends Controller
         else if($loggedInUser->role === 'Produsen')
         {
             $dataProdusen = ProdusenModel::where('user_id', $loggedInUser->user_id)->select('id_produsen','nama_produsen')->get();
-            $dataBeras = BerasModel::where('id_produsen', $dataProdusen[0]->id_produsen)->with(['produsen:id_produsen,nama_produsen'])->get();
+            $dataBeras = BerasModel::where('id_produsen', $dataProdusen[0]->id_produsen)->with([
+                'produsen:id_produsen,nama_produsen',
+                'detail:id_beras,berat,jumlah,harga',
+            ])->get();
             return Inertia::render('Produsen/Beras/Index', [
                 'dataProdusen' => $dataProdusen,
                 'dataBeras' => $dataBeras,
@@ -41,7 +44,7 @@ class BerasController extends Controller
         else if($loggedInUser->role === 'Pemilik')
         {
             $dataProdusen = ProdusenModel::select('id_produsen','nama_produsen')->get();
-            $dataBeras = BerasModel::with(['produsen:id_produsen,nama_produsen'])->get();
+            $dataBeras = BerasModel::with(['produsen:id_produsen,nama_produsen', 'detail:id_beras,berat,jumlah,harga'])->get();
             return Inertia::render('Pemilik/Beras/Index', [
                 'dataProdusen' => $dataProdusen,
                 'dataBeras' => $dataBeras,
