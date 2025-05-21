@@ -7,7 +7,6 @@ import { useConfirm, useToast } from 'primevue'
 
 onMounted(() =>
 {
-    console.log(props.dataBeras)
     dataBerasFix.value = [...props.dataBeras]
 })
 
