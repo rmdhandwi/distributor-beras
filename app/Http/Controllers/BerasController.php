@@ -58,10 +58,12 @@ class BerasController extends Controller
     public function store(Request $req)
     {
         // Format ulang tanggal dari ISO menjadi Y-m-d
-        $req->merge([
-            'tgl_produksi' => Carbon::parse($req->tgl_produksi)->timezone('Asia/Jayapura')->format('Y-m-d'),
-            'tgl_kadaluarsa' => Carbon::parse($req->tgl_kadaluarsa)->timezone('Asia/Jayapura')->format('Y-m-d'),
-        ]);
+        if(!empty($req->tgl_produksi))
+        {
+            $req->merge([
+                'tgl_produksi' => Carbon::parse($req->tgl_produksi)->timezone('Asia/Jayapura')->format('Y-m-d'),
+            ]);
+        }
 
         $validated = $req->validate([
             'nama_beras' => 'required|string|max:255|unique:tb_beras,nama_beras',
@@ -71,17 +73,43 @@ class BerasController extends Controller
             'tgl_produksi' => 'required|date',
             'kualitas_beras' => 'required|string|max:255',
             'sertifikat_beras' => 'required',
-            'detail' => 'required|array',
-            'detail.stok10kg.jumlah' => 'integer|min:0',
-            'detail.stok20kg.jumlah' => 'integer|min:0',
-            'detail.stok50kg.jumlah' => 'integer|min:0',
+            'stok10kg.jumlah' => 'integer|min:2',
+            'stok10kg.harga' => 'integer',
+            'stok20kg.jumlah' => 'integer|min:0',
+            'stok20kg.harga' => 'integer',
+            'stok50kg.jumlah' => 'integer|min:0',
+            'stok50kg.harga' => 'integer',
         ], [
             'required' => ':attribute wajib diisi.',
             'unique' => ':attribute sudah terdaftar.',
             'exists' => ':attribute tidak valid.',
-            'min' => ':attribute tidak boleh kurang dari :min.',
+            'min' => 'tidak boleh kurang dari :min.',
             'max' => ':attribute terlalu panjang.',
         ]);
+
+        // cek apakah stok dan harga terisi
+        $errors = [];
+        $labels = [
+            'stok10kg' => '10kg',
+            'stok20kg' => '20kg',
+            'stok50kg' => '50kg',
+        ];
+
+        foreach (['stok10kg', 'stok20kg', 'stok50kg'] as $key) {
+            $jumlah = (int) ($req->input("$key.jumlah") ?? 0);
+            // $jumlah = (int) ($req->$key->jumlah ?? 0);
+            $harga  = (int) ($req->input("$key.harga") ?? 0);
+            // $harga = (int) ($req->$key->harga ?? 0);
+
+            if ($jumlah > 0 && $harga <= 0) {
+                $errors["$key.harga"] = "Harga untuk stok {$labels[$key]} wajib diisi.";
+            }
+        }
+
+        if (!empty($errors)) {
+            return back()->withErrors($errors)->withInput($errors);
+        }
+
 
         $loggedInUser = auth()->guard()->user();
 
@@ -105,15 +133,14 @@ class BerasController extends Controller
 
             if($idBeras)
             {
-                foreach ($req->detail as $stok) {
-                    if ((int)$stok['jumlah'] > 0) {
-                        DetailBerasModel::create([
-                            'id_beras' => $idBeras,
-                            'berat' => $stok['berat'],
-                            'jumlah' => $stok['jumlah'],
-                            'harga' => $stok['harga'],
-                        ]);
-                    }
+                foreach (['stok10kg', 'stok20kg', 'stok50kg'] as $key) {
+                    $stok = $req->$key;
+                    DetailBerasModel::create([
+                        'id_beras' => $idBeras,
+                        'berat' => $stok['berat'],
+                        'jumlah' => $stok['jumlah'],
+                        'harga' => $stok['harga'],
+                    ]);
                 }
 
                 return redirect()->back()->with([
