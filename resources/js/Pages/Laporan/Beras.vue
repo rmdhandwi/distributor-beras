@@ -1,6 +1,11 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { Head, router } from '@inertiajs/vue3'
+
+onMounted(() =>
+{
+    setDataStats()
+})
 
 const props = defineProps({
     backRoute : String,
@@ -9,6 +14,23 @@ const props = defineProps({
 })
 
 const showButton = ref(true)
+
+const dataStats = ref({
+    total_tersedia : null,
+    jumlah10kg : null,
+    jumlah20kg : null,
+    jumlah50kg : null,
+})
+
+const setDataStats = () =>
+{
+    props.dataCetak.forEach(item => {
+        dataStats.value.total_tersedia += item.stok_tersedia
+        dataStats.value.jumlah10kg += item.detail?.[0].jumlah
+        dataStats.value.jumlah20kg += item.detail?.[1].jumlah
+        dataStats.value.jumlah50kg += item.detail?.[2].jumlah
+    })
+}
 
 function formatRupiah(angka) {
   return new Intl.NumberFormat('id-ID', {
@@ -124,6 +146,15 @@ const cetakLaporan = () =>
                     <span>{{ formatTanggal(data.tgl_produksi) }}</span>
                 </template>
             </Column>
+            <ColumnGroup type="footer" >
+                <Row>
+                    <Column footer="Total :" colspan="4" footerStyle="text-align:right"/>
+                    <Column :footer="dataStats.total_tersedia+' kg' ?? 0+' kg'" colspan="3"/>
+                    <Column :footer="dataStats.jumlah10kg" colspan="2"/>
+                    <Column :footer="dataStats.jumlah20kg" colspan="2"/>
+                    <Column :footer="dataStats.jumlah50kg" colspan="4"/>
+                </Row>
+            </ColumnGroup>
         </DataTable>
     </div>
     <div class="p-2 mt-3 flex items-center gap-4">
