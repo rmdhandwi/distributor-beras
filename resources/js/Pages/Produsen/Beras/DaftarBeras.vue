@@ -8,6 +8,7 @@ import { useConfirm, useToast } from 'primevue'
 onMounted(() =>
 {
     dataBerasFix.value = [...props.dataBeras]
+    setDataStats()
 })
 
 const filters = ref({
@@ -39,6 +40,23 @@ const priceFilterData = [
     {label : 'Termurah', value : 'ASC'},
     {label : 'Termahal', value : 'DESC'},
 ]
+
+const dataStats = ref({
+    total_tersedia : null,
+    jumlah10kg : null,
+    jumlah20kg : null,
+    jumlah50kg : null,
+})
+
+const setDataStats = () =>
+{
+    dataBerasFix.value.forEach(item => {
+        dataStats.value.total_tersedia += item.stok_tersedia
+        dataStats.value.jumlah10kg += item.detail?.[0].jumlah
+        dataStats.value.jumlah20kg += item.detail?.[1].jumlah
+        dataStats.value.jumlah50kg += item.detail?.[2].jumlah
+    })
+}
 
 function formatRupiah(angka) {
   return new Intl.NumberFormat('id-ID', {
@@ -212,12 +230,12 @@ const cetakLaporan = () =>
             <ColumnGroup type="header">
                 <Row>
                     <Column sortable header="No" frozen rowspan="2"/>
-                    <Column  header="Nama Beras" style="min-width: 180px;" frozen rowspan="2"/>
-                    <Column  header="Produsen" style="min-width: 180px;" rowspan="2"/>
-                    <Column  header="Jenis Beras" style="min-width: 140px;" rowspan="2"/>
-                    <Column  header="Stok Tersedia" style="min-width: 160px;" rowspan="2"/>
+                    <Column header="Nama Beras" style="min-width: 180px;" frozen rowspan="2"/>
+                    <Column header="Produsen" style="min-width: 180px;" rowspan="2"/>
+                    <Column header="Jenis Beras" style="min-width: 140px;" rowspan="2"/>
+                    <Column header="Stok Tersedia" style="min-width: 160px;" rowspan="2"/>
                     <Column header="Status" rowspan="2"/>
-                    <Column field="kualitas_beras" header="Kualitas" rowspan="2"/>
+                    <Column header="Kualitas" rowspan="2"/>
                     <Column header="10kg" colspan="2"/>
                     <Column header="20kg" colspan="2"/>
                     <Column header="50kg" colspan="2"/>
@@ -240,7 +258,7 @@ const cetakLaporan = () =>
             <Column field="jenis_beras" style="min-width: 140px;"/>
             <Column field="stok_tersedia" style="min-width: 160px;">
                 <template #body="{data}">
-                    {{ data.stok_tersedia+'kg'}}
+                    {{ data.stok_tersedia+' kg'}}
                 </template>
             </Column>
             <Column >
@@ -299,6 +317,17 @@ const cetakLaporan = () =>
                     </div>
                 </template>
             </Column>
+            <ColumnGroup type="footer" >
+                <Row>
+                    <Column colspan="2" frozen align-frozen="left"/>
+                    <Column footer="Total :" colspan="2" footerStyle="text-align:right"/>
+                    <Column :footer="dataStats.total_tersedia+' kg' ?? 0+' kg'" colspan="3"/>
+                    <Column :footer="dataStats.jumlah10kg" colspan="2"/>
+                    <Column :footer="dataStats.jumlah20kg" colspan="2"/>
+                    <Column :footer="dataStats.jumlah50kg" colspan="4"/>
+                    <Column colspan="1" frozen align-frozen="right"/>
+                </Row>
+            </ColumnGroup>
         </DataTable>
 
     </div>
