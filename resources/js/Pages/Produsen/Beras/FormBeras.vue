@@ -41,16 +41,19 @@ const berasForm = useForm({
   status_beras: props.dataBeras?.[0]?.status_beras ?? null,
   stok10kg : {
       berat : '10',
+      id_detail : props.dataBeras?.[0].detail?.[0].id_detail ?? null,
       jumlah : props.dataBeras?.[0].detail?.[0].jumlah ?? 0,
       harga  : props.dataBeras?.[0].detail?.[0].harga ?? 0
   },
   stok20kg : {
       berat : '20',
+      id_detail : props.dataBeras?.[0].detail?.[1].id_detail ?? null,
       jumlah : props.dataBeras?.[0].detail?.[1].jumlah ?? 0,
       harga : props.dataBeras?.[0].detail?.[1].harga ?? 0
   },
   stok50kg : {
       berat : '50',
+      id_detail : props.dataBeras?.[0].detail?.[2].id_detail ?? null,
       jumlah : props.dataBeras?.[0].detail?.[2].jumlah ?? 0,
       harga : props.dataBeras?.[0].detail?.[2].harga ?? 0
   },
