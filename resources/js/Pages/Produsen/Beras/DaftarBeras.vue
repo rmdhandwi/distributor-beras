@@ -279,32 +279,32 @@ const cetakLaporan = () =>
             <Column field="kualitas_beras"/>
             <Column>
                 <template #body="{data}">
-                    {{ data.detail[0].jumlah ?? '-' }}
+                    {{ data.detail[0]?.jumlah ?? '-' }}
                 </template>
             </Column>
             <Column>
                 <template #body="{data}">
-                    {{ formatRupiah(data.detail[0].harga) ?? '-' }}
+                    {{ formatRupiah(data.detail[0]?.harga) ?? '-' }}
                 </template>
             </Column>
             <Column>
                 <template #body="{data}">
-                    {{ data.detail[1].jumlah ?? '-' }}
+                    {{ data.detail[1]?.jumlah ?? '-' }}
                 </template>
             </Column>
             <Column>
                 <template #body="{data}">
-                    {{ formatRupiah(data.detail[1].harga) ?? '-' }}
+                    {{ formatRupiah(data.detail[1]?.harga) ?? '-' }}
                 </template>
             </Column>
             <Column>
                 <template #body="{data}">
-                    {{ data.detail[2].jumlah ?? '-' }}
+                    {{ data.detail[2]?.jumlah ?? '-' }}
                 </template>
             </Column>
             <Column>
                 <template #body="{data}">
-                    {{ formatRupiah(data.detail[2].harga) ?? '-' }}
+                    {{ formatRupiah(data.detail[2]?.harga) ?? '-' }}
                 </template>
             </Column>
             <Column>
