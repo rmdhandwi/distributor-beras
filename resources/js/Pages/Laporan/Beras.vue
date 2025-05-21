@@ -44,43 +44,84 @@ const cetakLaporan = () =>
             <template #footer>
                 <span>Tanggal Cetak Laporan : {{ props.tanggalCetak }}</span>
             </template>
-            <template #loading>
-                <span class="flex justify-center">Sedang Memuat Data...</span>
-            </template>
-            <template #empty>
-                <span class="flex justify-center">Tidak Ada Beras</span>
-            </template>
-            <Column field="nomor" header="No" frozen/>
-            <Column field="nama_beras" header="Nama Beras"/>
-            <Column field="produsen.nama_produsen" header="Produsen"/>
-            <Column field="jenis_beras" header="Jenis Beras"/>
-            <Column field="harga_jual" header="Harga Jual">
+            <ColumnGroup type="header">
+                <Row>
+                    <Column header="No" rowspan="2"/>
+                    <Column header="Nama Beras"" rowspan="2"/>
+                    <Column header="Produsen"" rowspan="2"/>
+                    <Column header="Jenis Beras" rowspan="2"/>
+                    <Column header="Stok Tersedia" rowspan="2"/>
+                    <Column header="Status" rowspan="2"/>
+                    <Column header="Kualitas" rowspan="2"/>
+                    <Column header="10kg" colspan="2"/>
+                    <Column header="20kg" colspan="2"/>
+                    <Column header="50kg" colspan="2"/>
+                    <Column header="Sertifikat" rowspan="2"/>
+                    <Column header="Tanggal Produksi" rowspan="2"/>
+                </Row>
+                <Row>
+                    <Column header="Jumlah"/>
+                    <Column header="Harga"/>
+                    <Column header="Jumlah"/>
+                    <Column header="Harga"/>
+                    <Column header="Jumlah"/>
+                    <Column header="Harga"/>
+                </Row>
+            </ColumnGroup>
+            <Column field="nomor"/>
+            <Column field="nama_beras""/>
+            <Column field="produsen.nama_produsen" "/>
+            <Column field="jenis_beras"/>
+            <Column field="stok_tersedia">
                 <template #body="{data}">
-                    <span>{{ formatRupiah(data.harga_jual) }}</span>
+                    {{ data.stok_tersedia+'kg'}}
                 </template>
             </Column>
-            <Column field="stok_awal" header="Stok Awal"/>
-            <Column field="stok_tersedia" header="Stok Tersedia"/>
-            <Column header="Status">
+            <Column >
                 <template #body="{data}">
                     <span>{{ data.status_beras }}</span>
                 </template>
             </Column>
-            <Column field="kualitas_beras" header="Kualitas"/>
-            <Column header="Sertifikat">
+            <Column field="kualitas_beras"/>
+            <Column>
+                <template #body="{data}">
+                    {{ data.detail[0]?.jumlah ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ formatRupiah(data.detail[0]?.harga) ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ data.detail[1]?.jumlah ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ formatRupiah(data.detail[1]?.harga) ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ data.detail[2]?.jumlah ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ formatRupiah(data.detail[2]?.harga) ?? '-' }}
+                </template>
+            </Column>
+            <Column>
                 <template #body="{data}">
                     <span v-if="data?.sertifikat_beras">Terdaftar</span>
                     <span v-else>Tidak ada sertifikat</span>
                 </template>
             </Column>
-            <Column header="Tanggal Produksi">
+            <Column>
                 <template #body="{data}">
                     <span>{{ formatTanggal(data.tgl_produksi) }}</span>
-                </template>
-            </Column>
-            <Column header="Tanggal Kadaluarsa">
-                <template #body="{data}">
-                    <span>{{ formatTanggal(data.tgl_kadaluarsa) }}</span>
                 </template>
             </Column>
         </DataTable>
