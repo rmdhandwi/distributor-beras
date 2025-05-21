@@ -34,7 +34,7 @@ class BerasController extends Controller
             $dataProdusen = ProdusenModel::where('user_id', $loggedInUser->user_id)->select('id_produsen','nama_produsen')->get();
             $dataBeras = BerasModel::where('id_produsen', $dataProdusen[0]->id_produsen)->with([
                 'produsen:id_produsen,nama_produsen',
-                'detail:id_beras,berat,jumlah,harga',
+                'detail:id_detail,id_beras,berat,jumlah,harga',
             ])->get();
             return Inertia::render('Produsen/Beras/Index', [
                 'dataProdusen' => $dataProdusen,
@@ -73,7 +73,7 @@ class BerasController extends Controller
             'tgl_produksi' => 'required|date',
             'kualitas_beras' => 'required|string|max:255',
             'sertifikat_beras' => 'required',
-            'stok10kg.jumlah' => 'integer|min:2',
+            'stok10kg.jumlah' => 'integer|min:0',
             'stok10kg.harga' => 'integer',
             'stok20kg.jumlah' => 'integer|min:0',
             'stok20kg.harga' => 'integer',
@@ -165,25 +165,51 @@ class BerasController extends Controller
     public function update(Request $req)
     {
         $id = $req->id_beras;
-        // Format tanggal ISO ke format MySQL
-        $req->merge([
-            'tgl_produksi' => Carbon::parse($req->tgl_produksi)->timezone('Asia/Jayapura')->format('Y-m-d'),
-            'tgl_kadaluarsa' => Carbon::parse($req->tgl_kadaluarsa)->timezone('Asia/Jayapura')->format('Y-m-d'),
-        ]);
+         // Format ulang tanggal dari ISO menjadi Y-m-d
+        if(!empty($req->tgl_produksi))
+        {
+            $req->merge([
+                'tgl_produksi' => Carbon::parse($req->tgl_produksi)->timezone('Asia/Jayapura')->format('Y-m-d'),
+            ]);
+        }
 
         // Validasi input
         $validated = $req->validate([
             'nama_beras'       => 'required|string|max:255|unique:tb_beras,nama_beras,' . $id . ',id_beras',
             'id_produsen'      => 'required|exists:tb_produsen,id_produsen',
             'jenis_beras'      => 'required|string|max:255',
-            'harga_jual'       => 'required|integer|min:0',
-            'stok_awal'        => 'required|integer|min:0',
             'stok_tersedia'    => 'required|integer|min:0',
             'tgl_produksi'     => 'required|date',
-            'tgl_kadaluarsa'   => 'required|date|after_or_equal:tgl_produksi',
             'kualitas_beras'   => 'nullable|string|max:255',
             'status_beras'     => 'required|string|max:255',
+            'stok10kg.jumlah' => 'integer|min:0',
+            'stok10kg.harga' => 'integer',
+            'stok20kg.jumlah' => 'integer|min:0',
+            'stok20kg.harga' => 'integer',
+            'stok50kg.jumlah' => 'integer|min:0',
+            'stok50kg.harga' => 'integer',
         ]);
+
+        // cek apakah stok dan harga terisi
+        $errors = [];
+        $labels = [
+            'stok10kg' => '10kg',
+            'stok20kg' => '20kg',
+            'stok50kg' => '50kg',
+        ];
+
+        foreach (['stok10kg', 'stok20kg', 'stok50kg'] as $key) {
+            $jumlah = (int) ($req->input("$key.jumlah") ?? 0);
+            $harga  = (int) ($req->input("$key.harga") ?? 0);
+
+            if ($jumlah > 0 && $harga <= 0) {
+                $errors["$key.harga"] = "Harga untuk stok {$labels[$key]} wajib diisi.";
+            }
+        }
+
+        if (!empty($errors)) {
+            return back()->withErrors($errors)->withInput($errors);
+        }
 
         // Cari data berdasarkan ID
         $beras = BerasModel::findOrFail($id);
@@ -212,6 +238,18 @@ class BerasController extends Controller
 
                 if ($update)
                 {
+                    foreach (['stok10kg', 'stok20kg', 'stok50kg'] as $key) {
+                        $stok = $req->$key;
+                        if($stok['id_detail'])
+                        {
+                            DetailBerasModel::find($stok['id_detail'])->update([
+                                'berat' => $stok['berat'],
+                                'jumlah' => $stok['jumlah'],
+                                'harga' => $stok['harga'],
+                            ]);
+                        }
+                    }
+
                     return redirect()->back()->with([
                         'notif_status' => 'success',
                         'notif_message' => 'Data beras berhasil diupdate!',
@@ -231,12 +269,27 @@ class BerasController extends Controller
         // Update data
         $update = $beras->update($validated);
 
-        if ($update) {
+        if ($update)
+        {
+            foreach (['stok10kg', 'stok20kg', 'stok50kg'] as $key) {
+                $stok = $req->$key;
+                if($stok['id_detail'])
+                {
+                    DetailBerasModel::find($stok['id_detail'])->update([
+                        'berat' => $stok['berat'],
+                        'jumlah' => $stok['jumlah'],
+                        'harga' => $stok['harga'],
+                    ]);
+                }
+            }
+
             return redirect()->back()->with([
                 'notif_status' => 'success',
                 'notif_message' => 'Data beras berhasil diupdate!',
             ]);
-        } else {
+        }
+        else
+        {
             return redirect()->back()->with([
                 'notif_status' => 'error',
                 'notif_message' => 'Gagal update data beras :(',
