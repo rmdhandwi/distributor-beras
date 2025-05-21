@@ -8,12 +8,12 @@ class DetailBerasModel extends Model
 {
     //
     protected $table = 'tb_detail_beras';
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'id_detail';
     public $incrementing = true;
     protected $keyType = 'int';
 
     protected $fillable = [
-        'id',
+        'id_detail',
         'id_beras',
         'berat',
         'jumlah',
