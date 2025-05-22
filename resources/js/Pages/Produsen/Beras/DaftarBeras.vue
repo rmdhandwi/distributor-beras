@@ -7,7 +7,7 @@ import { useConfirm, useToast } from 'primevue'
 
 onMounted(() =>
 {
-    dataBerasFix.value = [...props.dataBeras]
+    dataBerasFix.value = props.dataBeras
     setDataStats()
 })
 
@@ -52,18 +52,21 @@ const setDataStats = () =>
 {
     dataBerasFix.value.forEach(item => {
         dataStats.value.total_tersedia += item.stok_tersedia
-        dataStats.value.jumlah10kg += item.detail?.[0].jumlah
-        dataStats.value.jumlah20kg += item.detail?.[1].jumlah
-        dataStats.value.jumlah50kg += item.detail?.[2].jumlah
+        dataStats.value.jumlah10kg += item.stok10kg?.jumlah ?? 0
+        dataStats.value.jumlah20kg += item.stok20kg?.jumlah ?? 0
+        dataStats.value.jumlah50kg += item.stok50kg?.jumlah ?? 0
     })
 }
 
 function formatRupiah(angka) {
-  return new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-    minimumFractionDigits: 0
-  }).format(angka);
+    if(angka)
+    {
+        return new Intl.NumberFormat('id-ID', {
+          style: 'currency',
+          currency: 'IDR',
+          minimumFractionDigits: 0
+        }).format(angka);
+    }
 }
 
 function formatTanggal(tanggal) {
@@ -269,32 +272,32 @@ const cetakLaporan = () =>
             <Column field="kualitas_beras"/>
             <Column>
                 <template #body="{data}">
-                    {{ data.detail[0]?.jumlah ?? '-' }}
+                    {{ data.stok10kg?.jumlah ?? '-' }}
                 </template>
             </Column>
             <Column>
                 <template #body="{data}">
-                    {{ formatRupiah(data.detail[0]?.harga) ?? '-' }}
+                    {{ formatRupiah(data.stok10kg?.harga) ?? '-' }}
                 </template>
             </Column>
             <Column>
                 <template #body="{data}">
-                    {{ data.detail[1]?.jumlah ?? '-' }}
+                    {{ data.stok20kg?.jumlah ?? '-' }}
                 </template>
             </Column>
             <Column>
                 <template #body="{data}">
-                    {{ formatRupiah(data.detail[1]?.harga) ?? '-' }}
+                    {{ formatRupiah(data.stok20kg?.harga) ?? '-' }}
                 </template>
             </Column>
             <Column>
                 <template #body="{data}">
-                    {{ data.detail[2]?.jumlah ?? '-' }}
+                    {{ data.stok50kg?.jumlah ?? '-' }}
                 </template>
             </Column>
             <Column>
                 <template #body="{data}">
-                    {{ formatRupiah(data.detail[2]?.harga) ?? '-' }}
+                    {{ formatRupiah(data.stok50kg?.harga) ?? '-' }}
                 </template>
             </Column>
             <Column>
