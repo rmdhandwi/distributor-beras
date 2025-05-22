@@ -36,6 +36,15 @@ class BerasController extends Controller
                 'produsen:id_produsen,nama_produsen',
                 'detail:id_detail,id_beras,berat,jumlah,harga',
             ])->get();
+
+            // pisahkan detail berdasarkan berat
+            foreach ($dataBeras as $item) {
+                $detailMap = $item->detail->keyBy('berat');
+
+                $item->stok10kg = $detailMap->get(10); // bisa null kalau tidak ada
+                $item->stok20kg = $detailMap->get(20);
+                $item->stok50kg = $detailMap->get(50);
+            }
             return Inertia::render('Produsen/Beras/Index', [
                 'dataProdusen' => $dataProdusen,
                 'dataBeras' => $dataBeras,
@@ -135,12 +144,15 @@ class BerasController extends Controller
             {
                 foreach (['stok10kg', 'stok20kg', 'stok50kg'] as $key) {
                     $stok = $req->$key;
-                    DetailBerasModel::create([
-                        'id_beras' => $idBeras,
-                        'berat' => $stok['berat'],
-                        'jumlah' => $stok['jumlah'],
-                        'harga' => $stok['harga'],
-                    ]);
+                    if ($stok !== null && (int)$stok['jumlah'] > 0)
+                    {
+                        DetailBerasModel::create([
+                            'id_beras' => $idBeras,
+                            'berat' => $stok['berat'],
+                            'jumlah' => $stok['jumlah'],
+                            'harga' => $stok['harga'],
+                        ]);
+                    }
                 }
 
                 return redirect()->back()->with([
@@ -240,13 +252,19 @@ class BerasController extends Controller
                 {
                     foreach (['stok10kg', 'stok20kg', 'stok50kg'] as $key) {
                         $stok = $req->$key;
-                        if($stok['id_detail'])
+                        if($stok !== null && isset($stok['jumlah']) && (int)$stok['jumlah'] > 0)
                         {
-                            DetailBerasModel::find($stok['id_detail'])->update([
-                                'berat' => $stok['berat'],
-                                'jumlah' => $stok['jumlah'],
-                                'harga' => $stok['harga'],
-                            ]);
+                            DetailBerasModel::updateOrCreate(
+                                [
+                                    'id_detail' => $stok['id_detail']
+                                ],
+                                [
+                                    'id_beras' => $id,
+                                    'berat'    => $stok['berat'],
+                                    'jumlah'   => $stok['jumlah'],
+                                    'harga'    => $stok['harga'],
+                                ]
+                            );
                         }
                     }
 
@@ -273,13 +291,19 @@ class BerasController extends Controller
         {
             foreach (['stok10kg', 'stok20kg', 'stok50kg'] as $key) {
                 $stok = $req->$key;
-                if($stok['id_detail'])
+                if($stok !== null && isset($stok['jumlah']) && (int)$stok['jumlah'] > 0)
                 {
-                    DetailBerasModel::find($stok['id_detail'])->update([
-                        'berat' => $stok['berat'],
-                        'jumlah' => $stok['jumlah'],
-                        'harga' => $stok['harga'],
-                    ]);
+                    DetailBerasModel::updateOrCreate(
+                        [
+                            'id_detail' => $stok['id_detail']
+                        ],
+                        [
+                            'id_beras' => $id,
+                            'berat'    => $stok['berat'],
+                            'jumlah'   => $stok['jumlah'],
+                            'harga'    => $stok['harga'],
+                        ]
+                    );
                 }
             }
 
