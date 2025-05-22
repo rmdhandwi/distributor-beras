@@ -229,8 +229,8 @@ const cetakLaporan = () =>
             </template>
             <ColumnGroup type="header">
                 <Row>
-                    <Column sortable header="No" frozen rowspan="2"/>
-                    <Column header="Nama Beras" style="min-width: 180px;" frozen rowspan="2"/>
+                    <Column sortable field="nomor" header="No" frozen rowspan="2"/>
+                    <Column sortable field="nama_beras" header="Nama Beras" style="min-width: 180px;" frozen rowspan="2"/>
                     <Column header="Produsen" style="min-width: 180px;" rowspan="2"/>
                     <Column header="Jenis Beras" style="min-width: 140px;" rowspan="2"/>
                     <Column header="Stok Tersedia" style="min-width: 160px;" rowspan="2"/>
