@@ -250,10 +250,14 @@ class BerasController extends Controller
 
                 if ($update)
                 {
+                    $beratAktif = [];
+
                     foreach (['stok10kg', 'stok20kg', 'stok50kg'] as $key) {
                         $stok = $req->$key;
                         if($stok !== null && isset($stok['jumlah']) && (int)$stok['jumlah'] > 0)
                         {
+                            $beratAktif[]= $stok['berat'];
+
                             DetailBerasModel::updateOrCreate(
                                 [
                                     'id_detail' => $stok['id_detail']
@@ -267,6 +271,8 @@ class BerasController extends Controller
                             );
                         }
                     }
+
+                    DetailBerasModel::where('id_beras', $id)->whereNotIn('berat', $beratAktif)->delete();
 
                     return redirect()->back()->with([
                         'notif_status' => 'success',
@@ -289,10 +295,14 @@ class BerasController extends Controller
 
         if ($update)
         {
+            $beratAktif = [];
+            
             foreach (['stok10kg', 'stok20kg', 'stok50kg'] as $key) {
                 $stok = $req->$key;
                 if($stok !== null && isset($stok['jumlah']) && (int)$stok['jumlah'] > 0)
                 {
+                    $beratAktif[]= $stok['berat'];
+
                     DetailBerasModel::updateOrCreate(
                         [
                             'id_detail' => $stok['id_detail']
@@ -306,6 +316,8 @@ class BerasController extends Controller
                     );
                 }
             }
+
+            DetailBerasModel::where('id_beras', $id)->whereNotIn('berat', $beratAktif)->delete();
 
             return redirect()->back()->with([
                 'notif_status' => 'success',
