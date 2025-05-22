@@ -26,18 +26,28 @@ const setDataStats = () =>
 {
     props.dataCetak.forEach(item => {
         dataStats.value.total_tersedia += item.stok_tersedia
-        dataStats.value.jumlah10kg += item.detail?.[0].jumlah
-        dataStats.value.jumlah20kg += item.detail?.[1].jumlah
-        dataStats.value.jumlah50kg += item.detail?.[2].jumlah
+        dataStats.value.jumlah10kg += item.stok10kg?.jumlah ?? 0
+        dataStats.value.jumlah20kg += item.stok20kg?.jumlah ?? 0
+        dataStats.value.jumlah50kg += item.stok50kg?.jumlah ?? 0
     })
+}
+function formatDecimal(angka)
+{
+    if(angka)
+    {
+        return angka.toLocaleString('id-ID');
+    }
 }
 
 function formatRupiah(angka) {
-  return new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-    minimumFractionDigits: 0
-  }).format(angka);
+    if(angka)
+    {
+        return new Intl.NumberFormat('id-ID', {
+          style: 'currency',
+          currency: 'IDR',
+          minimumFractionDigits: 0
+        }).format(angka);
+    }
 }
 
 function formatTanggal(tanggal) {
@@ -64,7 +74,7 @@ const cetakLaporan = () =>
                 <span class="flex justify-center text-lg font-bold">Laporan Data Beras</span>
             </template>
             <template #footer>
-                <span>Tanggal Cetak Laporan : {{ props.tanggalCetak }}</span>
+                <span class="text-sm font-bold">Tanggal Cetak Laporan : {{ props.tanggalCetak }}</span>
             </template>
             <ColumnGroup type="header">
                 <Row>
@@ -107,32 +117,32 @@ const cetakLaporan = () =>
             <Column field="kualitas_beras"/>
             <Column>
                 <template #body="{data}">
-                    {{ data.detail[0]?.jumlah ?? '-' }}
+                    {{ data.stok10kg?.jumlah ?? '-' }}
                 </template>
             </Column>
             <Column>
                 <template #body="{data}">
-                    {{ formatRupiah(data.detail[0]?.harga) ?? '-' }}
+                    {{ formatRupiah(data.stok10kg?.harga) ?? '-' }}
                 </template>
             </Column>
             <Column>
                 <template #body="{data}">
-                    {{ data.detail[1]?.jumlah ?? '-' }}
+                    {{ data.stok20kg?.jumlah ?? '-' }}
                 </template>
             </Column>
             <Column>
                 <template #body="{data}">
-                    {{ formatRupiah(data.detail[1]?.harga) ?? '-' }}
+                    {{ formatRupiah(data.stok20kg?.harga) ?? '-' }}
                 </template>
             </Column>
             <Column>
                 <template #body="{data}">
-                    {{ data.detail[2]?.jumlah ?? '-' }}
+                    {{ data.stok50kg?.jumlah ?? '-' }}
                 </template>
             </Column>
             <Column>
                 <template #body="{data}">
-                    {{ formatRupiah(data.detail[2]?.harga) ?? '-' }}
+                    {{ formatRupiah(data.stok50kg?.harga) ?? '-' }}
                 </template>
             </Column>
             <Column>
@@ -149,10 +159,10 @@ const cetakLaporan = () =>
             <ColumnGroup type="footer" >
                 <Row>
                     <Column footer="Total :" colspan="4" footerStyle="text-align:right"/>
-                    <Column :footer="dataStats.total_tersedia+' kg' ?? 0+' kg'" colspan="3"/>
-                    <Column :footer="dataStats.jumlah10kg" colspan="2"/>
-                    <Column :footer="dataStats.jumlah20kg" colspan="2"/>
-                    <Column :footer="dataStats.jumlah50kg" colspan="4"/>
+                    <Column :footer="formatDecimal(dataStats.total_tersedia)+' kg' ?? 0+' kg'" colspan="3"/>
+                    <Column :footer="formatDecimal(dataStats.jumlah10kg)" colspan="2"/>
+                    <Column :footer="formatDecimal(dataStats.jumlah20kg)" colspan="2"/>
+                    <Column :footer="formatDecimal(dataStats.jumlah50kg)" colspan="4"/>
                 </Row>
             </ColumnGroup>
         </DataTable>
@@ -164,6 +174,16 @@ const cetakLaporan = () =>
 </template>
 
 <style scoped>
+::v-deep(.p-datatable-tbody td) {
+  color: black;
+}
+::v-deep(.p-datatable-column-title) {
+  color: black;
+}
+::v-deep(.p-datatable-column-footer) {
+  color: black;
+}
+
 ::v-deep(table th) {
   border: 1px solid black;
 }
@@ -171,11 +191,13 @@ const cetakLaporan = () =>
   border: 1px solid black;
 }
 ::v-deep(.p-datatable-footer) {
+  color: black;
   border-bottom: 1px solid black;
   border-left: 1px solid black;
   border-right: 1px solid black;
 }
 ::v-deep(.p-datatable-header) {
+  color: black;
   border-top: 1px solid black;
   border-left: 1px solid black;
   border-right: 1px solid black;
