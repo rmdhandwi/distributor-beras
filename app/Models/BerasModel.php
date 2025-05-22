@@ -37,6 +37,10 @@ class BerasModel extends Model
         static::creating(function ($model) {
             $model->status_beras = $model->stok_tersedia > 0 ? 'Tersedia' : 'Kosong';
         });
+
+        static::updating(function ($model) {
+            $model->status_beras = $model->stok_tersedia > 0 ? 'Tersedia' : 'Kosong';
+        });
     }
 
     /**
