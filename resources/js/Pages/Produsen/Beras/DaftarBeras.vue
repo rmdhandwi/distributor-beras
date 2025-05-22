@@ -58,6 +58,14 @@ const setDataStats = () =>
     })
 }
 
+function formatDecimal(angka)
+{
+    if(angka)
+    {
+        return angka.toLocaleString('id-ID');
+    }
+}
+
 function formatRupiah(angka) {
     if(angka)
     {
@@ -324,10 +332,10 @@ const cetakLaporan = () =>
                 <Row>
                     <Column colspan="2" frozen align-frozen="left"/>
                     <Column footer="Total :" colspan="2" footerStyle="text-align:right"/>
-                    <Column :footer="dataStats.total_tersedia+' kg' ?? 0+' kg'" colspan="3"/>
-                    <Column :footer="dataStats.jumlah10kg" colspan="2"/>
-                    <Column :footer="dataStats.jumlah20kg" colspan="2"/>
-                    <Column :footer="dataStats.jumlah50kg" colspan="4"/>
+                    <Column :footer="formatDecimal(dataStats.total_tersedia)+' kg' ?? 0+' kg'" colspan="3"/>
+                    <Column :footer="formatDecimal(dataStats.jumlah10kg)" colspan="2"/>
+                    <Column :footer="formatDecimal(dataStats.jumlah20kg)" colspan="2"/>
+                    <Column :footer="formatDecimal(dataStats.jumlah50kg)" colspan="4"/>
                     <Column colspan="1" frozen align-frozen="right"/>
                 </Row>
             </ColumnGroup>
