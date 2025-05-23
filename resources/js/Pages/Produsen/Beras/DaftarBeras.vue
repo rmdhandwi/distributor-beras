@@ -64,6 +64,8 @@ function formatDecimal(angka)
     {
         return angka.toLocaleString('id-ID');
     }
+
+    return 0
 }
 
 function formatRupiah(angka) {
@@ -332,7 +334,7 @@ const cetakLaporan = () =>
                 <Row>
                     <Column colspan="2" frozen align-frozen="left"/>
                     <Column footer="Total :" colspan="2" footerStyle="text-align:right"/>
-                    <Column :footer="formatDecimal(dataStats.total_tersedia)+' kg' ?? 0+' kg'" colspan="3"/>
+                    <Column :footer="formatDecimal(dataStats.total_tersedia)+' kg'" colspan="3"/>
                     <Column :footer="formatDecimal(dataStats.jumlah10kg)" colspan="2"/>
                     <Column :footer="formatDecimal(dataStats.jumlah20kg)" colspan="2"/>
                     <Column :footer="formatDecimal(dataStats.jumlah50kg)" colspan="4"/>
