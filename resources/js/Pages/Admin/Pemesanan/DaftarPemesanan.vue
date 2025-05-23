@@ -49,7 +49,6 @@ const switchStatus = status =>
                         </InputIcon>
                         <InputText v-model="filters['global'].value" placeholder="Cari Data Pemesanan" size="small" fluid/>
                     </IconField>
-                    <Button icon="pi pi-print" severity="contrast" variant="outlined" label="CSV" size="small" />
                 </div>
             </template>
             <template #footer>
