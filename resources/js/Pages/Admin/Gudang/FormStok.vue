@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useForm } from '@inertiajs/vue3'
 import { useConfirm, useToast } from 'primevue'
 
@@ -35,6 +35,7 @@ const stokForm = useForm({
     id_beras : props.dataGudang?.[0]?.id_beras ?? null,
     id_produsen : props.dataGudang?.[0]?.id_produsen ?? null,
     stok10kg : {
+        berat : '10',
         id_detail_gudang : props.dataGudang?.[0]?.stok10kg?.id_detail_gudang ?? null,
         stok_awal : props.dataGudang?.[0]?.stok10kg?.stok_awal ?? 0,
         rusak : props.dataGudang?.[0]?.stok10kg?.rusak ?? 0,
@@ -42,6 +43,7 @@ const stokForm = useForm({
         stok_sisa : props.dataGudang?.[0]?.stok10kg?.stok_sisa ?? 0,
     },
     stok20kg : {
+        berat : '20',
         id_detail_gudang : props.dataGudang?.[0]?.stok20kg?.id_detail_gudang ?? 0,
         stok_awal : props.dataGudang?.[0]?.stok20kg?.stok_awal ?? 0,
         rusak : props.dataGudang?.[0]?.stok20kg?.rusak ?? 0,
@@ -49,6 +51,7 @@ const stokForm = useForm({
         stok_sisa : props.dataGudang?.[0]?.stok20kg?.stok_sisa ?? 0,
     },
     stok50kg : {
+        berat : '50',
         id_detail_gudang : props.dataGudang?.[0]?.stok50kg?.id_detail_gudang ?? 0,
         stok_awal : props.dataGudang?.[0]?.stok50kg?.stok_awal ?? 0,
         rusak : props.dataGudang?.[0]?.stok50kg?.rusak ?? 0,
@@ -67,6 +70,20 @@ const selectIdProdusen = async () =>
     stokForm.id_produsen = filterData.id_produsen
     stokForm.stok_awal = filterData.stok_awal
 }
+
+watch(
+    () => [
+        [stokForm.stok10kg.stok_awal, stokForm.stok10kg.rusak, stokForm.stok10kg.hilang],
+        [stokForm.stok20kg.stok_awal, stokForm.stok20kg.rusak, stokForm.stok20kg.hilang],
+        [stokForm.stok50kg.stok_awal, stokForm.stok50kg.rusak, stokForm.stok50kg.hilang],
+    ],
+    () => {
+        stokForm.stok10kg.stok_sisa = stokForm.stok10kg.stok_awal - stokForm.stok10kg.rusak - stokForm.stok10kg.hilang
+        stokForm.stok20kg.stok_sisa = stokForm.stok20kg.stok_awal - stokForm.stok20kg.rusak - stokForm.stok20kg.hilang
+        stokForm.stok50kg.stok_sisa = stokForm.stok50kg.stok_awal - stokForm.stok50kg.rusak - stokForm.stok50kg.hilang
+    },
+    { immediate : true }
+)
 
 const submitStok = Action =>
 {
@@ -169,7 +186,7 @@ const confirmHapus = () => {
         </div>
         <div v-else>
             <FloatLabel variant="on">
-                <InputText id="nama_beras" :default-value="props.dataGudang[0].beras.nama_beras" fluid disabled/>
+                <InputText id="nama_beras" :default-value="props.dataGudang[0].beras.nama_beras" fluid readonly/>
                 <label for="nama_beras">Beras</label>
             </FloatLabel>
             <span class="text-red-500" v-if="stokForm.errors.id_beras"> {{ stokForm.errors.id_beras }} </span>
@@ -178,7 +195,7 @@ const confirmHapus = () => {
         <!-- Nama produsen -->
         <div v-if="props.formType==='Create'">
             <FloatLabel variant="on">
-                <InputText id="produsen" v-model="selectProdusen" fluid disabled/>
+                <InputText id="produsen" v-model="selectProdusen" readonly fluid/>
                 <label for="produsen">Produsen</label>
             </FloatLabel>
             <span class="text-red-500" v-if="stokForm.errors.id_produsen"> {{ stokForm.errors.id_produsen }} </span>
@@ -186,7 +203,7 @@ const confirmHapus = () => {
         </div>
         <div v-else>
             <FloatLabel variant="on">
-                <InputText id="produsen" :default-value="props.dataGudang[0].produsen.nama_produsen" fluid disabled/>
+                <InputText id="produsen" :default-value="props.dataGudang[0].produsen.nama_produsen" readonly fluid/>
                 <label for="produsen">Produsen</label>
             </FloatLabel>
             <span class="text-red-500" v-if="stokForm.errors.id_produsen"> {{ stokForm.errors.id_produsen }} </span>
@@ -222,10 +239,10 @@ const confirmHapus = () => {
                 <span class="text-red-500" v-if="stokForm.errors['stok10kg.hilang']"> {{ stokForm.errors['stok10kg.hilang'] }} </span>
             </div>
 
-            <!-- Stok Hilang -->
+            <!-- Stok Sisa -->
             <div>
                 <FloatLabel variant="on">
-                    <InputNumber mode="decimal" showButtons :min="0" id="stok_sisa" v-model="stokForm.stok10kg.stok_sisa" fluid/>
+                    <InputNumber mode="decimal" :min="0" id="stok_sisa" v-model="stokForm.stok10kg.stok_sisa" readonly fluid/>
                     <label for="stok_sisa">Stok Sisa</label>
                 </FloatLabel>
                 <span class="text-red-500" v-if="stokForm.errors['stok10kg.stok_sisa']"> {{ stokForm.errors['stok10kg.stok_sisa'] }} </span>
@@ -263,10 +280,10 @@ const confirmHapus = () => {
                 <span class="text-red-500" v-if="stokForm.errors['stok20kg.hilang']"> {{ stokForm.errors['stok20kg.hilang'] }} </span>
             </div>
 
-            <!-- Stok Hilang -->
+            <!-- Stok Sisa -->
             <div>
                 <FloatLabel variant="on">
-                    <InputNumber mode="decimal" showButtons :min="0" id="stok_sisa" v-model="stokForm.stok20kg.stok_sisa" fluid/>
+                    <InputNumber mode="decimal" :min="0" id="stok_sisa" v-model="stokForm.stok20kg.stok_sisa" readonly fluid/>
                     <label for="stok_sisa">Stok Sisa</label>
                 </FloatLabel>
                 <span class="text-red-500" v-if="stokForm.errors['stok20kg.stok_sisa']"> {{ stokForm.errors['stok20kg.stok_sisa'] }} </span>
@@ -304,10 +321,10 @@ const confirmHapus = () => {
                 <span class="text-red-500" v-if="stokForm.errors['stok50kg.hilang']"> {{ stokForm.errors['stok50kg.hilang'] }} </span>
             </div>
 
-            <!-- Stok Hilang -->
+            <!-- Stok Sisa -->
             <div>
                 <FloatLabel variant="on">
-                    <InputNumber mode="decimal" showButtons :min="0" id="stok_sisa" v-model="stokForm.stok50kg.stok_sisa" fluid/>
+                    <InputNumber mode="decimal" :min="0" id="stok_sisa" v-model="stokForm.stok50kg.stok_sisa" readonly fluid/>
                     <label for="stok_sisa">Stok Sisa</label>
                 </FloatLabel>
                 <span class="text-red-500" v-if="stokForm.errors['stok50kg.stok_sisa']"> {{ stokForm.errors['stok50kg.stok_sisa']}} </span>
