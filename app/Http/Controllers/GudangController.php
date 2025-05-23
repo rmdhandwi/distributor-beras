@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BerasModel;
+use App\Models\DetailGudangModel;
 use App\Models\GudangModel;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -31,8 +32,21 @@ class GudangController extends Controller
                 $item->stok20kg = $detailMap->get(20);
                 $item->stok50kg = $detailMap->get(50);
             }
-            
-            $dataGudang = GudangModel::with(['beras:id_beras,nama_beras','produsen:id_produsen,nama_produsen'])->get();
+
+            $dataGudang = GudangModel::with([
+                'beras:id_beras,nama_beras,jenis_beras',
+                'produsen:id_produsen,nama_produsen',
+                'detail:id_detail_gudang,id_gudang,berat,stok_awal,rusak,hilang,stok_sisa'
+            ])->get();
+
+            // pisahkan detail berdasarkan berat
+            foreach ($dataGudang as $item) {
+                $detailMap = $item->detail->keyBy('berat');
+
+                $item->stok10kg = $detailMap->get(10); // bisa null kalau tidak ada
+                $item->stok20kg = $detailMap->get(20);
+                $item->stok50kg = $detailMap->get(50);
+            }
 
             return Inertia::render('Admin/Gudang/Index', [
                 'dataBeras' => $dataBeras,
@@ -66,26 +80,53 @@ class GudangController extends Controller
     {
         //
         $validated = $req->validate([
-            'id_beras'      => 'required|exists:tb_beras,id_beras',
-            'id_produsen'      => 'required|exists:tb_produsen,id_produsen',
-            'stok_awal'        => 'required|integer|min:0',
-            'rusak'        => 'required|integer|min:0',
-            'hilang'        => 'required|integer|min:0',
-            'stok_sisa'    => 'required|integer|min:0',
+            'id_beras' => 'required|exists:tb_beras,id_beras',
+            'id_produsen' => 'required|exists:tb_produsen,id_produsen',
+            'stok10kg.stok_awal' => 'integer|min:0',
+            'stok10kg.rusak' => 'integer|min:0',
+            'stok10kg.hilang' => 'integer|min:0',
+            'stok10kg.stok_sisa' => 'integer|min:0',
+            'stok20kg.stok_awal' => 'integer|min:0',
+            'stok20kg.rusak' => 'integer|min:0',
+            'stok20kg.hilang' => 'integer|min:0',
+            'stok20kg.stok_sisa' => 'integer|min:0',
+            'stok50kg.stok_awal' => 'integer|min:0',
+            'stok50kg.rusak' => 'integer|min:0',
+            'stok50kg.hilang' => 'integer|min:0',
+            'stok50kg.stok_sisa' => 'integer|min:0',
         ], [
-            'required'               => ':attribute wajib diisi.',
-            'exists'                 => ':attribute tidak valid.',
-            'min'                    => ':attribute tidak boleh kurang dari :min.',
-            'max'                    => ':attribute terlalu panjang.',
+            'required' => ':attribute wajib diisi.',
+            'exists' => ':attribute tidak valid.',
+            'min' => ':attribute tidak boleh kurang dari :min.',
+            'max' => ':attribute terlalu panjang.',
         ]);
 
         $insert = GudangModel::create($validated);
 
-        if ($insert) {
+        $idGudang = $insert->id_gudang;
+
+        if ($idGudang) {
+
+            foreach (['stok10kg', 'stok20kg', 'stok50kg'] as $key) {
+                $stok = $req->$key;
+                if ($stok !== null && (int)$stok['stok_awal'] > 0)
+                {
+                    DetailGudangModel::create([
+                        'id_gudang' => $idGudang,
+                        'berat' => $stok['berat'],
+                        'stok_awal' => $stok['stok_awal'],
+                        'rusak' => $stok['rusak'],
+                        'hilang' => $stok['hilang'],
+                        'stok_sisa' => $stok['stok_sisa'],
+                    ]);
+                }
+            }
+
             return redirect()->back()->with([
                 'notif_status' => 'success',
                 'notif_message' => 'Data stok berhasil ditambahkan!',
             ]);
+
         } else {
             return redirect()->back()->with([
                 'notif_status' => 'error',
@@ -103,10 +144,18 @@ class GudangController extends Controller
         $validated = $req->validate([
             'id_beras' => 'required|exists:tb_beras,id_beras',
             'id_produsen' => 'required|exists:tb_produsen,id_produsen',
-            'stok_awal' => 'required|integer|min:0',
-            'rusak' => 'required|integer|min:0',
-            'hilang' => 'required|integer|min:0',
-            'stok_sisa' => 'required|integer|min:0',
+            'stok10kg.stok_awal' => 'integer|min:0',
+            'stok10kg.rusak' => 'integer|min:0',
+            'stok10kg.hilang' => 'integer|min:0',
+            'stok10kg.stok_sisa' => 'integer|min:0',
+            'stok20kg.stok_awal' => 'integer|min:0',
+            'stok20kg.rusak' => 'integer|min:0',
+            'stok20kg.hilang' => 'integer|min:0',
+            'stok20kg.stok_sisa' => 'integer|min:0',
+            'stok50kg.stok_awal' => 'integer|min:0',
+            'stok50kg.rusak' => 'integer|min:0',
+            'stok50kg.hilang' => 'integer|min:0',
+            'stok50kg.stok_sisa' => 'integer|min:0',
         ], [
             'required' => ':attribute wajib diisi.',
             'exists' => ':attribute tidak valid.',
@@ -116,14 +165,39 @@ class GudangController extends Controller
 
         $gudang = GudangModel::findOrFail($req->id_gudang);
 
-        $insert = $gudang->update($validated);
+        $update = $gudang->update($validated);
 
-        if ($insert) {
+        if ($update) {
+            $beratAktif = [];
+
+            foreach (['stok10kg', 'stok20kg', 'stok50kg'] as $key) {
+                $stok = $req->$key;
+                if ($stok !== null && (int)$stok['stok_awal'] > 0)
+                {
+                    $beratAktif[] = $stok['berat'];
+
+                    DetailGudangModel::updateOrCreate([
+                        'id_detail_gudang' => $stok['id_detail_gudang']
+                    ],[
+                        'id_gudang' => $req->id_gudang,
+                        'berat' => $stok['berat'],
+                        'stok_awal' => $stok['stok_awal'],
+                        'rusak' => $stok['rusak'],
+                        'hilang' => $stok['hilang'],
+                        'stok_sisa' => $stok['stok_sisa'],
+                    ]);
+                }
+            }
+
+            DetailGudangModel::where('id_gudang', $req->id_gudang)->whereNotIn('berat', $beratAktif)->delete();
+
             return redirect()->back()->with([
                 'notif_status' => 'success',
                 'notif_message' => 'Data stok berhasil diupdate!',
             ]);
-        } else {
+        }
+        else
+        {
             return redirect()->back()->with([
                 'notif_status' => 'error',
                 'notif_message' => 'Gagal update data stok :(',
