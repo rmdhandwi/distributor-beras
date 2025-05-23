@@ -175,7 +175,7 @@ class BerasController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $req)
-    {
+    {   
         $id = $req->id_beras;
          // Format ulang tanggal dari ISO menjadi Y-m-d
         if(!empty($req->tgl_produksi))
@@ -296,7 +296,7 @@ class BerasController extends Controller
         if ($update)
         {
             $beratAktif = [];
-            
+
             foreach (['stok10kg', 'stok20kg', 'stok50kg'] as $key) {
                 $stok = $req->$key;
                 if($stok !== null && isset($stok['jumlah']) && (int)$stok['jumlah'] > 0)
