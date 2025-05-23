@@ -34,22 +34,22 @@ const selectedNamaProdusen = ref(null)
 
 const dataStats = ref({
     stok10kg : {
-        stok_awal : null,
-        rusak : null,
-        hilang : null,
-        stok_sisa : null,
+        stok_awal : 0,
+        rusak : 0,
+        hilang : 0,
+        stok_sisa : 0,
     },
     stok20kg : {
-        stok_awal : null,
-        rusak : null,
-        hilang : null,
-        stok_sisa : null,
+        stok_awal : 0,
+        rusak : 0,
+        hilang : 0,
+        stok_sisa : 0,
     },
     stok50kg : {
-        stok_awal : null,
-        rusak : null,
-        hilang : null,
-        stok_sisa : null,
+        stok_awal : 0,
+        rusak : 0,
+        hilang : 0,
+        stok_sisa : 0,
     },
 })
 
@@ -124,20 +124,42 @@ const setDaftarProdusen = () =>
 const resetDataStats = () =>
 {
     dataStats.value = {
-        stok_awal: null,
-        rusak: null,
-        hilang: null,
-        stok_sisa: null,
+        stok10kg : {
+            stok_awal : 0,
+            rusak : 0,
+            hilang : 0,
+            stok_sisa : 0,
+        },
+        stok20kg : {
+            stok_awal : 0,
+            rusak : 0,
+            hilang : 0,
+            stok_sisa : 0,
+        },
+        stok50kg : {
+            stok_awal : 0,
+            rusak : 0,
+            hilang : 0,
+            stok_sisa : 0,
+        },
     }
 }
 
 const setDataStats = () =>
 {
     dataGudangFix.value.forEach(item => {
-        dataStats.value.stok_awal += item.stok_awal
-        dataStats.value.rusak += item.rusak
-        dataStats.value.hilang += item.hilang
-        dataStats.value.stok_sisa += item.stok_sisa
+        dataStats.value.stok10kg.stok_awal += item.stok10kg?.stok_awal
+        dataStats.value.stok10kg.rusak += item.stok10kg?.rusak
+        dataStats.value.stok10kg.hilang += item.stok10kg?.hilang
+        dataStats.value.stok10kg.stok_sisa += item.stok10kg?.stok_sisa
+        dataStats.value.stok20kg.stok_awal += item.stok20kg?.stok_awal
+        dataStats.value.stok20kg.rusak += item.stok20kg?.rusak
+        dataStats.value.stok20kg.hilang += item.stok20kg?.hilang
+        dataStats.value.stok20kg.stok_sisa += item.stok20kg?.stok_sisa
+        dataStats.value.stok50kg.stok_awal += item.stok50kg?.stok_awal
+        dataStats.value.stok50kg.rusak += item.stok50kg?.rusak
+        dataStats.value.stok50kg.hilang += item.stok50kg?.hilang
+        dataStats.value.stok50kg.stok_sisa += item.stok50kg?.stok_sisa
     })
 }
 
@@ -234,14 +256,14 @@ const cetakLaporan = () =>
                 </Row>
             </ColumnGroup>
             <Column sortable field="nomor"/>
-            <Column style="min-width: 180px;">
+            <Column field="beras.nama_beras" style="min-width: 180px;">
                 <template #body="{data}">
                     {{ data.beras?.nama_beras }}
                 </template>
             </Column>
             <Column style="min-width: 180px;">
                 <template #body="{data}">
-                    {{ data.beras?.jenis }}
+                    {{ data.beras?.jenis_beras }}
                 </template>
             </Column>
             <Column style="min-width: 180px;">
@@ -337,6 +359,7 @@ const cetakLaporan = () =>
                     <Column :footer="dataStats.stok50kg?.rusak"/>
                     <Column :footer="dataStats.stok50kg?.hilang"/>
                     <Column :footer="dataStats.stok50kg?.stok_sisa"/>
+                    <Column frozen align-frozen="right"/>
                 </Row>
             </ColumnGroup>
         </DataTable>
