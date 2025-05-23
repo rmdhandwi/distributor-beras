@@ -22,7 +22,15 @@ class PemesananController extends Controller
 
         if($loggedInUser->role === 'Admin')
         {
-            $dataBeras = BerasModel::get(['id_beras','id_produsen','nama_beras']);
+            $dataBeras = BerasModel::with(['detail:id_detail,id_beras,berat,jumlah,harga'])->get(['id_beras','id_produsen','nama_beras']);
+            // pisahkan detail berdasarkan berat
+            foreach ($dataBeras as $item) {
+                $detailMap = $item->detail->keyBy('berat');
+
+                $item->stok10kg = $detailMap->get(10); // bisa null kalau tidak ada
+                $item->stok20kg = $detailMap->get(20);
+                $item->stok50kg = $detailMap->get(50);
+            }
             $dataProdusen = ProdusenModel::get(['id_produsen','nama_produsen']);
             $dataPemesanan = PemesananModel::with(['beras:id_beras,nama_beras','produsen:id_produsen,nama_produsen'])->get();
 
