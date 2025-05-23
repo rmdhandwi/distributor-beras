@@ -15,10 +15,6 @@ class GudangModel extends Model
     protected $fillable = [
         'id_beras',
         'id_produsen',
-        'stok_awal',
-        'rusak',
-        'hilang',
-        'stok_sisa',
     ];
 
     // Casting (optional)
@@ -35,6 +31,14 @@ class GudangModel extends Model
     public function beras()
     {
         return $this->belongsTo(BerasModel::class, 'id_beras');
+    }
+
+    /**
+     * Relasi ke model detail gudang
+     */
+    public function detail()
+    {
+        return $this->hasMany(DetailGudangModel::class, 'id_gudang');
     }
 
     /**
