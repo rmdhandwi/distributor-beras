@@ -28,15 +28,24 @@ class ProdusenController extends Controller
         $produsen = ProdusenModel::where('user_id', $loggedInUser->user_id)->get('id_produsen');
         $idProdusen = $produsen[0]->id_produsen;
 
-        $dataBeras = BerasModel::where('id_produsen', $idProdusen)->selectRaw('
-            SUM(stok_tersedia) as total_stok_tersedia,
-            COUNT(DISTINCT jenis_beras) as jenis_beras
-        ')->get();
+        $dataBeras = BerasModel::where('id_produsen', $idProdusen)->with('detail')->get();
+
+        // Gabungkan semua detail dari setiap beras
+        $allDetail = $dataBeras->flatMap->detail;
+
+        // Group dan hitung manual
+        $statistikHarga = $allDetail->groupBy('berat')->map(function ($group) {
+            return [
+                'rata_rata' => $group->avg('harga'),
+                'termurah'  => $group->min('harga'),
+                'termahal'  => $group->max('harga'),
+            ];
+        });
 
         $dataBerasChart = BerasModel::where('id_produsen', $idProdusen)->select('nama_beras','stok_tersedia')->get();
 
         return Inertia::render('Produsen/Dashboard',[
-            'dataBeras' => $dataBeras,
+            'statistikHarga' => $statistikHarga,
             'dataBerasChart' => $dataBerasChart,
         ]);
     }
