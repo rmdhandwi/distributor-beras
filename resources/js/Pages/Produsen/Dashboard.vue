@@ -84,6 +84,7 @@ function formatRupiah(angka) {
             minimumFractionDigits: 0
         }).format(angka);
     }
+    return 0
 }
 
 const setPieData = () =>
@@ -124,7 +125,7 @@ const setPieData = () =>
                 <Card class="p-2 border border-slate-50 hover:border-amber-500">
                     <template #title>
                         <div class="flex gap-x-2 items-center">
-                            <span>Stok Beras : {{ totalStokBeras() + ' kg' }}</span>
+                            <span>Stok Beras : {{ totalStokBeras() ?? 0 + ' kg'}}</span>
                         </div>
                     </template>
                     <template #content>
@@ -146,19 +147,19 @@ const setPieData = () =>
                                 <div class="px-2 text-sm">
                                     <span>- 10kg : </span>
                                     <span class="text-green-500">
-                                        {{ formatRupiah(props.statistikHarga[10].rata_rata ?? 0)}}
+                                        {{ formatRupiah(props.statistikHarga[10]?.rata_rata)}}
                                     </span>
                                 </div>
                                 <div class="px-2 text-sm">
                                     <span>- 20kg : </span>
                                     <span class="text-green-500">
-                                        {{ formatRupiah(props.statistikHarga[20].rata_rata ?? 0)}}
+                                        {{ formatRupiah(props.statistikHarga[20]?.rata_rata)}}
                                     </span>
                                 </div>
                                 <div class="px-2 text-sm">
                                     <span>- 50kg : </span>
                                     <span class="text-green-500">
-                                        {{ formatRupiah(props.statistikHarga[50].rata_rata ?? 0)}}
+                                        {{ formatRupiah(props.statistikHarga[50]?.rata_rata)}}
                                     </span>
                                 </div>
                             </div>
@@ -167,19 +168,19 @@ const setPieData = () =>
                                 <div class="px-2 text-sm">
                                     <span>- 10kg : </span>
                                     <span class="text-green-500">
-                                        {{ formatRupiah(props.statistikHarga[10].termurah ?? 0)}}
+                                        {{ formatRupiah(props.statistikHarga[10]?.termurah)}}
                                     </span>
                                 </div>
                                 <div class="px-2 text-sm">
                                     <span>- 20kg : </span>
                                     <span class="text-green-500">
-                                        {{ formatRupiah(props.statistikHarga[20].termurah ?? 0)}}
+                                        {{ formatRupiah(props.statistikHarga[20]?.termurah)}}
                                     </span>
                                 </div>
                                 <div class="px-2 text-sm">
                                     <span>- 50kg : </span>
                                     <span class="text-green-500">
-                                        {{ formatRupiah(props.statistikHarga[50].termurah ?? 0)}}
+                                        {{ formatRupiah(props.statistikHarga[50]?.termurah)}}
                                     </span>
                                 </div>
                             </div>
@@ -188,19 +189,19 @@ const setPieData = () =>
                                 <div class="px-2 text-sm">
                                     <span>- 10kg : </span>
                                     <span class="text-green-500">
-                                        {{ formatRupiah(props.statistikHarga[10].termahal ?? 0)}}
+                                        {{ formatRupiah(props.statistikHarga[10]?.termahal)}}
                                     </span>
                                 </div>
                                 <div class="px-2 text-sm">
                                     <span>- 20kg : </span>
                                     <span class="text-green-500">
-                                        {{ formatRupiah(props.statistikHarga[20].termahal ?? 0)}}
+                                        {{ formatRupiah(props.statistikHarga[20]?.termahal)}}
                                     </span>
                                 </div>
                                 <div class="px-2 text-sm">
                                     <span>- 50kg : </span>
                                     <span class="text-green-500">
-                                        {{ formatRupiah(props.statistikHarga[50].termahal ?? 0)}}
+                                        {{ formatRupiah(props.statistikHarga[50]?.termahal)}}
                                     </span>
                                 </div>
                             </div>
