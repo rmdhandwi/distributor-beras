@@ -1,7 +1,12 @@
 <script setup>
+import { onMounted, ref } from 'vue'
 import { useForm } from '@inertiajs/vue3'
 import { useConfirm, useToast } from 'primevue'
-import { onMounted, ref } from 'vue'
+
+onMounted(() =>
+{
+    console.log(props.dataBeras)
+})
 
 const props = defineProps({
     formType : String,
@@ -25,6 +30,30 @@ const pemesananForm = useForm({
     tgl_pemesanan: props.dataPemesanan?.[0]?.tgl_pemesanan ?? null,
     status_pesanan: props.dataPemesanan?.[0]?.status_pesanan ?? null,
     catatan: props.dataPemesanan?.[0]?.catatan ?? null,
+    stok10kg : {
+        id_detail_pemesanan : props.dataPemesanan?.[0]?.stok10kg?.id_detail_pemesanan ?? null,
+        berat : '10',
+        jumlah : props.dataPemesanan?.[0]?.stok10kg?.jumlah ?? 0,
+        harga_satuan : props.dataPemesanan?.[0]?.stok10kg?.harga_satuan ?? 0,
+        total_harga : props.dataPemesanan?.[0]?.stok10kg?.total_harga ?? 0,
+        stok_sisa : props.dataPemesanan?.[0]?.stok10kg?.stok_sisa ?? 0,
+    },
+    stok20kg : {
+        id_detail_pemesanan : props.dataPemesanan?.[0]?.stok20kg?.id_detail_pemesanan ?? null,
+        berat : '10',
+        jumlah : props.dataPemesanan?.[0]?.stok20kg?.jumlah ?? 0,
+        harga_satuan : props.dataPemesanan?.[0]?.stok20kg?.harga_satuan ?? 0,
+        total_harga : props.dataPemesanan?.[0]?.stok20kg?.total_harga ?? 0,
+        stok_sisa : props.dataPemesanan?.[0]?.stok20kg?.stok_sisa ?? 0,
+    },
+    stok50kg : {
+        id_detail_pemesanan : props.dataPemesanan?.[0]?.stok50kg?.id_detail_pemesanan ?? null,
+        berat : '10',
+        jumlah : props.dataPemesanan?.[0]?.stok50kg?.jumlah ?? 0,
+        harga_satuan : props.dataPemesanan?.[0]?.stok50kg?.harga_satuan ?? 0,
+        total_harga : props.dataPemesanan?.[0]?.stok50kg?.total_harga ?? 0,
+        stok_sisa : props.dataPemesanan?.[0]?.stok50kg?.stok_sisa ?? 0,
+    },
 })
 
 const selectIdProdusen = () =>
