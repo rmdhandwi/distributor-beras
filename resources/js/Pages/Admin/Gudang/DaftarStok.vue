@@ -229,9 +229,9 @@ const cetakLaporan = () =>
             <ColumnGroup type="header">
                 <Row>
                     <Column sortable field="nomor" header="No" rowspan="2"/>
-                    <Column sortable header="Nama Beras" filter-field="beras.nama_beras" rowspan="2" style="min-width: 150px;"/>
-                    <Column header="Jenis" rowspan="2"/>
-                    <Column header="Produsen" filter-field="produsen.nama_produsen" rowspan="2"/>
+                    <Column sortable field="beras.nama_beras" header="Nama Beras" filter-field="beras.nama_beras" rowspan="2" style="min-width: 150px;"/>
+                    <Column sortable field="beras.jenis_beras" header="Jenis" rowspan="2"/>
+                    <Column sortable field="produsen.nama_produsen" header="Produsen" filter-field="produsen.nama_produsen" rowspan="2"/>
                     <Column header="Stok 10kg" colspan="4"/>
                     <Column header="Stok 20kg" colspan="4"/>
                     <Column header="Stok 50kg" colspan="4"/>
@@ -239,20 +239,20 @@ const cetakLaporan = () =>
                 </Row>
                 <Row>
                     <!-- 10kg -->
-                    <Column header="Awal"/>
-                    <Column header="Rusak"/>
-                    <Column header="Hilang"/>
-                    <Column header="Sisa"/>
+                    <Column sortable field="stok10kg.stok_awal"  header="Awal"/>
+                    <Column sortable field="stok10kg.rusak"  header="Rusak"/>
+                    <Column sortable field="stok10kg.hilang"  header="Hilang"/>
+                    <Column sortable field="stok10kg.stok_sisa"  header="Sisa"/>
                     <!-- 20kg -->
-                    <Column header="Awal"/>
-                    <Column header="Rusak"/>
-                    <Column header="Hilang"/>
-                    <Column header="Sisa"/>
+                    <Column sortable field="stok20kg.stok_awal"  header="Awal"/>
+                    <Column sortable field="stok20kg.rusak"  header="Rusak"/>
+                    <Column sortable field="stok20kg.hilang"  header="Hilang"/>
+                    <Column sortable field="stok20kg.stok_sisa"  header="Sisa"/>
                     <!-- 50kg -->
-                    <Column header="Awal"/>
-                    <Column header="Rusak"/>
-                    <Column header="Hilang"/>
-                    <Column header="Sisa"/>
+                    <Column sortable field="stok50kg.stok_awal"  header="Awal"/>
+                    <Column sortable field="stok50kg.rusak"  header="Rusak"/>
+                    <Column sortable field="stok50kg.hilang"  header="Hilang"/>
+                    <Column sortable field="stok50kg.stok_sisa"  header="Sisa"/>
                 </Row>
             </ColumnGroup>
             <Column sortable field="nomor"/>
