@@ -135,82 +135,6 @@ const setBarData = () =>
         <template #pageContent>
             <div class="flex flex-wrap gap-4">
                 <!-- Cards -->
-                <!-- Card Stok Beras -->
-                <Card class="p-2 border border-slate-50 hover:border-amber-500">
-                    <template #title>
-                        <div class="flex gap-x-2 items-center">
-                            <i class="pi pi-box" style="font-size: 1.2rem"></i>
-                            <span>Stok Beras</span>
-                        </div>
-                    </template>
-                    <template #content>
-                        <div class="flex items-center gap-2">
-                            <div class="flex flex-col">
-                                <span>Harga Rata-rata : </span>
-                                <div class="px-2 text-sm">
-                                    <span>- 10kg : </span>
-                                    <span class="text-green-500">
-                                        {{ formatRupiah(props.statistikHarga[10].rata_rata ?? 0)}}
-                                    </span>
-                                </div>
-                                <div class="px-2 text-sm">
-                                    <span>- 20kg : </span>
-                                    <span class="text-green-500">
-                                        {{ formatRupiah(props.statistikHarga[20].rata_rata ?? 0)}}
-                                    </span>
-                                </div>
-                                <div class="px-2 text-sm">
-                                    <span>- 50kg : </span>
-                                    <span class="text-green-500">
-                                        {{ formatRupiah(props.statistikHarga[50].rata_rata ?? 0)}}
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="flex flex-col">
-                                <span>Harga Termurah : </span>
-                                <div class="px-2 text-sm">
-                                    <span>- 10kg : </span>
-                                    <span class="text-green-500">
-                                        {{ formatRupiah(props.statistikHarga[10].termurah ?? 0)}}
-                                    </span>
-                                </div>
-                                <div class="px-2 text-sm">
-                                    <span>- 20kg : </span>
-                                    <span class="text-green-500">
-                                        {{ formatRupiah(props.statistikHarga[20].termurah ?? 0)}}
-                                    </span>
-                                </div>
-                                <div class="px-2 text-sm">
-                                    <span>- 50kg : </span>
-                                    <span class="text-green-500">
-                                        {{ formatRupiah(props.statistikHarga[50].termurah ?? 0)}}
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="flex flex-col">
-                                <span>Harga Termahal : </span>
-                                <div class="px-2 text-sm">
-                                    <span>- 10kg : </span>
-                                    <span class="text-green-500">
-                                        {{ formatRupiah(props.statistikHarga[10].termahal ?? 0)}}
-                                    </span>
-                                </div>
-                                <div class="px-2 text-sm">
-                                    <span>- 20kg : </span>
-                                    <span class="text-green-500">
-                                        {{ formatRupiah(props.statistikHarga[20].termahal ?? 0)}}
-                                    </span>
-                                </div>
-                                <div class="px-2 text-sm">
-                                    <span>- 50kg : </span>
-                                    <span class="text-green-500">
-                                        {{ formatRupiah(props.statistikHarga[50].termahal ?? 0)}}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </template>
-                </Card>
                 <!-- Card Stok Gudang -->
                 <Card class="p-2 w-[18rem] border border-slate-50 hover:border-amber-500">
                     <template #title>
@@ -313,6 +237,82 @@ const setBarData = () =>
                             <span>
                                 {{ props.dataTransaksi?.length ?? 0 }}
                             </span>
+                        </div>
+                    </template>
+                </Card>
+                <!-- Card Stok Beras -->
+                <Card class="p-2 border border-slate-50 hover:border-amber-500">
+                    <template #title>
+                        <div class="flex gap-x-2 items-center">
+                            <i class="pi pi-box" style="font-size: 1.2rem"></i>
+                            <span>Stok Beras</span>
+                        </div>
+                    </template>
+                    <template #content>
+                        <div class="flex items-center gap-2">
+                            <div class="flex flex-col">
+                                <span>Harga Rata-rata : </span>
+                                <div class="px-2 text-sm">
+                                    <span>- 10kg : </span>
+                                    <span class="text-green-500">
+                                        {{ formatRupiah(props.statistikHarga[10].rata_rata ?? 0)}}
+                                    </span>
+                                </div>
+                                <div class="px-2 text-sm">
+                                    <span>- 20kg : </span>
+                                    <span class="text-green-500">
+                                        {{ formatRupiah(props.statistikHarga[20].rata_rata ?? 0)}}
+                                    </span>
+                                </div>
+                                <div class="px-2 text-sm">
+                                    <span>- 50kg : </span>
+                                    <span class="text-green-500">
+                                        {{ formatRupiah(props.statistikHarga[50].rata_rata ?? 0)}}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="flex flex-col">
+                                <span>Harga Termurah : </span>
+                                <div class="px-2 text-sm">
+                                    <span>- 10kg : </span>
+                                    <span class="text-green-500">
+                                        {{ formatRupiah(props.statistikHarga[10].termurah ?? 0)}}
+                                    </span>
+                                </div>
+                                <div class="px-2 text-sm">
+                                    <span>- 20kg : </span>
+                                    <span class="text-green-500">
+                                        {{ formatRupiah(props.statistikHarga[20].termurah ?? 0)}}
+                                    </span>
+                                </div>
+                                <div class="px-2 text-sm">
+                                    <span>- 50kg : </span>
+                                    <span class="text-green-500">
+                                        {{ formatRupiah(props.statistikHarga[50].termurah ?? 0)}}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="flex flex-col">
+                                <span>Harga Termahal : </span>
+                                <div class="px-2 text-sm">
+                                    <span>- 10kg : </span>
+                                    <span class="text-green-500">
+                                        {{ formatRupiah(props.statistikHarga[10].termahal ?? 0)}}
+                                    </span>
+                                </div>
+                                <div class="px-2 text-sm">
+                                    <span>- 20kg : </span>
+                                    <span class="text-green-500">
+                                        {{ formatRupiah(props.statistikHarga[20].termahal ?? 0)}}
+                                    </span>
+                                </div>
+                                <div class="px-2 text-sm">
+                                    <span>- 50kg : </span>
+                                    <span class="text-green-500">
+                                        {{ formatRupiah(props.statistikHarga[50].termahal ?? 0)}}
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                     </template>
                 </Card>
