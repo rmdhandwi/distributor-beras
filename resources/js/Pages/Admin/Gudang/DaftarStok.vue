@@ -33,10 +33,24 @@ const selectedNamaBeras = ref(null)
 const selectedNamaProdusen = ref(null)
 
 const dataStats = ref({
-    stok_awal : null,
-    rusak : null,
-    hilang : null,
-    stok_sisa : null,
+    stok10kg : {
+        stok_awal : null,
+        rusak : null,
+        hilang : null,
+        stok_sisa : null,
+    },
+    stok20kg : {
+        stok_awal : null,
+        rusak : null,
+        hilang : null,
+        stok_sisa : null,
+    },
+    stok50kg : {
+        stok_awal : null,
+        rusak : null,
+        hilang : null,
+        stok_sisa : null,
+    },
 })
 
 const emit = defineEmits(['editData'])
@@ -190,22 +204,115 @@ const cetakLaporan = () =>
             <template #empty>
                 <span class="flex justify-center">Tidak Ada Gudang</span>
             </template>
-            <Column sortable field="nomor" header="No"/>
-            <Column header="Nama Beras" filter-field="beras.nama_beras" style="min-width: 180px;">
+            <ColumnGroup type="header">
+                <Row>
+                    <Column sortable field="nomor" header="No" rowspan="2"/>
+                    <Column sortable header="Nama Beras" filter-field="beras.nama_beras" rowspan="2" style="min-width: 150px;"/>
+                    <Column header="Jenis" rowspan="2"/>
+                    <Column header="Produsen" filter-field="produsen.nama_produsen" rowspan="2"/>
+                    <Column header="Stok 10kg" colspan="4"/>
+                    <Column header="Stok 20kg" colspan="4"/>
+                    <Column header="Stok 50kg" colspan="4"/>
+                    <Column header="Action" frozen align-frozen="right" rowspan="2"/>
+                </Row>
+                <Row>
+                    <!-- 10kg -->
+                    <Column header="Awal"/>
+                    <Column header="Rusak"/>
+                    <Column header="Hilang"/>
+                    <Column header="Sisa"/>
+                    <!-- 20kg -->
+                    <Column header="Awal"/>
+                    <Column header="Rusak"/>
+                    <Column header="Hilang"/>
+                    <Column header="Sisa"/>
+                    <!-- 50kg -->
+                    <Column header="Awal"/>
+                    <Column header="Rusak"/>
+                    <Column header="Hilang"/>
+                    <Column header="Sisa"/>
+                </Row>
+            </ColumnGroup>
+            <Column sortable field="nomor"/>
+            <Column style="min-width: 180px;">
                 <template #body="{data}">
                     {{ data.beras?.nama_beras }}
                 </template>
             </Column>
-            <Column header="Produsen" filter-field="produsen.nama_produsen" style="min-width: 180px;">
+            <Column style="min-width: 180px;">
+                <template #body="{data}">
+                    {{ data.beras?.jenis }}
+                </template>
+            </Column>
+            <Column style="min-width: 180px;">
                 <template #body="{data}">
                     {{ data.produsen?.nama_produsen }}
                 </template>
             </Column>
-            <Column field="stok_awal" header="Stok Awal" style="min-width: 100px;"/>
-            <Column field="rusak" header="Rusak" style="min-width: 100px;"/>
-            <Column field="hilang" header="Hilang" style="min-width: 100px;"/>
-            <Column field="stok_sisa" header="Stok Sisa" style="min-width: 100px;"/>
-            <Column header="Action" frozen align-frozen="right">
+            <!-- 10kg -->
+            <Column>
+                <template #body="{data}">
+                    {{ data.stok10kg?.stok_awal ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ data.stok10kg?.rusak ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ data.stok10kg?.hilang ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ data.stok10kg?.stok_sisa ?? '-' }}
+                </template>
+            </Column>
+            <!-- 20kg -->
+            <Column>
+                <template #body="{data}">
+                    {{ data.stok20kg?.stok_awal ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ data.stok20kg?.rusak ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ data.stok20kg?.hilang ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ data.stok20kg?.stok_sisa ?? '-' }}
+                </template>
+            </Column>
+            <!-- 50kg -->
+            <Column>
+                <template #body="{data}">
+                    {{ data.stok50kg?.stok_awal ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ data.stok50kg?.rusak ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ data.stok50kg?.hilang ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ data.stok50kg?.stok_sisa ?? '-' }}
+                </template>
+            </Column>
+            <Column frozen align-frozen="right">
                 <template #body="{data}">
                     <div class="flex place-content-center gap-2">
                         <Button @click="editStok(data.id_gudang)" severity="info" size="small" icon="pi pi-pen-to-square"/>
@@ -214,11 +321,22 @@ const cetakLaporan = () =>
             </Column>
             <ColumnGroup type="footer">
                 <Row>
-                    <Column footer="Total :" colspan="3" footerStyle="text-align:right"/>
-                    <Column :footer="dataStats.stok_awal"/>
-                    <Column :footer="dataStats.rusak"/>
-                    <Column :footer="dataStats.hilang"/>
-                    <Column :footer="dataStats.stok_sisa" colspan="2"/>
+                    <Column footer="Total :" colspan="4" footerStyle="text-align:right"/>
+                    <!-- 10kg -->
+                    <Column :footer="dataStats.stok10kg?.stok_awal"/>
+                    <Column :footer="dataStats.stok10kg?.rusak"/>
+                    <Column :footer="dataStats.stok10kg?.hilang"/>
+                    <Column :footer="dataStats.stok10kg?.stok_sisa"/>
+                    <!-- 20kg -->
+                    <Column :footer="dataStats.stok20kg?.stok_awal"/>
+                    <Column :footer="dataStats.stok20kg?.rusak"/>
+                    <Column :footer="dataStats.stok20kg?.hilang"/>
+                    <Column :footer="dataStats.stok20kg?.stok_sisa"/>
+                    <!-- 50kg -->
+                    <Column :footer="dataStats.stok50kg?.stok_awal"/>
+                    <Column :footer="dataStats.stok50kg?.rusak"/>
+                    <Column :footer="dataStats.stok50kg?.hilang"/>
+                    <Column :footer="dataStats.stok50kg?.stok_sisa"/>
                 </Row>
             </ColumnGroup>
         </DataTable>
