@@ -11,8 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::table('tb_transaksi', function (Blueprint $table){
+            $table->dropColumn('harga_satuan');
+            $table->renameColumn('total_harga','total_bayar');
+        });
+
         Schema::create('tb_detail_pemesanan', function (Blueprint $table) {
-            $table->id();
+            $table->id('id_detail_pemesanan');
+            $table->foreignId('id_pemesanan')->constrained('tb_pemesanan', 'id_pemesanan')->onDelete('cascade');
+            $table->string('berat');
+            $table->integer('jumlah')->default(0);
+            $table->integer('harga_satuan');
+            $table->integer('total_harga');
             $table->timestamps();
         });
     }
