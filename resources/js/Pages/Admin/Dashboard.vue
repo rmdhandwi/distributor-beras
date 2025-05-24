@@ -146,8 +146,8 @@ const setBarData = () =>
                     <template #content>
                         <div class="flex flex-col mt-4">
                             <div>
-                                <span>Tersedia : </span>
-                                <span class="text-green-500">
+                                <span>Stok Awal : </span>
+                                <span>
                                     {{ props.dataGudang?.total_stok_awal ?? 0 }}
                                 </span>
                             </div>
@@ -168,7 +168,7 @@ const setBarData = () =>
                     <template #footer>
                         <div class="border-t">
                             <span>Tersisa : </span>
-                            <span>
+                            <span class="text-green-500">
                                 {{ props.dataGudang?.total_stok_sisa ?? 0 }}
                             </span>
                         </div>
