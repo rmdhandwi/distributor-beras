@@ -43,14 +43,14 @@ const pemesananForm = useForm({
     },
     stok20kg : {
         id_detail_pemesanan : props.dataPemesanan?.[0]?.stok20kg?.id_detail_pemesanan ?? null,
-        berat : '10',
+        berat : '20',
         jumlah : props.dataPemesanan?.[0]?.stok20kg?.jumlah ?? 0,
         harga_satuan : props.dataPemesanan?.[0]?.stok20kg?.harga_satuan ?? 0,
         total_harga : props.dataPemesanan?.[0]?.stok20kg?.total_harga ?? 0,
     },
     stok50kg : {
         id_detail_pemesanan : props.dataPemesanan?.[0]?.stok50kg?.id_detail_pemesanan ?? null,
-        berat : '10',
+        berat : '50',
         jumlah : props.dataPemesanan?.[0]?.stok50kg?.jumlah ?? 0,
         harga_satuan : props.dataPemesanan?.[0]?.stok50kg?.harga_satuan ?? 0,
         total_harga : props.dataPemesanan?.[0]?.stok50kg?.total_harga ?? 0,
