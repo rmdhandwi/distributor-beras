@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BerasModel;
+use App\Models\DetailPemesananModel;
 use App\Models\PemesananModel;
 use App\Models\ProdusenModel;
 use App\Models\TransaksiModel;
@@ -22,7 +23,10 @@ class PemesananController extends Controller
 
         if($loggedInUser->role === 'Admin')
         {
-            $dataBeras = BerasModel::with(['detail:id_detail,id_beras,berat,jumlah,harga'])->get(['id_beras','id_produsen','nama_beras']);
+            $dataBeras = BerasModel::with([
+                'detail:id_detail,id_beras,berat,jumlah,harga',
+                'produsen:id_produsen,nama_produsen'
+            ])->get(['id_beras','id_produsen','nama_beras']);
             // pisahkan detail berdasarkan berat
             foreach ($dataBeras as $item) {
                 $detailMap = $item->detail->keyBy('berat');
@@ -63,9 +67,18 @@ class PemesananController extends Controller
         $validated = $req->validate([
             'id_beras' => 'required|exists:tb_beras,id_beras',
             'id_produsen' => 'required|exists:tb_produsen,id_produsen',
-            'jmlh' => 'required|max:100',
+            'jmlh' => 'required|integer|min:1',
             'tgl_pemesanan' => 'required|date',
             'catatan' => 'required',
+            'stok10kg.jumlah' => 'integer|min:0',
+            'stok10kg.harga_satuan' => 'integer|min:0',
+            'stok10kg.total_harga' => 'integer|min:0',
+            'stok20kg.jumlah' => 'integer|min:0',
+            'stok20kg.harga_satuan' => 'integer|min:0',
+            'stok20kg.total_harga' => 'integer|min:0',
+            'stok50kg.jumlah' => 'integer|min:0',
+            'stok50kg.harga_satuan' => 'integer|min:0',
+            'stok50kg.total_harga' => 'integer|min:0',
         ],
         [
             'required' => ':attribute wajib diisi',
@@ -76,11 +89,28 @@ class PemesananController extends Controller
 
         $insert = PemesananModel::create($validated);
 
-        if ($insert)
+        $idPemesanan = $insert->id_pemesanan;
+
+        if ($idPemesanan)
         {
+            foreach (['stok10kg', 'stok20kg', 'stok50kg'] as $key) {
+                $stok = $req->$key;
+
+                if ($stok !== null && (int)$stok['jumlah'] > 0)
+                {
+                    DetailPemesananModel::create([
+                        'id_pemesanan' => $idPemesanan,
+                        'berat' => $stok['berat'],
+                        'jumlah' => $stok['jumlah'],
+                        'harga_satuan' => $stok['harga_satuan'],
+                        'total_harga' => $stok['total_harga'],
+                    ]);
+                }
+            }
+
             return redirect()->back()->with([
                 'notif_status' => 'success',
-                'notif_message' => 'Data pemesanan berhasil ditambahkan!',
+                'notif_message' => 'Data stok berhasil ditambahkan!',
             ]);
         }
         else
