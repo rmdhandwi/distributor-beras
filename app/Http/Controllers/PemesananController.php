@@ -36,7 +36,21 @@ class PemesananController extends Controller
                 $item->stok50kg = $detailMap->get(50);
             }
             $dataProdusen = ProdusenModel::get(['id_produsen','nama_produsen']);
-            $dataPemesanan = PemesananModel::with(['beras:id_beras,nama_beras','produsen:id_produsen,nama_produsen'])->get();
+            $dataPemesanan = PemesananModel::with([
+                'beras:id_beras,nama_beras',
+                'produsen:id_produsen,nama_produsen',
+                'detail'
+            ])->get();
+
+
+            // pisahkan detail berdasarkan berat
+            foreach ($dataPemesanan as $item) {
+                $detailMap = $item->detail->keyBy('berat');
+
+                $item->stok10kg = $detailMap->get(10); // bisa null kalau tidak ada
+                $item->stok20kg = $detailMap->get(20);
+                $item->stok50kg = $detailMap->get(50);
+            }
 
             return Inertia::render('Admin/Pemesanan/Index', [
                 'dataBeras' => $dataBeras,
