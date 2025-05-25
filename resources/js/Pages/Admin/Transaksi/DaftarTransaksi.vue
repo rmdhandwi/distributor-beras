@@ -69,7 +69,7 @@ function formatTanggal(tanggal) {
 const setDataStats = () =>
 {
     dataTransaksiFix.value.forEach(item => {
-        totalStats.value += item.total_harga
+        totalStats.value += item.total_bayar
     })
 }
 
@@ -434,14 +434,9 @@ const cetakLaporan = () =>
                 </template>
             </Column>
             <Column field="jmlh" header="Jumlah Pesan" style="min-width: 100px;"/>
-            <Column filter-field="harga_satuan" header="Harga Satuan" style="min-width: 100px;">
-                <template #body="{data}">
-                    {{ formatRupiah(data.harga_satuan) }}
-                </template>
-            </Column>
             <Column header="Total Harga" style="min-width: 100px;">
                 <template #body="{data}">
-                    {{ formatRupiah(data.total_harga) }}
+                    {{ formatRupiah(data.total_bayar) }}
                 </template>
             </Column>
             <Column header="Bukti Bayar" style="min-width: 150px;">
