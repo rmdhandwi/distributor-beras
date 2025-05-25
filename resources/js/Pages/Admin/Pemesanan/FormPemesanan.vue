@@ -5,7 +5,7 @@ import { useConfirm, useToast } from 'primevue'
 
 onMounted(() =>
 {
-    console.log(props.dataBeras)
+    countTotalHarga()
 })
 
 const props = defineProps({
@@ -303,7 +303,7 @@ const confirmHapus = () => {
         <!-- total bayar -->
         <div>
             <FloatLabel variant="on">
-                <InputNumber mode="decimal" showButtons :min="0" id="totalBayar" readonly v-model="totalBayar" locale="id-ID" prefix="Rp" fluid/>
+                <InputNumber mode="decimal" :min="0" id="totalBayar" readonly v-model="totalBayar" locale="id-ID" prefix="Rp" fluid/>
                 <label for="totalBayar">Total Bayar</label>
             </FloatLabel>
         </div>
