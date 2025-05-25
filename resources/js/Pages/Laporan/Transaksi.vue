@@ -4,6 +4,7 @@ import { Head, router } from '@inertiajs/vue3'
 
 onMounted(() =>
 {
+    dataTransaksiFix.value = props.dataCetak
     setDataStats()
 })
 
@@ -13,15 +14,62 @@ const props = defineProps({
     tanggalCetak : String,
 })
 
-const totalStats = ref(0)
+const dataTransaksiFix = ref([])
+
 const showButton = ref(true)
 
+const dataStats = ref({
+    jumlah_pesan : 0,
+    total_bayar : 0,
+    stok10kg : {
+        jumlah : 0,
+        total_harga : 0,
+    },
+    stok20kg : {
+        jumlah : 0,
+        total_harga : 0,
+    },
+    stok50kg : {
+        jumlah : 0,
+        total_harga : 0,
+    },
+})
+
+const setDataStats = () =>
+{
+    dataTransaksiFix.value.forEach(item => {
+        dataStats.value.jumlah_pesan += item.jmlh
+        dataStats.value.total_bayar += item.total_bayar
+        dataStats.value.stok10kg.jumlah += item.stok10kg?.jumlah ?? 0
+        dataStats.value.stok10kg.total_harga += item.stok10kg?.total_harga ?? 0
+        dataStats.value.stok20kg.jumlah += item.stok20kg?.jumlah ?? 0
+        dataStats.value.stok20kg.total_harga += item.stok20kg?.total_harga ?? 0
+        dataStats.value.stok50kg.jumlah += item.stok50kg?.jumlah ?? 0
+        dataStats.value.stok50kg.total_harga += item.stok50kg?.total_harga ?? 0
+    })
+}
+
+function formatDecimal(angka)
+{
+    if(angka)
+    {
+        return angka.toLocaleString('id-ID');
+    }
+
+    return 0
+}
+
 function formatRupiah(angka) {
-  return new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-    minimumFractionDigits: 0
-  }).format(angka);
+    if(angka)
+    {
+        return new Intl.NumberFormat('id-ID', {
+          style: 'currency',
+          currency: 'IDR',
+          minimumFractionDigits: 0
+        }).format(angka);
+    }
+
+    return 0
 }
 
 function formatTanggal(tanggal) {
@@ -30,14 +78,7 @@ function formatTanggal(tanggal) {
         const [tahun, bulan, hari] = tanggal.split('-')
         return `${hari}/${bulan}/${tahun}`
     }
-    else return '-'
-}
-
-const setDataStats = () =>
-{
-    props.dataCetak.forEach(item => {
-        totalStats.value += item.total_harga
-    })
+    return '-'
 }
 
 const cetakLaporan = () =>
@@ -54,7 +95,7 @@ const cetakLaporan = () =>
 <template>
     <Head title="Laporan Transaksi"/>
     <div class="p-2">
-        <DataTable class="text-xs" :value="props.dataCetak" dataKey="index" showGridlines striped-rows scrollable size="small">
+        <DataTable class="w-fit px-2 text-xs" :value="dataTransaksiFix" dataKey="index" showGridlines striped-rows scrollable size="small">
             <template #header>
                 <span class="flex justify-center text-lg font-bold">Laporan Data Transaksi</span>
             </template>
@@ -67,58 +108,122 @@ const cetakLaporan = () =>
             <template #empty>
                 <span class="flex justify-center">Tidak Ada Beras</span>
             </template>
-            <Column field="nomor" header="No"/>
-            <Column header="Nama Beras">
+            <ColumnGroup type="header">
+                <Row>
+                    <Column  field="nomor" header="No"  rowspan="2"/>
+                    <Column  field="pemesanan.beras.nama_beras" header="Nama Beras"  rowspan="2"/>
+                    <Column  field="tgl_transaksi" header="Tanggal Transaksi" rowspan="2"/>
+                    <Column field="jmlh" header="Jumlah Pesan" rowspan="2"/>
+                    <Column header="10kg" colspan="2"/>
+                    <Column header="20kg" colspan="2"/>
+                    <Column header="50kg" colspan="2"/>
+                    <Column header="Total Bayar" rowspan="2"/>
+                    <Column header="Bukti Bayar" rowspan="2"/>
+                    <Column header="Status Pembayaran" rowspan="2"/>
+                    <Column header="Status Pengiriman" rowspan="2"/>
+                    <Column field="tgl_pengiriman"  header="Tanggal Pengiriman" rowspan="2"/>
+                    <Column field="catatan" header="Catatan" rowspan="2"/>
+                </Row>
+                <Row>
+                    <!-- 10kg -->
+                    <Column  field="stok10kg.jumlah" header="Jumlah"/>
+                    <Column  field="stok10kg.total_bayar" header="Total Harga"/>
+                    <!-- 20kg -->
+                    <Column  field="stok20kg.jumlah" header="Jumlah"/>
+                    <Column  field="stok20kg.total_bayar" header="Total Harga"/>
+                    <!-- 50kg -->
+                    <Column  field="stok50kg.jumlah" header="Jumlah"/>
+                    <Column  field="stok50kg.total_bayar" header="Total Harga"/>
+                </Row>
+            </ColumnGroup>
+            <Column field="nomor" />
+            <Column >
                 <template #body="{data}">
                     {{ data.pemesanan?.beras?.nama_beras }}
                 </template>
             </Column>
-            <Column header="Produsen">
+            <Column >
                 <template #body="{data}">
-                    {{ data.pemesanan?.produsen?.nama_produsen }}
+                    <span>{{ formatTanggal(data.tgl_transaksi) ?? 'Belum dijadwalkan' }}</span>
                 </template>
             </Column>
-            <Column header="Tanggal Transaksi">
+            <Column field="jmlh"/>
+            <!-- 10kg -->
+            <Column>
                 <template #body="{data}">
-                    <span>{{ formatTanggal(data.tgl_transaksi)}}</span>
+                    {{ formatDecimal(data.stok10kg?.jumlah) }}
                 </template>
             </Column>
-            <Column field="jmlh" header="Jumlah Pesan"/>
-            <Column header="Harga Satuan">
+            <Column>
                 <template #body="{data}">
-                    {{ formatRupiah(data.harga_satuan) }}
+                    {{ formatRupiah(data.stok10kg?.total_harga) }}
                 </template>
             </Column>
-            <Column header="Total Harga">
+            <!-- 20kg -->
+            <Column>
                 <template #body="{data}">
-                    {{ formatRupiah(data.total_harga) }}
+                    {{ formatDecimal(data.stok20kg?.jumlah) }}
                 </template>
             </Column>
-            <Column header="Bukti Bayar">
+            <Column>
                 <template #body="{data}">
-                    <span>{{ data.bukti_bayar?'Ada':'Belum Bayar' }}</span>
+                    {{ formatRupiah(data.stok20kg?.total_harga) }}
                 </template>
             </Column>
-            <Column header="Status Pembayaran">
+            <!-- 50kg -->
+            <Column>
                 <template #body="{data}">
-                    <span>{{ data.status_pembayaran}}</span>
+                    {{ formatDecimal(data.stok50kg?.jumlah) }}
                 </template>
             </Column>
-            <Column header="Status Pengiriman">
+            <Column>
                 <template #body="{data}">
-                    <span>{{ data.status_pengiriman }}</span>
+                    {{ formatRupiah(data.stok50kg?.total_harga) }}
                 </template>
             </Column>
-            <Column header="Tanggal Pengiriman" style="min-width: 100px;">
+            <Column>
+                <template #body="{data}">
+                    {{ formatRupiah(data.total_bayar) }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ data.bukti_bayar ? 'Ada' : 'Tidak ada' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ data.status_pembayaran }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ data.status_pengiriman }}
+                </template>
+            </Column>
+            <Column>
                 <template #body="{data}">
                     <span>{{ formatTanggal(data.tgl_pengiriman) ??'Belum dijadwalkan'  }}</span>
                 </template>
             </Column>
-            <Column field="catatan" header="Catatan" style="min-width: 150px;"/>
+            <Column field="catatan"/>
             <ColumnGroup type="footer">
                 <Row>
-                    <Column footer="Total :" colspan="6" footerStyle="text-align:right"/>
-                    <Column :footer="formatRupiah(totalStats)" colspan="6"/>
+                    <Column />
+                    <Column />
+                    <Column footer="Total :" footerStyle="text-align:right"/>
+                    <Column :footer="dataStats.jumlah_pesan"/>
+                    <!-- 10kg -->
+                    <Column :footer="dataStats.stok10kg?.jumlah"/>
+                    <Column :footer="formatRupiah(dataStats.stok10kg?.total_harga)"/>
+                    <!-- 20kg -->
+                    <Column :footer="dataStats.stok20kg?.jumlah"/>
+                    <Column :footer="formatRupiah(dataStats.stok20kg?.total_harga)"/>
+                    <!-- 50kg -->
+                    <Column :footer="dataStats.stok50kg?.jumlah"/>
+                    <Column :footer="formatRupiah(dataStats.stok50kg?.total_harga)"/>
+                    <Column colspan="2" :footer="formatRupiah(dataStats.total_bayar)"/>
+                    <Column colspan="4"/>
                 </Row>
             </ColumnGroup>
         </DataTable>
@@ -130,6 +235,15 @@ const cetakLaporan = () =>
 </template>
 
 <style scoped>
+::v-deep(.p-datatable-tbody td) {
+  color: black;
+}
+::v-deep(.p-datatable-column-title) {
+  color: black;
+}
+::v-deep(.p-datatable-column-footer) {
+  color: black;
+}
 ::v-deep(table th) {
   border: 1px solid black;
 }
@@ -137,11 +251,13 @@ const cetakLaporan = () =>
   border: 1px solid black;
 }
 ::v-deep(.p-datatable-footer) {
+  color: black;
   border-bottom: 1px solid black;
   border-left: 1px solid black;
   border-right: 1px solid black;
 }
 ::v-deep(.p-datatable-header) {
+  color: black;
   border-top: 1px solid black;
   border-left: 1px solid black;
   border-right: 1px solid black;
