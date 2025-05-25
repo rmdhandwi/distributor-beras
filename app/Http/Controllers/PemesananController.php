@@ -61,7 +61,21 @@ class PemesananController extends Controller
         else if($loggedInUser->role === 'Produsen')
         {
             $produsen = ProdusenModel::where('user_id', $loggedInUser->user_id)->first();
-            $dataPemesanan = PemesananModel::where('id_produsen', $produsen->id_produsen)->with(['beras:id_beras,nama_beras','produsen:id_produsen,nama_produsen'])->get();
+            $dataPemesanan = PemesananModel::where('id_produsen', $produsen->id_produsen)->with([
+                'beras:id_beras,nama_beras',
+                'produsen:id_produsen,nama_produsen',
+                'detail'
+            ])->get();
+
+
+            // pisahkan detail berdasarkan berat
+            foreach ($dataPemesanan as $item) {
+                $detailMap = $item->detail->keyBy('berat');
+
+                $item->stok10kg = $detailMap->get(10); // bisa null kalau tidak ada
+                $item->stok20kg = $detailMap->get(20);
+                $item->stok50kg = $detailMap->get(50);
+            }
 
             return Inertia::render('Produsen/Pemesanan/Index', [
                 'dataPemesanan' => $dataPemesanan,
