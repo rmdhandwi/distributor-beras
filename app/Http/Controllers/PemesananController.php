@@ -155,30 +155,65 @@ class PemesananController extends Controller
      */
     public function update(Request $req)
     {
+        $idPemesanan = $req->id_pemesanan;
+
         $req->merge([
             'tgl_pemesanan' => Carbon::parse($req->tgl_produksi)->timezone('Asia/Jayapura')->format('Y-m-d'),
         ]);
+
         $validated = $req->validate([
             'id_beras' => 'required|exists:tb_beras,id_beras',
             'id_produsen' => 'required|exists:tb_produsen,id_produsen',
-            'jmlh' => 'required|max:100',
+            'jmlh' => 'required',
             'tgl_pemesanan' => 'required|date',
             'catatan' => 'required',
+            'stok10kg.jumlah' => 'integer|min:0',
+            'stok10kg.harga_satuan' => 'integer|min:0',
+            'stok10kg.total_harga' => 'integer|min:0',
+            'stok20kg.jumlah' => 'integer|min:0',
+            'stok20kg.harga_satuan' => 'integer|min:0',
+            'stok20kg.total_harga' => 'integer|min:0',
+            'stok50kg.jumlah' => 'integer|min:0',
+            'stok50kg.harga_satuan' => 'integer|min:0',
+            'stok50kg.total_harga' => 'integer|min:0',
         ],
         [
             'required' => ':attribute wajib diisi',
             'max' => 'tidak boleh melebihi :max',
         ]);
 
-        $pemesanan = PemesananModel::findOrFail($req->id_pemesanan);
+        $pemesanan = PemesananModel::findOrFail($idPemesanan);
 
         $update = $pemesanan->update($validated);
 
         if ($update)
         {
+            $beratAktif = [];
+
+            foreach (['stok10kg', 'stok20kg', 'stok50kg'] as $key) {
+                $stok = $req->$key;
+
+                if ($stok !== null && isset($stok['jumlah']) && (int)$stok['jumlah'] > 0)
+                {
+                    $beratAktif[] = $stok['berat'];
+                    DetailPemesananModel::updateOrCreate([
+                        'id_detail_pemesanan' => $stok['id_detail_pemesanan']
+                    ],
+                    [
+                        'id_pemesanan' => $idPemesanan,
+                        'berat' => $stok['berat'],
+                        'jumlah' => $stok['jumlah'],
+                        'harga_satuan' => $stok['harga_satuan'],
+                        'total_harga' => $stok['total_harga'],
+                    ]);
+                }
+            }
+
+            DetailPemesananModel::where('id_pemesanan', $idPemesanan)->whereNotIn('berat', $beratAktif)->delete();
+
             return redirect()->back()->with([
                 'notif_status' => 'success',
-                'notif_message' => 'Data pemesanan berhasil update!',
+                'notif_message' => 'Data stok berhasil ditambahkan!',
             ]);
         }
         else
