@@ -116,7 +116,7 @@ const switchStatus = status =>
                     <Column sortable field="beras.nama_beras" header="Nama Beras" style="min-width: 160px;" frozen rowspan="2"/>
                     <Column sortable field="produsen.nama_produsen" header="Produsen" style="min-width: 160px;" rowspan="2"/>
                     <Column sortable header="Tanggal Pemesanan" style="min-width: 200px;" rowspan="2"/>
-                    <Column sortable field="jmlh" header="Jumlah Pesan" style="min-width: 100px;" rowspan="2"/>
+                    <Column sortable field="jmlh" header="Jumlah Pesan" style="min-width: 160px;" rowspan="2"/>
                     <Column header="10kg" colspan="3"/>
                     <Column header="20kg" colspan="3"/>
                     <Column header="50kg" colspan="3"/>
