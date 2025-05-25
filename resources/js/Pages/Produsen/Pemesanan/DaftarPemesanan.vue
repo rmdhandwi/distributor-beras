@@ -103,7 +103,6 @@ const switchStatus = status =>
                         </InputIcon>
                         <InputText v-model="filters['global'].value" placeholder="Cari Data Pemesanan" size="small" fluid/>
                     </IconField>
-                    <Button icon="pi pi-print" severity="contrast" variant="outlined" label="CSV" size="small" />
                 </div>
             </template>
             <template #footer>
@@ -242,31 +241,6 @@ const switchStatus = status =>
                     <Column frozen align-frozen="right"/>
                 </Row>
             </ColumnGroup>
-            <!-- <Column sortable field="nomor" header="No" frozen/>
-            <Column sortable header="Nama Beras" style="min-width: 180px;" frozen>
-                <template #body="{data}">
-                    {{ data.beras?.nama_beras }}
-                </template>
-            </Column>
-            <Column sortable header="Produsen" style="min-width: 180px;" frozen>
-                <template #body="{data}">
-                    {{ data.produsen?.nama_produsen }}
-                </template>
-            </Column>
-            <Column field="jmlh" header="Jumlah Pesan" style="min-width: 100px;"/>
-            <Column sortable header="Tanggal Pemesanan" style="min-width: 100px;">
-                <template #body="{data}">
-                    <span>{{ formatTanggal(data.tgl_pemesanan) }}</span>
-                </template>
-            </Column>
-            <Column header="Status" style="min-width: 150px;">
-                <template #body="{data}">
-                    <Tag :value="data.status_pesanan" :severity="switchStatus(data.status_pesanan)"/>
-
-                </template>
-            </Column>
-            <Column field="catatan" header="Catatan" style="min-width: 150px;"/>
-             -->
         </DataTable>
     </div>
 </template>
