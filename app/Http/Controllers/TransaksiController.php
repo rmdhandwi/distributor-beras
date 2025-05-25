@@ -26,8 +26,18 @@ class TransaksiController extends Controller
             $dataTransaksi = TransaksiModel::with([
                 'pemesanan:id_pemesanan,id_beras,id_produsen',
                 'pemesanan.produsen:id_produsen,nama_produsen',
-                'pemesanan.beras:id_beras,nama_beras'
+                'pemesanan.beras:id_beras,nama_beras',
+                'pemesanan.detail'
             ])->get();
+
+            // pisahkan detail berdasarkan berat
+            foreach ($dataTransaksi as $item) {
+                $detailMap = $item->pemesanan->detail->keyBy('berat');
+
+                $item->stok10kg = $detailMap->get(10); // bisa null kalau tidak ada
+                $item->stok20kg = $detailMap->get(20);
+                $item->stok50kg = $detailMap->get(50);
+            }
 
             return Inertia::render('Admin/Transaksi/Index', [
                 'dataTransaksi' => $dataTransaksi,
@@ -38,8 +48,18 @@ class TransaksiController extends Controller
             $dataTransaksi = TransaksiModel::with([
                 'pemesanan:id_pemesanan,id_beras,id_produsen',
                 'pemesanan.produsen:id_produsen,nama_produsen',
-                'pemesanan.beras:id_beras,nama_beras'
+                'pemesanan.beras:id_beras,nama_beras',
+                'pemesanan.detail'
             ])->get();
+
+            // pisahkan detail berdasarkan berat
+            foreach ($dataTransaksi as $item) {
+                $detailMap = $item->pemesanan->detail->keyBy('berat');
+
+                $item->stok10kg = $detailMap->get(10); // bisa null kalau tidak ada
+                $item->stok20kg = $detailMap->get(20);
+                $item->stok50kg = $detailMap->get(50);
+            }
 
             return Inertia::render('Pemilik/Transaksi/Index', [
                 'dataTransaksi' => $dataTransaksi,
@@ -54,10 +74,22 @@ class TransaksiController extends Controller
             $dataTransaksi = TransaksiModel::with([
                 'pemesanan:id_pemesanan,id_beras,id_produsen',
                 'pemesanan.produsen:id_produsen,nama_produsen',
-                'pemesanan.beras:id_beras,nama_beras'
+                'pemesanan.beras:id_beras,nama_beras',
+                'pemesanan.detail'
             ])->whereHas('pemesanan', function ($query) use ($idProdusen) {
                 $query->where('id_produsen', $idProdusen);
             })->get();
+
+            // pisahkan detail berdasarkan berat
+            foreach ($dataTransaksi as $item) {
+                $detailMap = $item->pemesanan->detail->keyBy('berat');
+
+                $item->stok10kg = $detailMap->get(10); // bisa null kalau tidak ada
+                $item->stok20kg = $detailMap->get(20);
+                $item->stok50kg = $detailMap->get(50);
+            }
+
+
 
             return Inertia::render('Produsen/Transaksi/Index', [
                 'dataTransaksi' => $dataTransaksi,
@@ -139,6 +171,31 @@ class TransaksiController extends Controller
             return redirect()->back()->with([
                 'notif_status' => 'error',
                 'notif_message' => 'Gagal menjadwalkan pengiriman :(',
+            ]);
+        }
+    }
+
+    public function konfirmasiSelesai(Request $req)
+    {
+         $validated = $req->validate([
+            'id_transaksi' => 'required',
+            'status_pengiriman' => 'required|string',
+            'catatan' => 'string',
+        ]);
+
+        $transaksi = TransaksiModel::findOrFail($req->id_transaksi);
+
+        $update = $transaksi->update($validated);
+
+        if ($update) {
+            return redirect()->back()->with([
+                'notif_status' => 'success',
+                'notif_message' => 'Transaksi Selesai!',
+            ]);
+        } else {
+            return redirect()->back()->with([
+                'notif_status' => 'error',
+                'notif_message' => 'Gagal konfirmasi transaksi :(',
             ]);
         }
     }
