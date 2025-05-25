@@ -31,6 +31,7 @@ const setDataStats = () =>
         dataStats.value.jumlah50kg += item.stok50kg?.jumlah ?? 0
     })
 }
+
 function formatDecimal(angka)
 {
     if(angka)
