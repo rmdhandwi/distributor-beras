@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3000
--- Generation Time: May 12, 2025 at 04:26 PM
+-- Generation Time: May 25, 2025 at 06:46 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.7
 
@@ -48,7 +48,10 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (8, '2025_04_29_191329_update_tb_produsen_table', 1),
 (9, '2025_05_05_200700_rename_metode_pembayaran_to_bukti_bayar', 2),
 (10, '2025_05_05_224322_make_tgl_transaksi_nullable', 3),
-(11, '2025_05_06_001414_make_tgl_pengiriman_nullable', 4);
+(11, '2025_05_06_001414_make_tgl_pengiriman_nullable', 4),
+(16, '2025_05_20_183427_create_tb_detail_beras', 5),
+(17, '2025_05_22_190149_create_tb_detail_pemesanan', 6),
+(18, '2025_05_23_170605_create_tb_detail_gudang', 6);
 
 -- --------------------------------------------------------
 
@@ -70,8 +73,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('igDM90OiA6QsUr464M4IDAdDWlgf4ctZkLrAnprg', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiemk1ZERXWW9PNTdHSlhQUTVacGc1eEpQT3BtbEl3SFE0akljT1ZKRSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzM6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9iZXJhcyI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtzOjE6IjEiO30=', 1747066994),
-('x8q0KFkvPoRjrbXv1X0bxilhJdFUwqP5yNXgDfmx', 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im5ldyI7YTowOnt9czozOiJvbGQiO2E6MDp7fX1zOjY6Il90b2tlbiI7czo0MDoib05VUHVLUzZ1UjNicUdqVEhkSTRCWmNCSWlUV1NxMm9yWXkwYmE0ciI7czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO3M6MToiMiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzk6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9wZW1pbGlrL3RyYW5zYWtzaSI7fX0=', 1747066994);
+('9kK3tXazVqLQUgGF8Wu0VsV5qJnCGmBIrm3WhWkO', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YToyOntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im5ldyI7YTowOnt9czozOiJvbGQiO2E6MDp7fX1zOjY6Il90b2tlbiI7czo0MDoiVGVYNW01VVlmek1aUHNNbFpZWVhTV3NpMmMyT1EyckMwc1daYkp0byI7fQ==', 1748198776),
+('dhkZgfcQBL3KBpvdAxz8IdMTHcf2ftNQwrNCQ0nT', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YToyOntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im5ldyI7YTowOnt9czozOiJvbGQiO2E6MDp7fX1zOjY6Il90b2tlbiI7czo0MDoienkxRTY1a25oWElkZzV1N0Y1aGF3THByaHQ1TWFnVnRHSEFaQkwwaSI7fQ==', 1748198780);
 
 -- --------------------------------------------------------
 
@@ -84,11 +87,8 @@ CREATE TABLE `tb_beras` (
   `nama_beras` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `id_produsen` bigint UNSIGNED NOT NULL,
   `jenis_beras` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `harga_jual` int NOT NULL,
-  `stok_awal` int NOT NULL,
   `stok_tersedia` int NOT NULL,
   `tgl_produksi` date NOT NULL,
-  `tgl_kadaluarsa` date NOT NULL,
   `kualitas_beras` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `sertifikat_beras` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `status_beras` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -100,15 +100,127 @@ CREATE TABLE `tb_beras` (
 -- Dumping data for table `tb_beras`
 --
 
-INSERT INTO `tb_beras` (`id_beras`, `nama_beras`, `id_produsen`, `jenis_beras`, `harga_jual`, `stok_awal`, `stok_tersedia`, `tgl_produksi`, `tgl_kadaluarsa`, `kualitas_beras`, `sertifikat_beras`, `status_beras`, `created_at`, `updated_at`) VALUES
-(1, 'ABC', 1, 'Putih', 88000, 100, 100, '2025-05-02', '2026-05-02', 'Baik', '/storage/upload/sertifikat_beras/Produsen01/sertifikat-Beras Putih 01-05-05-2025.jpg', 'Tersedia', '2025-05-02 01:55:11', '2025-05-10 01:23:24'),
-(3, 'Kelopak', 1, 'Hitam', 99000, 100, 80, '2025-05-02', '2026-05-02', 'Baik', '/storage/upload/sertifikat_beras/Produsen01/sertifikat-Beras Hitam 01-05-05-2025.jpg', 'Tersedia', '2025-05-03 00:21:24', '2025-05-10 01:24:27'),
-(4, 'Hoki', 1, 'Merah', 90000, 100, 100, '2025-05-05', '2026-05-05', 'Baik', '	/storage/upload/sertifikat_beras/Produsen01/sertifikat-Beras Merah ABCD-05-05-2025.jpg', 'Tersedia', '2025-05-05 19:01:31', '2025-05-10 01:23:04'),
-(5, 'Mahkota', 1, 'Putih', 98000, 100, 100, '2025-05-05', '2026-05-05', 'Baik', '	/storage/upload/sertifikat_beras/Produsen01/sertifikat-Beras Putih Mahkota-05-05-2025.jpg', 'Tersedia', '2025-05-05 19:16:09', '2025-05-10 01:23:39'),
-(9, 'Dewa', 2, 'Putih', 93000, 250, 250, '2025-05-09', '2026-04-09', 'Baik', '/storage/upload/sertifikat_beras/Produsen02/sertifikat-Beras Putih Dewa-10-05-2025.jpg', 'Tersedia', '2025-05-10 00:44:32', '2025-05-10 00:54:42'),
-(10, 'Tulip Premium', 2, 'Hitam', 95000, 300, 300, '2025-05-09', '2026-05-09', 'Baik', '/storage/upload/sertifikat_beras/Produsen02/sertifikat-Tulip Premium-10-05-2025.jpg', 'Tersedia', '2025-05-10 00:47:30', '2025-05-10 00:47:30'),
-(11, 'Raja Premium', 3, 'Putih', 94000, 215, 215, '2025-05-04', '2026-06-04', 'Baik', '/storage/upload/sertifikat_beras/Produsen 03/sertifikat-Raja Premium-10-05-2025.jpg', 'Tersedia', '2025-05-10 03:11:14', '2025-05-10 03:11:14'),
-(12, 'Naga', 3, 'Ketan', 96000, 256, 256, '2025-05-06', '2026-05-06', 'Baik', '/storage/upload/sertifikat_beras/Produsen 03/sertifikat-Naga-10-05-2025.jpg', 'Tersedia', '2025-05-10 03:13:14', '2025-05-10 03:13:14');
+INSERT INTO `tb_beras` (`id_beras`, `nama_beras`, `id_produsen`, `jenis_beras`, `stok_tersedia`, `tgl_produksi`, `kualitas_beras`, `sertifikat_beras`, `status_beras`, `created_at`, `updated_at`) VALUES
+(13, 'ABC', 1, 'Putih', 3250, '2025-05-21', 'Premium', '/storage/upload/sertifikat_beras/Produsen01/sertifikat-ABC-21-05-2025.jpg', 'Tersedia', '2025-05-21 04:11:11', '2025-05-23 19:14:34'),
+(20, 'Kelopak', 1, 'Hitam', 1800, '2025-05-22', 'Premium', '/storage/upload/sertifikat_beras/Produsen01/sertifikat-Kelopak-22-05-2025.jpg', 'Tersedia', '2025-05-22 01:06:06', '2025-05-22 01:06:06'),
+(21, 'Hoki', 1, 'Merah', 2850, '2025-05-22', 'Premium', '/storage/upload/sertifikat_beras/Produsen01/sertifikat-Hoki-22-05-2025.jpg', 'Tersedia', '2025-05-22 01:24:16', '2025-05-22 01:33:10'),
+(22, 'Mahkota', 1, 'Ketan', 3250, '2025-05-22', 'Premium', '/storage/upload/sertifikat_beras/Produsen01/sertifikat-Mahkota-22-05-2025.jpg', 'Tersedia', '2025-05-22 01:41:06', '2025-05-23 01:00:02'),
+(23, 'Mawar', 1, 'Putih', 2700, '2025-05-22', 'Medium', '/storage/upload/sertifikat_beras/Produsen01/sertifikat-Mawar-22-05-2025.jpg', 'Tersedia', '2025-05-22 23:44:03', '2025-05-23 00:42:08'),
+(24, 'Nyoba', 1, 'Putih', 2000, '2025-05-22', 'Premium', '/storage/upload/sertifikat_beras/Produsen01/sertifikat-Nyoba-23-05-2025.jpg', 'Tersedia', '2025-05-23 00:58:10', '2025-05-23 18:10:08'),
+(25, 'Dewa', 2, 'Putih', 4000, '2025-05-23', 'Premium', '/storage/upload/sertifikat_beras/Produsen02/sertifikat-Dewa-23-05-2025.jpg', 'Tersedia', '2025-05-23 19:40:48', '2025-05-23 19:40:48'),
+(26, 'Tulip', 2, 'Hitam', 4800, '2025-05-23', 'Premium', '/storage/upload/sertifikat_beras/Produsen02/sertifikat-Tulip-23-05-2025.jpg', 'Tersedia', '2025-05-23 19:42:45', '2025-05-23 19:42:45'),
+(27, 'Merpati', 2, 'Putih', 5100, '2025-05-23', 'Medium', '/storage/upload/sertifikat_beras/Produsen02/sertifikat-Merpati-23-05-2025.jpg', 'Tersedia', '2025-05-23 19:44:05', '2025-05-23 19:44:05'),
+(28, 'Raja', 3, 'Putih', 6000, '2025-05-24', 'Premium', '/storage/upload/sertifikat_beras/Produsen 03/sertifikat-Raja-25-05-2025.jpg', 'Tersedia', '2025-05-25 00:39:35', '2025-05-25 00:39:35'),
+(29, 'Naga', 3, 'Ketan', 4600, '2025-05-24', 'Premium', '/storage/upload/sertifikat_beras/Produsen 03/sertifikat-Naga-25-05-2025.jpg', 'Tersedia', '2025-05-25 00:41:41', '2025-05-25 00:41:41');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tb_detail_beras`
+--
+
+CREATE TABLE `tb_detail_beras` (
+  `id_detail` bigint UNSIGNED NOT NULL,
+  `id_beras` bigint UNSIGNED NOT NULL,
+  `berat` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `jumlah` int NOT NULL,
+  `harga` int NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tb_detail_beras`
+--
+
+INSERT INTO `tb_detail_beras` (`id_detail`, `id_beras`, `berat`, `jumlah`, `harga`, `created_at`, `updated_at`) VALUES
+(1, 13, '10', 100, 115000, '2025-05-21 04:11:11', '2025-05-23 19:14:34'),
+(2, 13, '20', 50, 215500, '2025-05-21 04:11:11', '2025-05-23 19:14:34'),
+(3, 13, '50', 25, 550000, '2025-05-21 04:11:11', '2025-05-23 19:14:34'),
+(7, 20, '10', 45, 255000, '2025-05-22 01:06:06', '2025-05-22 01:06:06'),
+(8, 20, '20', 30, 513000, '2025-05-22 01:06:06', '2025-05-22 01:06:06'),
+(9, 20, '50', 15, 1280000, '2025-05-22 01:06:06', '2025-05-22 01:06:06'),
+(10, 21, '10', 60, 292000, '2025-05-22 01:24:16', '2025-05-22 01:32:26'),
+(12, 21, '50', 45, 1465000, '2025-05-22 01:24:16', '2025-05-22 01:33:10'),
+(16, 23, '20', 60, 230000, '2025-05-22 23:44:03', '2025-05-22 23:44:03'),
+(17, 22, '10', 100, 138000, '2025-05-23 00:39:00', '2025-05-23 00:40:51'),
+(18, 22, '20', 50, 280000, '2025-05-23 00:40:51', '2025-05-23 00:40:51'),
+(19, 23, '50', 30, 580000, '2025-05-23 00:42:08', '2025-05-23 00:42:08'),
+(24, 22, '50', 25, 700000, '2025-05-23 01:00:02', '2025-05-23 01:00:02'),
+(25, 24, '10', 40, 120000, '2025-05-23 18:10:09', '2025-05-23 18:10:09'),
+(26, 24, '20', 30, 240000, '2025-05-23 18:10:09', '2025-05-23 18:10:09'),
+(27, 24, '50', 20, 565000, '2025-05-23 18:10:09', '2025-05-23 18:10:09'),
+(28, 25, '10', 80, 108000, '2025-05-23 19:40:48', '2025-05-23 19:40:48'),
+(29, 25, '20', 60, 218000, '2025-05-23 19:40:48', '2025-05-23 19:40:48'),
+(30, 25, '50', 40, 550000, '2025-05-23 19:40:48', '2025-05-23 19:40:48'),
+(31, 26, '10', 75, 138000, '2025-05-23 19:42:45', '2025-05-23 19:42:45'),
+(32, 26, '20', 65, 280000, '2025-05-23 19:42:45', '2025-05-23 19:42:45'),
+(33, 26, '50', 55, 700000, '2025-05-23 19:42:45', '2025-05-23 19:42:45'),
+(34, 27, '20', 80, 200000, '2025-05-23 19:44:05', '2025-05-23 19:44:05'),
+(35, 27, '50', 70, 505000, '2025-05-23 19:44:05', '2025-05-23 19:44:05'),
+(36, 28, '10', 90, 108000, '2025-05-25 00:39:35', '2025-05-25 00:39:35'),
+(37, 28, '20', 80, 220000, '2025-05-25 00:39:35', '2025-05-25 00:39:35'),
+(38, 28, '50', 70, 550000, '2025-05-25 00:39:35', '2025-05-25 00:39:35'),
+(39, 29, '20', 85, 245000, '2025-05-25 00:41:41', '2025-05-25 00:41:41'),
+(40, 29, '50', 58, 580000, '2025-05-25 00:41:42', '2025-05-25 00:41:42');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tb_detail_gudang`
+--
+
+CREATE TABLE `tb_detail_gudang` (
+  `id_detail_gudang` bigint UNSIGNED NOT NULL,
+  `id_gudang` bigint UNSIGNED NOT NULL,
+  `berat` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `stok_awal` int NOT NULL DEFAULT '0',
+  `rusak` int NOT NULL DEFAULT '0',
+  `hilang` int NOT NULL DEFAULT '0',
+  `stok_sisa` int NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tb_detail_gudang`
+--
+
+INSERT INTO `tb_detail_gudang` (`id_detail_gudang`, `id_gudang`, `berat`, `stok_awal`, `rusak`, `hilang`, `stok_sisa`, `created_at`, `updated_at`) VALUES
+(1, 7, '10', 86, 3, 2, 81, '2025-05-23 15:04:35', '2025-05-23 15:27:36'),
+(3, 7, '50', 10, 1, 3, 6, '2025-05-23 15:14:42', '2025-05-23 15:27:36'),
+(4, 8, '20', 70, 3, 2, 65, '2025-05-23 15:25:13', '2025-05-23 15:26:47'),
+(5, 8, '10', 90, 1, 3, 86, '2025-05-23 15:26:47', '2025-05-23 15:26:47'),
+(6, 8, '50', 50, 2, 1, 47, '2025-05-23 15:26:47', '2025-05-23 15:26:47'),
+(7, 7, '20', 78, 2, 1, 75, '2025-05-23 15:27:36', '2025-05-23 15:27:36');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tb_detail_pemesanan`
+--
+
+CREATE TABLE `tb_detail_pemesanan` (
+  `id_detail_pemesanan` bigint UNSIGNED NOT NULL,
+  `id_pemesanan` bigint UNSIGNED NOT NULL,
+  `berat` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `jumlah` int NOT NULL DEFAULT '0',
+  `harga_satuan` int NOT NULL,
+  `total_harga` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tb_detail_pemesanan`
+--
+
+INSERT INTO `tb_detail_pemesanan` (`id_detail_pemesanan`, `id_pemesanan`, `berat`, `jumlah`, `harga_satuan`, `total_harga`, `created_at`, `updated_at`) VALUES
+(1, 5, '10', 10, 108000, 1080000, '2025-05-24 18:21:13', '2025-05-24 18:21:13'),
+(2, 5, '20', 20, 220000, 4400000, '2025-05-24 18:21:13', '2025-05-24 18:21:13'),
+(3, 5, '50', 30, 550000, 16500000, '2025-05-24 18:21:13', '2025-05-24 18:21:13'),
+(4, 6, '10', 25, 108000, 2700000, '2025-05-24 19:08:58', '2025-05-24 19:08:58'),
+(6, 7, '20', 10, 245000, 2450000, '2025-05-25 16:17:24', '2025-05-25 16:17:24');
 
 -- --------------------------------------------------------
 
@@ -120,10 +232,6 @@ CREATE TABLE `tb_gudang` (
   `id_gudang` bigint UNSIGNED NOT NULL,
   `id_beras` bigint UNSIGNED NOT NULL,
   `id_produsen` bigint UNSIGNED NOT NULL,
-  `stok_awal` int NOT NULL DEFAULT '0',
-  `rusak` int NOT NULL DEFAULT '0',
-  `hilang` int NOT NULL DEFAULT '0',
-  `stok_sisa` int NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -132,11 +240,9 @@ CREATE TABLE `tb_gudang` (
 -- Dumping data for table `tb_gudang`
 --
 
-INSERT INTO `tb_gudang` (`id_gudang`, `id_beras`, `id_produsen`, `stok_awal`, `rusak`, `hilang`, `stok_sisa`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, 90, 5, 1, 84, '2025-05-02 17:46:58', '2025-05-05 09:04:44'),
-(3, 3, 1, 100, 15, 0, 85, '2025-05-05 08:38:32', '2025-05-05 09:05:01'),
-(4, 4, 1, 80, 5, 0, 25, '2025-05-06 06:41:15', '2025-05-06 06:41:15'),
-(5, 11, 3, 100, 2, 0, 98, '2025-05-11 10:08:02', '2025-05-11 10:08:02');
+INSERT INTO `tb_gudang` (`id_gudang`, `id_beras`, `id_produsen`, `created_at`, `updated_at`) VALUES
+(7, 24, 1, '2025-05-23 15:04:35', '2025-05-23 15:04:35'),
+(8, 27, 2, '2025-05-23 15:25:12', '2025-05-23 15:25:12');
 
 -- --------------------------------------------------------
 
@@ -161,9 +267,9 @@ CREATE TABLE `tb_pemesanan` (
 --
 
 INSERT INTO `tb_pemesanan` (`id_pemesanan`, `id_produsen`, `id_beras`, `jmlh`, `tgl_pemesanan`, `status_pesanan`, `catatan`, `created_at`, `updated_at`) VALUES
-(2, 1, 4, 80, '2025-05-05', 'Telah Dikonfirmasi', 'Stok di gudang menipis', '2025-05-05 21:35:48', '2025-05-06 00:34:17'),
-(3, 2, 10, 100, '2025-05-11', 'Telah Dikonfirmasi', '-', '2025-05-11 17:35:51', '2025-05-11 17:36:31'),
-(4, 3, 12, 100, '2025-05-11', 'Telah Dikonfirmasi', '-', '2025-05-11 17:43:36', '2025-05-11 17:45:20');
+(5, 3, 28, 60, '2025-05-25', 'Telah Dikonfirmasi', 'Stok menipis', '2025-05-25 02:21:12', '2025-05-26 03:19:20'),
+(6, 2, 25, 25, '2025-05-26', 'Pending', '-', '2025-05-25 03:08:58', '2025-05-26 00:04:07'),
+(7, 3, 29, 10, '2025-05-26', 'Telah Dikonfirmasi', '-', '2025-05-26 00:17:24', '2025-05-26 00:56:25');
 
 -- --------------------------------------------------------
 
@@ -204,8 +310,7 @@ CREATE TABLE `tb_transaksi` (
   `id_pemesanan` bigint UNSIGNED NOT NULL,
   `tgl_transaksi` date DEFAULT NULL,
   `jmlh` int NOT NULL,
-  `harga_satuan` int NOT NULL,
-  `total_harga` int NOT NULL,
+  `total_bayar` int NOT NULL,
   `bukti_bayar` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `status_pembayaran` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `status_pengiriman` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -219,10 +324,9 @@ CREATE TABLE `tb_transaksi` (
 -- Dumping data for table `tb_transaksi`
 --
 
-INSERT INTO `tb_transaksi` (`id_transaksi`, `id_pemesanan`, `tgl_transaksi`, `jmlh`, `harga_satuan`, `total_harga`, `bukti_bayar`, `status_pembayaran`, `status_pengiriman`, `tgl_pengiriman`, `catatan`, `created_at`, `updated_at`) VALUES
-(1, 2, '2025-05-06', 80, 90000, 7200000, '/storage/upload/bukti_bayar_/06-05-2025/1-06-05-2025-06-05-2025.jpg', 'Selesai', 'Dijadwalkan', '2025-05-07', '-', '2025-05-06 00:34:16', '2025-05-07 00:43:43'),
-(2, 3, '2025-05-11', 100, 95000, 9500000, '/storage/upload/bukti_bayar_/11-05-2025/2-11-05-2025-11-05-2025.jpg', 'Pending', 'Pending', NULL, '-', '2025-05-11 17:36:30', '2025-05-11 17:42:02'),
-(3, 4, NULL, 100, 96000, 9600000, NULL, 'Pending', 'Pending', NULL, '-', '2025-05-11 17:45:20', '2025-05-11 17:45:20');
+INSERT INTO `tb_transaksi` (`id_transaksi`, `id_pemesanan`, `tgl_transaksi`, `jmlh`, `total_bayar`, `bukti_bayar`, `status_pembayaran`, `status_pengiriman`, `tgl_pengiriman`, `catatan`, `created_at`, `updated_at`) VALUES
+(8, 7, '2025-05-26', 10, 2450000, '/storage/upload/bukti_bayar_/26-05-2025/8-26-05-2025-26-05-2025.jpg', 'Selesai', 'Selesai', '2025-05-26', '- terdapat 2 karung yang rusak', '2025-05-26 00:56:25', '2025-05-26 03:20:26'),
+(9, 5, NULL, 60, 21980000, NULL, 'Pending', 'Pending', NULL, '-', '2025-05-26 03:19:20', '2025-05-26 03:19:20');
 
 -- --------------------------------------------------------
 
@@ -278,6 +382,27 @@ ALTER TABLE `tb_beras`
   ADD KEY `tb_beras_id_produsen_foreign` (`id_produsen`);
 
 --
+-- Indexes for table `tb_detail_beras`
+--
+ALTER TABLE `tb_detail_beras`
+  ADD PRIMARY KEY (`id_detail`),
+  ADD KEY `tb_detail_beras_id_beras_foreign` (`id_beras`);
+
+--
+-- Indexes for table `tb_detail_gudang`
+--
+ALTER TABLE `tb_detail_gudang`
+  ADD PRIMARY KEY (`id_detail_gudang`),
+  ADD KEY `tb_detail_gudang_id_gudang_foreign` (`id_gudang`);
+
+--
+-- Indexes for table `tb_detail_pemesanan`
+--
+ALTER TABLE `tb_detail_pemesanan`
+  ADD PRIMARY KEY (`id_detail_pemesanan`),
+  ADD KEY `tb_detail_pemesanan_id_pemesanan_foreign` (`id_pemesanan`);
+
+--
 -- Indexes for table `tb_gudang`
 --
 ALTER TABLE `tb_gudang`
@@ -324,25 +449,43 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `tb_beras`
 --
 ALTER TABLE `tb_beras`
-  MODIFY `id_beras` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id_beras` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+
+--
+-- AUTO_INCREMENT for table `tb_detail_beras`
+--
+ALTER TABLE `tb_detail_beras`
+  MODIFY `id_detail` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+
+--
+-- AUTO_INCREMENT for table `tb_detail_gudang`
+--
+ALTER TABLE `tb_detail_gudang`
+  MODIFY `id_detail_gudang` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `tb_detail_pemesanan`
+--
+ALTER TABLE `tb_detail_pemesanan`
+  MODIFY `id_detail_pemesanan` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tb_gudang`
 --
 ALTER TABLE `tb_gudang`
-  MODIFY `id_gudang` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_gudang` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `tb_pemesanan`
 --
 ALTER TABLE `tb_pemesanan`
-  MODIFY `id_pemesanan` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_pemesanan` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `tb_produsen`
@@ -354,7 +497,7 @@ ALTER TABLE `tb_produsen`
 -- AUTO_INCREMENT for table `tb_transaksi`
 --
 ALTER TABLE `tb_transaksi`
-  MODIFY `id_transaksi` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_transaksi` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -371,6 +514,24 @@ ALTER TABLE `users`
 --
 ALTER TABLE `tb_beras`
   ADD CONSTRAINT `tb_beras_id_produsen_foreign` FOREIGN KEY (`id_produsen`) REFERENCES `tb_produsen` (`id_produsen`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `tb_detail_beras`
+--
+ALTER TABLE `tb_detail_beras`
+  ADD CONSTRAINT `tb_detail_beras_id_beras_foreign` FOREIGN KEY (`id_beras`) REFERENCES `tb_beras` (`id_beras`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `tb_detail_gudang`
+--
+ALTER TABLE `tb_detail_gudang`
+  ADD CONSTRAINT `tb_detail_gudang_id_gudang_foreign` FOREIGN KEY (`id_gudang`) REFERENCES `tb_gudang` (`id_gudang`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `tb_detail_pemesanan`
+--
+ALTER TABLE `tb_detail_pemesanan`
+  ADD CONSTRAINT `tb_detail_pemesanan_id_pemesanan_foreign` FOREIGN KEY (`id_pemesanan`) REFERENCES `tb_pemesanan` (`id_pemesanan`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `tb_gudang`
