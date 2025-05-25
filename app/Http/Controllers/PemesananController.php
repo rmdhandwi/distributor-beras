@@ -227,15 +227,29 @@ class PemesananController extends Controller
 
     public function confirm(Request $req)
     {
-        $pemesanan = PemesananModel::findOrFail($req->id_pemesanan);
-        $beras = BerasModel::findOrFail($pemesanan->id_beras);
+        $pemesanan = PemesananModel::with('detail')->findOrFail($req->id_pemesanan);
+
+        //pisah detail pemesanan berdasarkan berat
+        $detailMap = $pemesanan->detail->keyBy('berat');
+
+        $stok10kg = $detailMap->get(10);
+        $stok20kg = $detailMap->get(20);
+        $stok50kg = $detailMap->get(50);
+
+        $total_bayar = 0;
+
+        foreach (['stok10kg' => $stok10kg, 'stok20kg' => $stok20kg, 'stok50kg' => $stok50kg] as $stok) {
+            if ($stok !== null && (int)$stok['jumlah'] > 0)
+            {
+                $total_bayar += (int) $stok['total_harga'];
+            }
+        }
 
         $storeData = [
             'id_pemesanan' => $req->id_pemesanan,
             'tgl_transaksi' => NULL,
             'jmlh' => $pemesanan->jmlh,
-            'harga_satuan' => $beras->harga_jual,
-            'total_harga' => $beras->harga_jual * $pemesanan->jmlh,
+            'total_bayar' => $total_bayar,
             'bukti_bayar' => NULL,
             'status_pembayaran' => 'Pending',
             'status_pengiriman' => 'Pending',
@@ -247,8 +261,9 @@ class PemesananController extends Controller
 
         if ($insert)
         {
-            $pemesanan->status_pesanan = 'Telah Dikonfirmasi';
-            $update = $pemesanan->save();
+            $update = $pemesanan->update([
+                'status_pesanan' => 'Telah Dikonfirmasi'
+            ]);
 
             if($update)
             {
