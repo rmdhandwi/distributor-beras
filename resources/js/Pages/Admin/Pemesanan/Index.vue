@@ -108,6 +108,7 @@ const componentProps = computed(() => {
         case 'EditPemesanan':
         return {
             formType: 'Edit',
+            dataBeras : props.dataBeras,
             dataPemesanan: { ...dataEditPemesanan.value },
             dataProdusen : props.dataProdusen,
         };
