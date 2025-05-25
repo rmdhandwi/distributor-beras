@@ -54,6 +54,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     // Route Transaksi
     Route::get('admin/transaksi', [TransaksiController::class, 'index'])->name('admin.transaksi.index');
     Route::post('admin/transaksi/uploadBukti', [TransaksiController::class, 'uploadBukti'])->name('admin.transaksi.uploadBukti');
+    Route::post('admin/transaksi/selesai', [TransaksiController::class, 'konfirmasiSelesai'])->name('admin.transaksi.selesai');
 });
 
 Route::middleware(['auth', 'pemilik'])->group(function () {
