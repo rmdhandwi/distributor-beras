@@ -44,7 +44,7 @@ const showPengiriman = ref(false)
 const transaksiForm = useForm({
     id_transaksi : null,
     nama_pesanan : null,
-    total_harga : null,
+    total_bayar : null,
     jumlah_pesanan : null,
     tgl_transaksi : null,
     tgl_pengiriman : null,
@@ -58,11 +58,14 @@ const statusPembayaran = [
 ]
 
 function formatRupiah(angka) {
-    return new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
-        minimumFractionDigits: 0
-    }).format(angka);
+    if(angka)
+    {
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0
+        }).format(angka);
+    }
 }
 
 function formatTanggal(tanggal) {
@@ -76,7 +79,7 @@ function formatTanggal(tanggal) {
 const setDataStats = () =>
 {
     dataTransaksiFix.value.forEach(item => {
-        totalStats.value += item.total_harga
+        totalStats.value += item.total_bayar
     })
 }
 
@@ -208,7 +211,7 @@ const setJadwal = id_transaksi =>
     transaksiForm.id_transaksi = id_transaksi
     transaksiForm.nama_pesanan = dataFilter[0]?.pemesanan?.beras?.nama_beras
     transaksiForm.jumlah_pesanan = dataFilter[0]?.jmlh
-    transaksiForm.total_harga = formatRupiah(dataFilter[0]?.total_harga)
+    transaksiForm.total_bayar = formatRupiah(dataFilter[0]?.total_bayar)
     transaksiForm.tgl_transaksi = formatTanggal(dataFilter[0]?.tgl_transaksi)
     transaksiForm.bukti_bayar = dataFilter[0]?.bukti_bayar
 
@@ -326,8 +329,8 @@ const cetakLaporan = () =>
             <!-- Total Harga pesanan -->
             <div>
                 <FloatLabel variant="on">
-                    <InputText id="total_harga" v-model="transaksiForm.total_harga" disabled fluid/>
-                    <label for="total_harga">Total Harga</label>
+                    <InputText id="total_bayar" v-model="transaksiForm.total_bayar" disabled fluid/>
+                    <label for="total_bayar">Total Harga</label>
                 </FloatLabel>
             </div>
             <!-- Tanggal Transaksi pesanan -->
@@ -428,14 +431,9 @@ const cetakLaporan = () =>
                 </template>
             </Column>
             <Column field="jmlh" header="Jumlah Pesan" style="min-width: 100px;"/>
-            <Column header="Harga Satuan" style="min-width: 100px;">
+            <Column header="Total Bayar" style="min-width: 100px;">
                 <template #body="{data}">
-                    {{ formatRupiah(data.harga_satuan) }}
-                </template>
-            </Column>
-            <Column header="Total Harga" style="min-width: 100px;">
-                <template #body="{data}">
-                    {{ formatRupiah(data.total_harga) }}
+                    {{ formatRupiah(data.total_bayar) }}
                 </template>
             </Column>
             <Column header="Bukti Bayar" style="min-width: 150px;">
