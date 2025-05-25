@@ -6,6 +6,10 @@ import { useConfirm, useToast } from 'primevue'
 onMounted(() =>
 {
     countTotalHarga()
+    if(props.formType === 'Edit')
+    {
+        selectIdProdusen()
+    }
 })
 
 const props = defineProps({
@@ -80,9 +84,12 @@ function countTotalHarga ()
 
 const selectIdProdusen = () =>
 {
-    pemesananForm.stok10kg.jumlah = 0
-    pemesananForm.stok20kg.jumlah = 0
-    pemesananForm.stok50kg.jumlah = 0
+    if(props.formType === 'Create')
+    {
+        pemesananForm.stok10kg.jumlah = 0
+        pemesananForm.stok20kg.jumlah = 0
+        pemesananForm.stok50kg.jumlah = 0
+    }
 
     selectedBeras.value = props.dataBeras.find( (beras) => beras.id_beras === pemesananForm.id_beras)
 
