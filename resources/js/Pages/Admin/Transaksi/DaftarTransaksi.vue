@@ -7,7 +7,6 @@ import { useConfirm, useToast } from 'primevue'
 
 onMounted(() =>
 {
-    console.log(props.dataTransaksi)
     dataTransaksiFix.value = props.dataTransaksi
     setDaftarBeras()
     setDaftarProdusen()
