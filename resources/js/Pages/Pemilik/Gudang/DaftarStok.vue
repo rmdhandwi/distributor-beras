@@ -33,10 +33,24 @@ const selectedNamaBeras = ref(null)
 const selectedNamaProdusen = ref(null)
 
 const dataStats = ref({
-    stok_awal : null,
-    rusak : null,
-    hilang : null,
-    stok_sisa : null,
+    stok10kg : {
+        stok_awal : 0,
+        rusak : 0,
+        hilang : 0,
+        stok_sisa : 0,
+    },
+    stok20kg : {
+        stok_awal : 0,
+        rusak : 0,
+        hilang : 0,
+        stok_sisa : 0,
+    },
+    stok50kg : {
+        stok_awal : 0,
+        rusak : 0,
+        hilang : 0,
+        stok_sisa : 0,
+    },
 })
 
 const resetData = () =>
@@ -102,20 +116,42 @@ const setDaftarProdusen = () =>
 const resetDataStats = () =>
 {
     dataStats.value = {
-        stok_awal: null,
-        rusak: null,
-        hilang: null,
-        stok_sisa: null,
+        stok10kg : {
+            stok_awal : 0,
+            rusak : 0,
+            hilang : 0,
+            stok_sisa : 0,
+        },
+        stok20kg : {
+            stok_awal : 0,
+            rusak : 0,
+            hilang : 0,
+            stok_sisa : 0,
+        },
+        stok50kg : {
+            stok_awal : 0,
+            rusak : 0,
+            hilang : 0,
+            stok_sisa : 0,
+        },
     }
 }
 
 const setDataStats = () =>
 {
     dataGudangFix.value.forEach(item => {
-        dataStats.value.stok_awal += item.stok_awal
-        dataStats.value.rusak += item.rusak
-        dataStats.value.hilang += item.hilang
-        dataStats.value.stok_sisa += item.stok_sisa
+        dataStats.value.stok10kg.stok_awal += item.stok10kg?.stok_awal
+        dataStats.value.stok10kg.rusak += item.stok10kg?.rusak
+        dataStats.value.stok10kg.hilang += item.stok10kg?.hilang
+        dataStats.value.stok10kg.stok_sisa += item.stok10kg?.stok_sisa
+        dataStats.value.stok20kg.stok_awal += item.stok20kg?.stok_awal
+        dataStats.value.stok20kg.rusak += item.stok20kg?.rusak
+        dataStats.value.stok20kg.hilang += item.stok20kg?.hilang
+        dataStats.value.stok20kg.stok_sisa += item.stok20kg?.stok_sisa
+        dataStats.value.stok50kg.stok_awal += item.stok50kg?.stok_awal
+        dataStats.value.stok50kg.rusak += item.stok50kg?.rusak
+        dataStats.value.stok50kg.hilang += item.stok50kg?.hilang
+        dataStats.value.stok50kg.stok_sisa += item.stok50kg?.stok_sisa
     })
 }
 
@@ -182,28 +218,132 @@ const cetakLaporan = () =>
             <template #empty>
                 <span class="flex justify-center">Tidak Ada Gudang</span>
             </template>
-            <Column sortable field="nomor" header="No"/>
-            <Column header="Nama Beras" filter-field="beras.nama_beras" style="min-width: 180px;">
+            <ColumnGroup type="header">
+                <Row>
+                    <Column sortable field="nomor" header="No" rowspan="2"/>
+                    <Column sortable field="beras.nama_beras" header="Nama Beras" filter-field="beras.nama_beras" rowspan="2" style="min-width: 150px;"/>
+                    <Column sortable field="beras.jenis_beras" header="Jenis" rowspan="2"/>
+                    <Column sortable field="produsen.nama_produsen" header="Produsen" filter-field="produsen.nama_produsen" rowspan="2"/>
+                    <Column header="Stok 10kg" colspan="4"/>
+                    <Column header="Stok 20kg" colspan="4"/>
+                    <Column header="Stok 50kg" colspan="4"/>
+                </Row>
+                <Row>
+                    <!-- 10kg -->
+                    <Column sortable field="stok10kg.stok_awal"  header="Awal"/>
+                    <Column sortable field="stok10kg.rusak"  header="Rusak"/>
+                    <Column sortable field="stok10kg.hilang"  header="Hilang"/>
+                    <Column sortable field="stok10kg.stok_sisa"  header="Sisa"/>
+                    <!-- 20kg -->
+                    <Column sortable field="stok20kg.stok_awal"  header="Awal"/>
+                    <Column sortable field="stok20kg.rusak"  header="Rusak"/>
+                    <Column sortable field="stok20kg.hilang"  header="Hilang"/>
+                    <Column sortable field="stok20kg.stok_sisa"  header="Sisa"/>
+                    <!-- 50kg -->
+                    <Column sortable field="stok50kg.stok_awal"  header="Awal"/>
+                    <Column sortable field="stok50kg.rusak"  header="Rusak"/>
+                    <Column sortable field="stok50kg.hilang"  header="Hilang"/>
+                    <Column sortable field="stok50kg.stok_sisa"  header="Sisa"/>
+                </Row>
+            </ColumnGroup>
+            <Column sortable field="nomor"/>
+            <Column field="beras.nama_beras" style="min-width: 180px;">
                 <template #body="{data}">
                     {{ data.beras?.nama_beras }}
                 </template>
             </Column>
-            <Column header="Produsen" filter-field="produsen.nama_produsen" style="min-width: 180px;">
+            <Column style="min-width: 180px;">
+                <template #body="{data}">
+                    {{ data.beras?.jenis_beras }}
+                </template>
+            </Column>
+            <Column style="min-width: 180px;">
                 <template #body="{data}">
                     {{ data.produsen?.nama_produsen }}
                 </template>
             </Column>
-            <Column field="stok_awal" header="Stok Awal" style="min-width: 100px;"/>
-            <Column field="rusak" header="Rusak" style="min-width: 100px;"/>
-            <Column field="hilang" header="Hilang" style="min-width: 100px;"/>
-            <Column field="stok_sisa" header="Stok Sisa" style="min-width: 100px;"/>
+            <!-- 10kg -->
+            <Column>
+                <template #body="{data}">
+                    {{ data.stok10kg?.stok_awal ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ data.stok10kg?.rusak ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ data.stok10kg?.hilang ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ data.stok10kg?.stok_sisa ?? '-' }}
+                </template>
+            </Column>
+            <!-- 20kg -->
+            <Column>
+                <template #body="{data}">
+                    {{ data.stok20kg?.stok_awal ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ data.stok20kg?.rusak ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ data.stok20kg?.hilang ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ data.stok20kg?.stok_sisa ?? '-' }}
+                </template>
+            </Column>
+            <!-- 50kg -->
+            <Column>
+                <template #body="{data}">
+                    {{ data.stok50kg?.stok_awal ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ data.stok50kg?.rusak ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ data.stok50kg?.hilang ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ data.stok50kg?.stok_sisa ?? '-' }}
+                </template>
+            </Column>
             <ColumnGroup type="footer">
                 <Row>
-                    <Column footer="Total :" colspan="3" footerStyle="text-align:right"/>
-                    <Column :footer="dataStats.stok_awal"/>
-                    <Column :footer="dataStats.rusak"/>
-                    <Column :footer="dataStats.hilang"/>
-                    <Column :footer="dataStats.stok_sisa" colspan="2"/>
+                    <Column footer="Total :" colspan="4" footerStyle="text-align:right"/>
+                    <!-- 10kg -->
+                    <Column :footer="dataStats.stok10kg?.stok_awal"/>
+                    <Column :footer="dataStats.stok10kg?.rusak"/>
+                    <Column :footer="dataStats.stok10kg?.hilang"/>
+                    <Column :footer="dataStats.stok10kg?.stok_sisa"/>
+                    <!-- 20kg -->
+                    <Column :footer="dataStats.stok20kg?.stok_awal"/>
+                    <Column :footer="dataStats.stok20kg?.rusak"/>
+                    <Column :footer="dataStats.stok20kg?.hilang"/>
+                    <Column :footer="dataStats.stok20kg?.stok_sisa"/>
+                    <!-- 50kg -->
+                    <Column :footer="dataStats.stok50kg?.stok_awal"/>
+                    <Column :footer="dataStats.stok50kg?.rusak"/>
+                    <Column :footer="dataStats.stok50kg?.hilang"/>
+                    <Column :footer="dataStats.stok50kg?.stok_sisa"/>
+                    <Column frozen align-frozen="right"/>
                 </Row>
             </ColumnGroup>
         </DataTable>
