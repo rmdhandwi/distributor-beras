@@ -80,8 +80,12 @@ function formatRupiah(angka) {
 }
 
 function formatTanggal(tanggal) {
-  const [tahun, bulan, hari] = tanggal.split('-')
-  return `${hari}/${bulan}/${tahun}`
+    if(tanggal)
+    {
+        const [tahun, bulan, hari] = tanggal.split('-')
+        return `${hari}/${bulan}/${tahun}`
+    }
+    return '-'
 }
 
 const editBeras = id_beras =>
