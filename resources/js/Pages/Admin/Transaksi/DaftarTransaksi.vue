@@ -111,6 +111,18 @@ function formatTanggal(tanggal) {
     return '-'
 }
 
+const resetDataStats = () =>
+{
+    dataStats.value.jumlah_pesan = 0
+    dataStats.value.total_bayar = 0
+    dataStats.value.stok10kg.jumlah = 0
+    dataStats.value.stok10kg.total_harga = 0
+    dataStats.value.stok20kg.jumlah = 0
+    dataStats.value.stok20kg.total_harga = 0
+    dataStats.value.stok50kg.jumlah = 0
+    dataStats.value.stok50kg.total_harga = 0
+}
+
 const setDataStats = () =>
 {
     dataTransaksiFix.value.forEach(item => {
@@ -133,6 +145,8 @@ const normalizeDate = (date) => {
 
 const resetData = () =>
 {
+    resetDataStats()
+
     selectedIdBeras.value = null
     selectedIdProdusen.value = null
     selectedTransaksiDate.value = null
@@ -149,7 +163,7 @@ const resetData = () =>
 
 const filterByTransaksiDate = () =>
 {
-    dataStats.value = 0
+    resetDataStats()
     isLoading.value = true
 
     const start = normalizeDate(selectedTransaksiDate.value[0])
@@ -169,7 +183,7 @@ const filterByTransaksiDate = () =>
 
 const filterByPengirimanDate = () =>
 {
-    dataStats.value = 0
+    resetDataStats()
     isLoading.value = true
 
     const start = normalizeDate(selectedPengirimanDate.value[0])
@@ -218,7 +232,7 @@ const setDaftarProdusen = () =>
 
 const filterByBeras = () =>
 {
-    dataStats.value = 0
+    resetDataStats()
 
     isLoading.value = true
 
@@ -238,7 +252,7 @@ const filterByBeras = () =>
 
 const filterByProdusen = () =>
 {
-    dataStats.value = 0
+    resetDataStats()
 
     isLoading.value = true
 
