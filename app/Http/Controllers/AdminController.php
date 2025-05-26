@@ -14,7 +14,7 @@ class AdminController extends Controller
 {
     //
     public function dashboardPage()
-    {
+    {   
         $dataBeras = BerasModel::with('detail')->get();
 
         // Gabungkan semua detail dari setiap beras
