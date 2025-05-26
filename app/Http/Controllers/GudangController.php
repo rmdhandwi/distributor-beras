@@ -17,36 +17,37 @@ class GudangController extends Controller
     {
         $loggedInUser = auth()->guard()->user();
 
+        $dataBeras = BerasModel::whereDoesntHave('gudang')->with([
+            'produsen:id_produsen,nama_produsen',
+            'detail:id_detail,id_beras,berat,jumlah,harga',
+        ])->get();
+
+        // pisahkan detail berdasarkan berat
+        foreach ($dataBeras as $item) {
+            $detailMap = $item->detail->keyBy('berat');
+
+            $item->stok10kg = $detailMap->get(10); // bisa null kalau tidak ada
+            $item->stok20kg = $detailMap->get(20);
+            $item->stok50kg = $detailMap->get(50);
+        }
+
+        $dataGudang = GudangModel::with([
+            'beras:id_beras,nama_beras,jenis_beras',
+            'produsen:id_produsen,nama_produsen',
+            'detail:id_detail_gudang,id_gudang,berat,stok_awal,rusak,hilang,stok_sisa'
+        ])->get();
+
+        // pisahkan detail berdasarkan berat
+        foreach ($dataGudang as $item) {
+            $detailMap = $item->detail->keyBy('berat');
+
+            $item->stok10kg = $detailMap->get(10); // bisa null kalau tidak ada
+            $item->stok20kg = $detailMap->get(20);
+            $item->stok50kg = $detailMap->get(50);
+        }
+
         if($loggedInUser->role === 'Admin')
         {
-            $dataBeras = BerasModel::whereDoesntHave('gudang')->with([
-                'produsen:id_produsen,nama_produsen',
-                'detail:id_detail,id_beras,berat,jumlah,harga',
-            ])->get();
-
-            // pisahkan detail berdasarkan berat
-            foreach ($dataBeras as $item) {
-                $detailMap = $item->detail->keyBy('berat');
-
-                $item->stok10kg = $detailMap->get(10); // bisa null kalau tidak ada
-                $item->stok20kg = $detailMap->get(20);
-                $item->stok50kg = $detailMap->get(50);
-            }
-
-            $dataGudang = GudangModel::with([
-                'beras:id_beras,nama_beras,jenis_beras',
-                'produsen:id_produsen,nama_produsen',
-                'detail:id_detail_gudang,id_gudang,berat,stok_awal,rusak,hilang,stok_sisa'
-            ])->get();
-
-            // pisahkan detail berdasarkan berat
-            foreach ($dataGudang as $item) {
-                $detailMap = $item->detail->keyBy('berat');
-
-                $item->stok10kg = $detailMap->get(10); // bisa null kalau tidak ada
-                $item->stok20kg = $detailMap->get(20);
-                $item->stok50kg = $detailMap->get(50);
-            }
 
             return Inertia::render('Admin/Gudang/Index', [
                 'dataBeras' => $dataBeras,
@@ -55,22 +56,12 @@ class GudangController extends Controller
         }
         if($loggedInUser->role === 'Pemilik')
         {
-            $dataBeras = BerasModel::whereDoesntHave('gudang')->with(['produsen:id_produsen,nama_produsen'])->get();
-            $dataGudang = GudangModel::with(['beras:id_beras,nama_beras','produsen:id_produsen,nama_produsen'])->get();
 
             return Inertia::render('Pemilik/Gudang/Index', [
                 'dataBeras' => $dataBeras,
                 'dataGudang' => $dataGudang,
             ]);
         }
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
