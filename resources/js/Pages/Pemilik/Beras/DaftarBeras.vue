@@ -9,6 +9,7 @@ onMounted(() =>
 {
     dataBerasFix.value = [...props.dataBeras]
     setDaftarProdusen()
+    setDataStats()
 })
 
 const filters = ref({
@@ -29,32 +30,65 @@ const dataBerasFix = ref([])
 
 const isLoading = ref(false)
 
-const selectedDataFilter = ref(null)
-
 const selectedDateProduksiRange = ref(null)
-
-const selectedDateExpireRange = ref(null)
 
 const selectedIdProdusen = ref(null)
 
 const daftarProdusen = ref([])
 
-const priceFilterData = [
-    {label : 'Termurah', value : 'ASC'},
-    {label : 'Termahal', value : 'DESC'},
-]
+const dataStats = ref({
+    total_tersedia : 0,
+    jumlah10kg : 0,
+    jumlah20kg : 0,
+    jumlah50kg : 0,
+})
+
+const resetDataStats = () =>
+{
+    dataStats.value.total_tersedia = 0
+    dataStats.value.jumlah10kg = 0
+    dataStats.value.jumlah20kg = 0
+    dataStats.value.jumlah50kg = 0
+}
+
+const setDataStats = () =>
+{
+    dataBerasFix.value.forEach(item => {
+        dataStats.value.total_tersedia += item.stok_tersedia
+        dataStats.value.jumlah10kg += item.stok10kg?.jumlah ?? 0
+        dataStats.value.jumlah20kg += item.stok20kg?.jumlah ?? 0
+        dataStats.value.jumlah50kg += item.stok50kg?.jumlah ?? 0
+    })
+}
+
+function formatDecimal(angka)
+{
+    if(angka)
+    {
+        return angka.toLocaleString('id-ID');
+    }
+
+    return 0
+}
 
 function formatRupiah(angka) {
-  return new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-    minimumFractionDigits: 0
-  }).format(angka);
+    if(angka)
+    {
+        return new Intl.NumberFormat('id-ID', {
+          style: 'currency',
+          currency: 'IDR',
+          minimumFractionDigits: 0
+        }).format(angka);
+    }
 }
 
 function formatTanggal(tanggal) {
-  const [tahun, bulan, hari] = tanggal.split('-')
-  return `${hari}/${bulan}/${tahun}`
+    if(tanggal)
+    {
+        const [tahun, bulan, hari] = tanggal.split('-')
+        return `${hari}/${bulan}/${tahun}`
+    }
+    return '-'
 }
 
 const normalizeDate = (date) => {
@@ -78,6 +112,7 @@ const setDaftarProdusen = () =>
 
 const filterByProdusen = () =>
 {
+    resetDataStats()
     isLoading.value = true
 
     if(selectedIdProdusen.value)
@@ -86,7 +121,7 @@ const filterByProdusen = () =>
 
         nextTick(() => {
             dataBerasFix.value = sorted
-            filterByPrice()
+            setDataStats()
             isLoading.value = false
         })
     }
@@ -96,16 +131,19 @@ const filterByProdusen = () =>
 
 const resetData = () =>
 {
+    resetDataStats()
     isLoading.value = true
     dataBerasFix.value = props.dataBeras.map((p, i) => ({...p, nomor: i + 1}))
 
     nextTick(() => {
+        setDataStats()
         isLoading.value = false
     })
 }
 
 const filterByDateProduksiRange = () =>
 {
+    resetDataStats()
     isLoading.value = true
 
     const start = normalizeDate(selectedDateProduksiRange.value[0])
@@ -117,69 +155,12 @@ const filterByDateProduksiRange = () =>
     nextTick(() =>
     {
         dataBerasFix.value = sorted
-        filterByPrice()
+        setDataStats()
     })
 
     isLoading.value = false
 }
 
-const filterByDateExpireRange = () =>
-{
-    isLoading.value = true
-
-    const start = normalizeDate(selectedDateExpireRange.value[0])
-
-    const end = normalizeDate(selectedDateExpireRange.value[1]) ?? start
-
-    const sorted  = props.dataBeras.filter(item => normalizeDate(item.tgl_kadaluarsa) >= start && normalizeDate(item.tgl_kadaluarsa) <= end).map((p, i) => ({...p, nomor: i + 1}))
-
-    nextTick(() =>
-    {
-        dataBerasFix.value = sorted
-        filterByPrice()
-    })
-
-    isLoading.value = false
-}
-
-const filterByPrice = () =>
-{
-    if(selectedDataFilter.value === 'ASC')
-    {
-        termurahFilter()
-    }
-    if(selectedDataFilter.value === 'DESC')
-    {
-        termahalFilter()
-    }
-}
-
-const termurahFilter = () =>
-{
-    isLoading.value = true
-    const dataSource = dataBerasFix.value ?? props.dataBeras
-
-    const sorted = dataSource.sort((a, b) => a.harga_jual - b.harga_jual).map((p, i) => ({...p, nomor: i + 1}))
-
-    nextTick(() =>
-    {
-        dataBerasFix.value = sorted
-        isLoading.value = false
-    })
-}
-
-const termahalFilter = () =>
-{
-    isLoading.value = true
-    const dataSource = dataBerasFix.value ?? props.dataBeras
-    const sorted = dataSource.sort((a, b) => b.harga_jual - a.harga_jual).map((p, i) => ({ ...p, nomor: i + 1}))
-
-    nextTick(() =>
-    {
-        dataBerasFix.value = sorted
-        isLoading.value = false
-    })
-}
 
 const cetakLaporan = () =>
 {
@@ -234,21 +215,10 @@ const cetakLaporan = () =>
                                 <i class="pi pi-users" />
                             </template>
                         </Select>
-                        <!-- filter by harga -->
-                        <Select :show-clear="true" @change="filterByPrice()" v-model="selectedDataFilter" placeholder="Filter Harga" :options="priceFilterData" optionLabel="label" optionValue="value" fluid>
-                            <template #dropdownicon>
-                                <i class="pi pi-filter-fill" />
-                            </template>
-                        </Select>
                         <!-- filter by tanggal -->
                         <FloatLabel variant="on">
                             <DatePicker class="w-[20rem]" show-button-bar @clear-click="resetData()" @date-select="filterByDateProduksiRange" showIcon iconDisplay="input" inputId="filterTanggal" v-model="selectedDateProduksiRange" selectionMode="range" :manual-input="false" date-format="yy-mm-dd"  fluid/>
                             <label for="filterTanggal">Filter Tanggal Produksi</label>
-                        </FloatLabel>
-                        <!-- filter by tanggal -->
-                        <FloatLabel variant="on">
-                            <DatePicker class="w-[20rem]" show-button-bar @clear-click="resetData()" @date-select="filterByDateExpireRange" showIcon iconDisplay="input" inputId="filterTanggal" v-model="selectedDateExpireRange" selectionMode="range" :manual-input="false" date-format="yy-mm-dd"  fluid/>
-                            <label for="filterTanggal">Filter Tanggal Kadaluarsa</label>
                         </FloatLabel>
 
                     </div>
@@ -263,24 +233,76 @@ const cetakLaporan = () =>
             <template #empty>
                 <span class="flex justify-center">Tidak Ada Beras</span>
             </template>
-            <Column sortable field="nomor" header="No" frozen/>
-            <Column sortable field="nama_beras" header="Nama Beras" style="min-width: 180px;" frozen/>
-            <Column sortable field="produsen.nama_produsen" header="Produsen" style="min-width: 180px;"/>
-            <Column field="jenis_beras" header="Jenis Beras" style="min-width: 140px;"/>
-            <Column sortable field="harga_jual" header="Harga Jual" style="min-width: 180px;">
+            <ColumnGroup type="header">
+                <Row>
+                    <Column sortable field="nomor" header="No" frozen rowspan="2"/>
+                    <Column sortable field="nama_beras" header="Nama Beras" style="min-width: 180px;" frozen rowspan="2"/>
+                    <Column sortable field="produsen.nama_produsen" header="Produsen" style="min-width: 180px;" rowspan="2"/>
+                    <Column header="Jenis Beras" style="min-width: 140px;" rowspan="2"/>
+                    <Column header="Stok Tersedia" style="min-width: 160px;" rowspan="2"/>
+                    <Column header="Status" rowspan="2"/>
+                    <Column header="Kualitas" rowspan="2"/>
+                    <Column header="10kg" colspan="2"/>
+                    <Column header="20kg" colspan="2"/>
+                    <Column header="50kg" colspan="2"/>
+                    <Column header="Sertifikat" style="min-width: 100px;" rowspan="2"/>
+                    <Column header="Tanggal Produksi" style="min-width: 160px;" rowspan="2"/>
+                </Row>
+                <Row>
+                    <Column header="Jumlah"/>
+                    <Column header="Harga"/>
+                    <Column header="Jumlah"/>
+                    <Column header="Harga"/>
+                    <Column header="Jumlah"/>
+                    <Column header="Harga"/>
+                </Row>
+            </ColumnGroup>
+             <Column field="nomor" frozen/>
+            <Column field="nama_beras" style="min-width: 180px;" frozen/>
+            <Column field="produsen.nama_produsen"  style="min-width: 180px;"/>
+            <Column field="jenis_beras" style="min-width: 140px;"/>
+            <Column field="stok_tersedia" style="min-width: 160px;">
                 <template #body="{data}">
-                    <span>{{ formatRupiah(data.harga_jual) }}</span>
+                    {{ data.stok_tersedia+' kg'}}
                 </template>
             </Column>
-            <Column sortable field="stok_awal" header="Stok Awal" style="min-width: 140px;"/>
-            <Column sortable field="stok_tersedia" header="Stok Tersedia" style="min-width: 160px;"/>
-            <Column header="Status">
+            <Column >
                 <template #body="{data}">
                     <Badge :value="data.status_beras" :severity="data.status_beras==='Tersedia'?'success':'danger'"/>
                 </template>
             </Column>
-            <Column field="kualitas_beras" header="Kualitas" style="min-width: 240px;"/>
-            <Column header="Sertifikat" style="min-width: 100px;">
+            <Column field="kualitas_beras"/>
+            <Column>
+                <template #body="{data}">
+                    {{ data.stok10kg?.jumlah ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ formatRupiah(data.stok10kg?.harga) ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ data.stok20kg?.jumlah ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ formatRupiah(data.stok20kg?.harga) ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ data.stok50kg?.jumlah ?? '-' }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ formatRupiah(data.stok50kg?.harga) ?? '-' }}
+                </template>
+            </Column>
+            <Column>
                 <template #body="{data}">
                     <div class="size-10 overflow-hidden border rounded" v-if="data?.sertifikat_beras">
                         <Image :src="data?.sertifikat_beras" class="size-full" preview />
@@ -288,16 +310,22 @@ const cetakLaporan = () =>
                     <span class="text-sm" v-else>Tidak ada sertifikat</span>
                 </template>
             </Column>
-            <Column sortable header="Tanggal Produksi" style="min-width: 240px;">
+            <Column>
                 <template #body="{data}">
                     <span>{{ formatTanggal(data.tgl_produksi) }}</span>
                 </template>
             </Column>
-            <Column sortable header="Tanggal Kadaluarsa" style="min-width: 240px;">
-                <template #body="{data}">
-                    <span>{{ formatTanggal(data.tgl_kadaluarsa) }}</span>
-                </template>
-            </Column>
+            <ColumnGroup type="footer" >
+                <Row>
+                    <Column colspan="2" frozen align-frozen="left"/>
+                    <Column footer="Total :" colspan="2" footerStyle="text-align:right"/>
+                    <Column :footer="formatDecimal(dataStats.total_tersedia)+' kg'" colspan="3"/>
+                    <Column :footer="formatDecimal(dataStats.jumlah10kg)" colspan="2"/>
+                    <Column :footer="formatDecimal(dataStats.jumlah20kg)" colspan="2"/>
+                    <Column :footer="formatDecimal(dataStats.jumlah50kg)" colspan="4"/>
+                    <Column colspan="1" frozen align-frozen="right"/>
+                </Row>
+            </ColumnGroup>
         </DataTable>
 
     </div>
