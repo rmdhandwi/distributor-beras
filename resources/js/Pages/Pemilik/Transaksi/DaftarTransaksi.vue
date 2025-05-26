@@ -24,7 +24,22 @@ const props = defineProps({
 const toast = useToast()
 const confirm = useConfirm()
 
-const totalStats = ref(0)
+const dataStats = ref({
+    jumlah_pesan : 0,
+    total_bayar : 0,
+    stok10kg : {
+        jumlah : 0,
+        total_harga : 0,
+    },
+    stok20kg : {
+        jumlah : 0,
+        total_harga : 0,
+    },
+    stok50kg : {
+        jumlah : 0,
+        total_harga : 0,
+    },
+})
 
 const isLoading = ref(false)
 
@@ -41,12 +56,26 @@ const emit = defineEmits(['editData', 'refreshPage'])
 
 const dataTransaksiFix = ref([])
 
+function formatDecimal(angka)
+{
+    if(angka)
+    {
+        return angka.toLocaleString('id-ID');
+    }
+
+    return 0
+}
+
 function formatRupiah(angka) {
-    return new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
-        minimumFractionDigits: 0
-    }).format(angka);
+    if(angka)
+    {
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0
+        }).format(angka);
+    }
+    return 0
 }
 
 function formatTanggal(tanggal) {
@@ -55,12 +84,33 @@ function formatTanggal(tanggal) {
         const [tahun, bulan, hari] = tanggal.split('-')
         return `${hari}/${bulan}/${tahun}`
     }
+
+    return '-'
+}
+
+const resetDataStats = () =>
+{
+    dataStats.value.jumlah_pesan = 0
+    dataStats.value.total_bayar = 0
+    dataStats.value.stok10kg.jumlah = 0
+    dataStats.value.stok10kg.total_harga = 0
+    dataStats.value.stok20kg.jumlah = 0
+    dataStats.value.stok20kg.total_harga = 0
+    dataStats.value.stok50kg.jumlah = 0
+    dataStats.value.stok50kg.total_harga = 0
 }
 
 const setDataStats = () =>
 {
     dataTransaksiFix.value.forEach(item => {
-        totalStats.value += item.total_harga
+        dataStats.value.jumlah_pesan += item.jmlh
+        dataStats.value.total_bayar += item.total_bayar
+        dataStats.value.stok10kg.jumlah += item.stok10kg?.jumlah ?? 0
+        dataStats.value.stok10kg.total_harga += item.stok10kg?.total_harga ?? 0
+        dataStats.value.stok20kg.jumlah += item.stok20kg?.jumlah ?? 0
+        dataStats.value.stok20kg.total_harga += item.stok20kg?.total_harga ?? 0
+        dataStats.value.stok50kg.jumlah += item.stok50kg?.jumlah ?? 0
+        dataStats.value.stok50kg.total_harga += item.stok50kg?.total_harga ?? 0
     })
 }
 
@@ -88,7 +138,8 @@ const resetData = () =>
 
 const filterByTransaksiDate = () =>
 {
-    totalStats.value = 0
+    resetDataStats()
+
     isLoading.value = true
 
     const start = normalizeDate(selectedTransaksiDate.value[0])
@@ -108,7 +159,8 @@ const filterByTransaksiDate = () =>
 
 const filterByPengirimanDate = () =>
 {
-    totalStats.value = 0
+    resetDataStats()
+
     isLoading.value = true
 
     const start = normalizeDate(selectedPengirimanDate.value[0])
@@ -157,7 +209,7 @@ const setDaftarProdusen = () =>
 
 const filterByBeras = () =>
 {
-    totalStats.value = 0
+    resetDataStats()
 
     isLoading.value = true
 
@@ -177,7 +229,7 @@ const filterByBeras = () =>
 
 const filterByProdusen = () =>
 {
-    totalStats.value = 0
+    resetDataStats()
 
     isLoading.value = true
 
@@ -206,7 +258,7 @@ const switchStatus = status =>
 
         case 'Dalam Pengiriman' : return 'info';
 
-        case 'Transaksi Selesai' : return 'success';
+        case 'Selesai' : return 'success';
     }
 }
 
@@ -301,61 +353,131 @@ const cetakLaporan = () =>
             <template #empty>
                 <span class="flex justify-center">Tidak Ada Transaksi</span>
             </template>
-            <Column sortable field="nomor" header="No" frozen/>
-            <Column filter-field="pemesanan.beras.nama_beras" header="Nama Beras" style="min-width: 150px;" frozen>
+            <ColumnGroup type="header">
+                <Row>
+                    <Column sortable field="nomor" header="No" frozen rowspan="2"/>
+                    <Column sortable field="pemesanan.beras.nama_beras" header="Nama Beras" style="min-width: 150px;" frozen rowspan="2"/>
+                    <Column filter-field="pemesanan.produsen.nama_produsen" header="Produsen" style="min-width: 150px;" rowspan="2"/>
+                    <Column sortable field="tgl_transaksi" header="Tanggal Transaksi" style="min-width: 200px;" rowspan="2"/>
+                    <Column field="jmlh" header="Jumlah Pesan" style="min-width: 150px;" rowspan="2"/>
+                    <Column header="10kg" colspan="2"/>
+                    <Column header="20kg" colspan="2"/>
+                    <Column header="50kg" colspan="2"/>
+                    <Column header="Total Bayar" style="min-width: 100px;" rowspan="2"/>
+                    <Column header="Bukti Bayar" style="min-width: 150px;" rowspan="2"/>
+                    <Column header="Status Pembayaran" style="min-width: 150px;" rowspan="2"/>
+                    <Column header="Status Pengiriman" style="min-width: 150px;" rowspan="2"/>
+                    <Column field="tgl_pengiriman" sortable header="Tanggal Pengiriman" style="min-width: 100px;" rowspan="2"/>
+                    <Column field="catatan" header="Catatan" style="min-width: 150px;" rowspan="2"/>
+                </Row>
+                <Row>
+                    <!-- 10kg -->
+                    <Column sortable field="stok10kg.jumlah" header="Jumlah"/>
+                    <Column sortable field="stok10kg.total_bayar" header="Total Harga" style="min-width: 140px;"/>
+                    <!-- 20kg -->
+                    <Column sortable field="stok20kg.jumlah" header="Jumlah"/>
+                    <Column sortable field="stok20kg.total_bayar" header="Total Harga" style="min-width: 140px;"/>
+                    <!-- 50kg -->
+                    <Column sortable field="stok50kg.jumlah" header="Jumlah"/>
+                    <Column sortable field="stok50kg.total_bayar" header="Total Harga" style="min-width: 140px;"/>
+                </Row>
+            </ColumnGroup>
+            <Column field="nomor" frozen/>
+            <Column frozen>
                 <template #body="{data}">
                     {{ data.pemesanan?.beras?.nama_beras }}
                 </template>
             </Column>
-            <Column filter-field="pemesanan.produsen.nama_produsen" header="Produsen" style="min-width: 150px;">
+            <Column>
                 <template #body="{data}">
                     {{ data.pemesanan?.produsen?.nama_produsen }}
                 </template>
             </Column>
-            <Column header="Tanggal Transaksi" style="min-width: 100px;">
+            <Column sortable>
                 <template #body="{data}">
                     <span>{{ formatTanggal(data.tgl_transaksi) ?? 'Belum dijadwalkan' }}</span>
                 </template>
             </Column>
-            <Column field="jmlh" header="Jumlah Pesan" style="min-width: 100px;"/>
-            <Column filter-field="harga_satuan" header="Harga Satuan" style="min-width: 100px;">
+            <Column field="jmlh"/>
+            <!-- 10kg -->
+            <Column>
                 <template #body="{data}">
-                    {{ formatRupiah(data.harga_satuan) }}
+                    {{ formatDecimal(data.stok10kg?.jumlah) }}
                 </template>
             </Column>
-            <Column header="Total Harga" style="min-width: 100px;">
+            <Column>
                 <template #body="{data}">
-                    {{ formatRupiah(data.total_harga) }}
+                    {{ formatRupiah(data.stok10kg?.total_harga) }}
                 </template>
             </Column>
-            <Column header="Bukti Bayar" style="min-width: 150px;">
+            <!-- 20kg -->
+            <Column>
+                <template #body="{data}">
+                    {{ formatDecimal(data.stok20kg?.jumlah) }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ formatRupiah(data.stok20kg?.total_harga) }}
+                </template>
+            </Column>
+            <!-- 50kg -->
+            <Column>
+                <template #body="{data}">
+                    {{ formatDecimal(data.stok50kg?.jumlah) }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ formatRupiah(data.stok50kg?.total_harga) }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ formatRupiah(data.total_bayar) }}
+                </template>
+            </Column>
+            <Column>
                 <template #body="{data}">
                     <div class="size-10 overflow-hidden border rounded" v-if="data?.bukti_bayar">
                         <Image :src="data?.bukti_bayar" class="size-full" preview />
                     </div>
-                    <Tag severity="warn" value="Silahkan Upload Bukti Pembayaran" v-else/>
+                    <Tag severity="warn" value="Belum Upload" v-else/>
                 </template>
             </Column>
-            <Column header="Status Pembayaran" style="min-width: 150px;">
+            <Column>
                 <template #body="{data}">
                     <Tag :value="data.status_pembayaran" :severity="switchStatusBayar(data.status_pembayaran)"/>
                 </template>
             </Column>
-            <Column header="Status Pengiriman" style="min-width: 150px;">
+            <Column>
                 <template #body="{data}">
                     <Tag :value="data.status_pengiriman" :severity="switchStatus(data.status_pengiriman)"/>
                 </template>
             </Column>
-            <Column header="Tanggal Pengiriman" style="min-width: 100px;">
+            <Column>
                 <template #body="{data}">
                     <span>{{ formatTanggal(data.tgl_pengiriman) ??'Belum dijadwalkan'  }}</span>
                 </template>
             </Column>
-            <Column field="catatan" header="Catatan" style="min-width: 150px;"/>
+            <Column field="catatan"/>
             <ColumnGroup type="footer">
                 <Row>
-                    <Column footer="Total :" colspan="6" footerStyle="text-align:right"/>
-                    <Column :footer="formatRupiah(totalStats)" colspan="7"/>
+                    <Column frozen/>
+                    <Column frozen/>
+                    <Column footer="Total :" footerStyle="text-align:right" colspan="2"/>
+                    <Column :footer="dataStats.jumlah_pesan"/>
+                    <!-- 10kg -->
+                    <Column :footer="dataStats.stok10kg?.jumlah"/>
+                    <Column :footer="formatRupiah(dataStats.stok10kg?.total_harga)"/>
+                    <!-- 20kg -->
+                    <Column :footer="dataStats.stok20kg?.jumlah"/>
+                    <Column :footer="formatRupiah(dataStats.stok20kg?.total_harga)"/>
+                    <!-- 50kg -->
+                    <Column :footer="dataStats.stok50kg?.jumlah"/>
+                    <Column :footer="formatRupiah(dataStats.stok50kg?.total_harga)"/>
+                    <Column colspan="2" :footer="formatRupiah(dataStats.total_bayar)"/>
+                    <Column colspan="4"/>
                 </Row>
             </ColumnGroup>
         </DataTable>
