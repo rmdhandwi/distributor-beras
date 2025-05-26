@@ -24,6 +24,14 @@ class BerasController extends Controller
         {
             $dataProdusen = ProdusenModel::select('id_produsen','nama_produsen')->get();
             $dataBeras = BerasModel::with(['produsen:id_produsen,nama_produsen', 'detail:id_beras,berat,jumlah,harga'])->get();
+            // pisahkan detail berdasarkan berat
+            foreach ($dataBeras as $item) {
+                $detailMap = $item->detail->keyBy('berat');
+
+                $item->stok10kg = $detailMap->get(10); // bisa null kalau tidak ada
+                $item->stok20kg = $detailMap->get(20);
+                $item->stok50kg = $detailMap->get(50);
+            }
             return Inertia::render('Admin/Beras/Index', [
                 'dataProdusen' => $dataProdusen,
                 'dataBeras' => $dataBeras,
@@ -54,6 +62,14 @@ class BerasController extends Controller
         {
             $dataProdusen = ProdusenModel::select('id_produsen','nama_produsen')->get();
             $dataBeras = BerasModel::with(['produsen:id_produsen,nama_produsen', 'detail:id_beras,berat,jumlah,harga'])->get();
+            // pisahkan detail berdasarkan berat
+            foreach ($dataBeras as $item) {
+                $detailMap = $item->detail->keyBy('berat');
+
+                $item->stok10kg = $detailMap->get(10); // bisa null kalau tidak ada
+                $item->stok20kg = $detailMap->get(20);
+                $item->stok50kg = $detailMap->get(50);
+            }
             return Inertia::render('Pemilik/Beras/Index', [
                 'dataProdusen' => $dataProdusen,
                 'dataBeras' => $dataBeras,
@@ -175,7 +191,7 @@ class BerasController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $req)
-    {   
+    {
         $id = $req->id_beras;
          // Format ulang tanggal dari ISO menjadi Y-m-d
         if(!empty($req->tgl_produksi))
