@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BerasModel;
-use App\Models\GudangModel;
+use App\Models\DetailGudangModel;
 use App\Models\ProdusenModel;
 use App\Models\TransaksiModel;
 use Illuminate\Http\Request;
@@ -16,16 +16,28 @@ class PemilikController extends Controller
     //
     public function dashboardPage()
     {
-        $dataBeras = BerasModel::selectRaw('
-            MIN(harga_jual) as min_harga_jual,
-            AVG(harga_jual) as avg_harga_jual,
-            MAX(harga_jual) as max_harga_jual,
-            SUM(stok_tersedia) as total_stok_tersedia,
-            COUNT(DISTINCT jenis_beras) as jenis_beras
-        ')->get();
+        $dataBeras = BerasModel::with('detail')->get();
 
-        $dataGudang = GudangModel::selectRaw('SUM(stok_awal) as total_stok_awal, SUM(rusak) as total_rusak, SUM(hilang) as total_hilang, SUM(stok_sisa) as total_stok_sisa')
-        ->first();
+        // Gabungkan semua detail dari setiap beras
+        $allDetail = $dataBeras->flatMap->detail;
+
+        // Group dan hitung manual
+        $statistikHarga = $allDetail->groupBy('berat')->map(function ($group) {
+            return [
+                'rata_rata' => $group->avg('harga'),
+                'termurah'  => $group->min('harga'),
+                'termahal'  => $group->max('harga'),
+            ];
+        });
+
+        $gudangDetails = DetailGudangModel::get();
+
+        $dataGudang = (object)[
+            'total_stok_awal' => $gudangDetails->sum('stok_awal'),
+            'total_rusak'     => $gudangDetails->sum('rusak'),
+            'total_hilang'    => $gudangDetails->sum('hilang'),
+            'total_stok_sisa' => $gudangDetails->sum('stok_sisa'),
+        ];
 
         $dataProdusen = ProdusenModel::selectRaw('
             COUNT(*) as total,
@@ -49,7 +61,7 @@ class PemilikController extends Controller
         ->get();
 
         return Inertia::render('Pemilik/Dashboard', [
-            'dataBeras' => $dataBeras,
+            'statistikHarga' => $statistikHarga,
             'dataBerasChart' => $dataBerasChart,
             'dataGudang' => $dataGudang,
             'dataProdusen' => $dataProdusen,
