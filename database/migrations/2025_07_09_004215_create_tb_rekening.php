@@ -12,8 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tb_rekening', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->id('id_rekening');
+            $table->string('no_rekening');
+            $table->string('nama_rekening')->unique();
+            $table->dateTime('created_at');
+            $table->dateTime('updated_at')->nullable();
+        });
+
+        Schema::table('tb_transaksi', function (Blueprint $table) {
+            $table->foreignId('rekening')->nullable()->after('total_bayar')->constrained('tb_rekening', 'id_rekening')->onDelete('cascade');
         });
     }
 
