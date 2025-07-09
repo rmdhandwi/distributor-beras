@@ -50,4 +50,9 @@ class User extends Authenticatable
             'user_id' => 'string',
         ];
     }
+
+    public function daftarNoRek()
+    {
+        return $this->hasMany(RekeningModel::class, 'id_produsen', 'user_id');
+    }
 }
