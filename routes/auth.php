@@ -8,6 +8,7 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PemesananController;
 use App\Http\Controllers\PemilikController;
 use App\Http\Controllers\ProdusenController;
+use App\Http\Controllers\RekeningController;
 use App\Http\Controllers\TransaksiController;
 use Illuminate\Support\Facades\Route;
 
@@ -78,6 +79,8 @@ Route::middleware(['auth', 'produsen'])->group(function () {
     Route::post('produsen/beras/tambah', [BerasController::class, 'store'])->name('produsen.beras.store');
     Route::post('produsen/beras/update', [BerasController::class, 'update'])->name('produsen.beras.update');
     Route::post('produsen/beras/destroy', [BerasController::class, 'destroy'])->name('produsen.beras.destroy');
+
+    Route::get('/produsen/rekening', [RekeningController::class, 'index'])->name('produsen.rekening.index');
 
 
     Route::get('/produsen/pemesanan/', [PemesananController::class, 'index'])->name('produsen.pemesanan.index');
