@@ -16,6 +16,7 @@ onMounted(() =>
 const props = defineProps({
     flash : Object,
     dataTransaksi : Object,
+    daftarNoRek : Object
 })
 
 const toast = useToast()
@@ -74,6 +75,7 @@ const componentProps = computed(() => {
         case 'DaftarTransaksi':
         return {
             dataTransaksi: props.dataTransaksi?.map((p, i) => ({ nomor: i + 1, ...p })),
+            daftarNoRek : props.daftarNoRek
         };
 
         default:
