@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3000
--- Generation Time: May 25, 2025 at 06:46 PM
+-- Generation Time: Jul 09, 2025 at 02:25 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.7
 
@@ -51,7 +51,11 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (11, '2025_05_06_001414_make_tgl_pengiriman_nullable', 4),
 (16, '2025_05_20_183427_create_tb_detail_beras', 5),
 (17, '2025_05_22_190149_create_tb_detail_pemesanan', 6),
-(18, '2025_05_23_170605_create_tb_detail_gudang', 6);
+(18, '2025_05_23_170605_create_tb_detail_gudang', 6),
+(19, '2025_07_09_004215_create_tb_rekening', 7),
+(20, '2025_07_09_150147_add_id_produsen_column_on_tb_rekening', 8),
+(21, '2025_07_09_214319_remove_unique_from_nama_rekening_in_tb_rekening', 9),
+(22, '2025_07_09_215141_update_foreign_key_on_tb_rekening', 10);
 
 -- --------------------------------------------------------
 
@@ -73,8 +77,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('9kK3tXazVqLQUgGF8Wu0VsV5qJnCGmBIrm3WhWkO', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YToyOntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im5ldyI7YTowOnt9czozOiJvbGQiO2E6MDp7fX1zOjY6Il90b2tlbiI7czo0MDoiVGVYNW01VVlmek1aUHNNbFpZWVhTV3NpMmMyT1EyckMwc1daYkp0byI7fQ==', 1748198776),
-('dhkZgfcQBL3KBpvdAxz8IdMTHcf2ftNQwrNCQ0nT', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36', 'YToyOntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im5ldyI7YTowOnt9czozOiJvbGQiO2E6MDp7fX1zOjY6Il90b2tlbiI7czo0MDoienkxRTY1a25oWElkZzV1N0Y1aGF3THByaHQ1TWFnVnRHSEFaQkwwaSI7fQ==', 1748198780);
+('E3JjjE7j73fnyDNJa8HIxSrPWf0IrnvVxkYYEUCv', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', 'YToyOntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im5ldyI7YTowOnt9czozOiJvbGQiO2E6MDp7fX1zOjY6Il90b2tlbiI7czo0MDoiYjIwc08zb2N4T1JEOGZFVEU0QWN2aFBpdmMzT1AzNTBiaG9VdGxTNSI7fQ==', 1752071123),
+('xgZ5Z3ga0XoGoNpM1PBFXZkiuWzE5SPAiEAVevYn', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', 'YToyOntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im5ldyI7YTowOnt9czozOiJvbGQiO2E6MDp7fX1zOjY6Il90b2tlbiI7czo0MDoiMkxac3B1eWxMekdLb3FRVW9JRDRLbGZiaERETVBhOW9IMDFNNmNjWCI7fQ==', 1752071127);
 
 -- --------------------------------------------------------
 
@@ -268,7 +272,7 @@ CREATE TABLE `tb_pemesanan` (
 
 INSERT INTO `tb_pemesanan` (`id_pemesanan`, `id_produsen`, `id_beras`, `jmlh`, `tgl_pemesanan`, `status_pesanan`, `catatan`, `created_at`, `updated_at`) VALUES
 (5, 3, 28, 60, '2025-05-25', 'Telah Dikonfirmasi', 'Stok menipis', '2025-05-25 02:21:12', '2025-05-26 03:19:20'),
-(6, 2, 25, 25, '2025-05-26', 'Pending', '-', '2025-05-25 03:08:58', '2025-05-26 00:04:07'),
+(6, 2, 25, 25, '2025-05-26', 'Telah Dikonfirmasi', '-', '2025-05-25 03:08:58', '2025-07-09 21:58:02'),
 (7, 3, 29, 10, '2025-05-26', 'Telah Dikonfirmasi', '-', '2025-05-26 00:17:24', '2025-05-26 00:56:25');
 
 -- --------------------------------------------------------
@@ -302,6 +306,31 @@ INSERT INTO `tb_produsen` (`id_produsen`, `user_id`, `nama_produsen`, `alamat`, 
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tb_rekening`
+--
+
+CREATE TABLE `tb_rekening` (
+  `id_rekening` bigint UNSIGNED NOT NULL,
+  `id_produsen` bigint UNSIGNED NOT NULL,
+  `no_rekening` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nama_rekening` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tb_rekening`
+--
+
+INSERT INTO `tb_rekening` (`id_rekening`, `id_produsen`, `no_rekening`, `nama_rekening`, `created_at`, `updated_at`) VALUES
+(4, 4, '12348765', 'BCA', '2025-07-09 21:55:15', '2025-07-09 21:55:15'),
+(5, 4, '1234876501', 'MANDIRI', '2025-07-09 21:55:55', '2025-07-09 21:55:55'),
+(6, 4, '081234567802', 'DANA', '2025-07-09 21:56:45', '2025-07-09 21:56:45'),
+(7, 5, '21836913', 'BRI', '2025-07-09 23:14:34', '2025-07-09 23:14:34');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tb_transaksi`
 --
 
@@ -311,6 +340,7 @@ CREATE TABLE `tb_transaksi` (
   `tgl_transaksi` date DEFAULT NULL,
   `jmlh` int NOT NULL,
   `total_bayar` int NOT NULL,
+  `rekening` bigint UNSIGNED DEFAULT NULL,
   `bukti_bayar` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `status_pembayaran` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `status_pengiriman` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -324,9 +354,10 @@ CREATE TABLE `tb_transaksi` (
 -- Dumping data for table `tb_transaksi`
 --
 
-INSERT INTO `tb_transaksi` (`id_transaksi`, `id_pemesanan`, `tgl_transaksi`, `jmlh`, `total_bayar`, `bukti_bayar`, `status_pembayaran`, `status_pengiriman`, `tgl_pengiriman`, `catatan`, `created_at`, `updated_at`) VALUES
-(8, 7, '2025-05-26', 10, 2450000, '/storage/upload/bukti_bayar_/26-05-2025/8-26-05-2025-26-05-2025.jpg', 'Selesai', 'Selesai', '2025-05-26', '- terdapat 2 karung yang rusak', '2025-05-26 00:56:25', '2025-05-26 03:20:26'),
-(9, 5, NULL, 60, 21980000, NULL, 'Pending', 'Pending', NULL, '-', '2025-05-26 03:19:20', '2025-05-26 03:19:20');
+INSERT INTO `tb_transaksi` (`id_transaksi`, `id_pemesanan`, `tgl_transaksi`, `jmlh`, `total_bayar`, `rekening`, `bukti_bayar`, `status_pembayaran`, `status_pengiriman`, `tgl_pengiriman`, `catatan`, `created_at`, `updated_at`) VALUES
+(8, 7, '2025-05-26', 10, 2450000, 7, '/storage/upload/bukti_bayar_/26-05-2025/8-26-05-2025-26-05-2025.jpg', 'Selesai', 'Selesai', '2025-05-26', '- terdapat 2 karung yang rusak', '2025-05-26 00:56:25', '2025-05-26 03:20:26'),
+(9, 5, NULL, 60, 21980000, NULL, NULL, 'Pending', 'Pending', NULL, '-', '2025-05-26 03:19:20', '2025-05-26 03:19:20'),
+(10, 6, '2025-07-09', 25, 2700000, 4, '/storage/upload/bukti_bayar_/09-07-2025/10-09-07-2025-09-07-2025.jpg', 'Pending', 'Pending', NULL, '-', '2025-07-09 21:58:02', '2025-07-09 22:45:42');
 
 -- --------------------------------------------------------
 
@@ -428,11 +459,19 @@ ALTER TABLE `tb_produsen`
   ADD KEY `tb_produsen_user_id_foreign` (`user_id`);
 
 --
+-- Indexes for table `tb_rekening`
+--
+ALTER TABLE `tb_rekening`
+  ADD PRIMARY KEY (`id_rekening`),
+  ADD KEY `tb_rekening_id_produsen_foreign` (`id_produsen`);
+
+--
 -- Indexes for table `tb_transaksi`
 --
 ALTER TABLE `tb_transaksi`
   ADD PRIMARY KEY (`id_transaksi`),
-  ADD KEY `tb_transaksi_id_pemesanan_foreign` (`id_pemesanan`);
+  ADD KEY `tb_transaksi_id_pemesanan_foreign` (`id_pemesanan`),
+  ADD KEY `tb_transaksi_rekening_foreign` (`rekening`);
 
 --
 -- Indexes for table `users`
@@ -449,7 +488,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `tb_beras`
@@ -494,10 +533,16 @@ ALTER TABLE `tb_produsen`
   MODIFY `id_produsen` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT for table `tb_rekening`
+--
+ALTER TABLE `tb_rekening`
+  MODIFY `id_rekening` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
 -- AUTO_INCREMENT for table `tb_transaksi`
 --
 ALTER TABLE `tb_transaksi`
-  MODIFY `id_transaksi` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id_transaksi` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -554,10 +599,17 @@ ALTER TABLE `tb_produsen`
   ADD CONSTRAINT `tb_produsen_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 
 --
+-- Constraints for table `tb_rekening`
+--
+ALTER TABLE `tb_rekening`
+  ADD CONSTRAINT `tb_rekening_id_produsen_foreign` FOREIGN KEY (`id_produsen`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
+
+--
 -- Constraints for table `tb_transaksi`
 --
 ALTER TABLE `tb_transaksi`
-  ADD CONSTRAINT `tb_transaksi_id_pemesanan_foreign` FOREIGN KEY (`id_pemesanan`) REFERENCES `tb_pemesanan` (`id_pemesanan`) ON DELETE CASCADE;
+  ADD CONSTRAINT `tb_transaksi_id_pemesanan_foreign` FOREIGN KEY (`id_pemesanan`) REFERENCES `tb_pemesanan` (`id_pemesanan`) ON DELETE CASCADE,
+  ADD CONSTRAINT `tb_transaksi_rekening_foreign` FOREIGN KEY (`rekening`) REFERENCES `tb_rekening` (`id_rekening`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
