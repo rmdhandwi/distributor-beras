@@ -11,7 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //
+        Schema::table('tb_rekening', function (Blueprint $table) {
+            $table->foreignId('id_produsen')->after('id_rekening')->constrained('tb_produsen', 'id_produsen')->onDelete('cascade');
+        });
     }
 
     /**
