@@ -20,6 +20,7 @@ export const pemilikMenu = reactive([
 export const produsenMenu = reactive([
     { label: "Dashboard", icon: "pi pi-home", route: "produsen.dashboard" },
     { label: "Beras", icon: "pi pi-box", route: "produsen.beras.index" },
+    { label: "Rekening", icon: "pi pi-credit-card", route: "produsen.rekening.index" },
     { label: "Pemesanan", icon: "pi pi-shopping-cart", route: "produsen.pemesanan.index" },
     { label: "Transaksi", icon: "pi pi-arrow-right-arrow-left", route: "produsen.transaksi.index" },
 ]);
