@@ -17,6 +17,7 @@ class TransaksiModel extends Model
         'tgl_transaksi',
         'jmlh',
         'total_bayar',
+        'rekening',
         'bukti_bayar',
         'status_pembayaran',
         'status_pengiriman',
@@ -28,6 +29,11 @@ class TransaksiModel extends Model
         'tgl_transaksi' => 'string',
         'tgl_pengiriman' => 'string',
     ];
+
+    public function rekening()
+    {
+        return $this->belongsTo(RekeningModel::class, 'rekening', 'id_rekening');
+    }
 
     // relasi ke pemesanan
     public function pemesanan()
