@@ -17,4 +17,14 @@ class RekeningModel extends Model
         'no_rekening',
         'nama_rekening',
     ];
+
+    public function transaksi()
+    {
+        return $this->hasMany(TransaksiModel::class, 'rekening', 'id_rekening');
+    }
+
+    public function produsen()
+    {
+        return $this->belongsTo(User::class, 'id_produsen', 'user_id');
+    }
 }
