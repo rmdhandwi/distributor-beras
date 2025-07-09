@@ -8,6 +8,7 @@ import { useConfirm, useToast } from 'primevue'
 onMounted(() =>
 {
     dataTransaksiFix.value = props.dataTransaksi
+    daftarNoRekFix.value = props.daftarNoRek
     setDaftarBeras()
     setDaftarProdusen()
     setDataStats()
@@ -19,6 +20,7 @@ const filters = ref({
 
 const props = defineProps({
     dataTransaksi : Object,
+    daftarNoRek : Object
 })
 
 const showPengiriman = ref(false)
@@ -57,6 +59,7 @@ const selectedPengirimanDate = ref(null)
 const emit = defineEmits(['editData', 'refreshPage'])
 
 const dataTransaksiFix = ref([])
+const daftarNoRekFix = ref([])
 
 const previewImg = ref(null)
 const showPreviewBukti = ref(false)
@@ -65,6 +68,7 @@ const transaksiForm = useForm({
     id_transaksi : null,
     nama_pesanan : null,
     total_bayar : null,
+    rekening : null,
     jumlah_pesanan : null,
     tgl_transaksi : null,
     tgl_pengiriman : null,
@@ -278,6 +282,7 @@ const setSelesaiTransaksi = id_transaksi =>
     transaksiForm.nama_pesanan = dataFilter[0]?.pemesanan?.beras?.nama_beras
     transaksiForm.jumlah_pesanan = dataFilter[0]?.jmlh
     transaksiForm.total_bayar = formatRupiah(dataFilter[0]?.total_bayar)
+    transaksiForm.rekening = dataFilter[0]?.rekening
     transaksiForm.tgl_transaksi = formatTanggal(dataFilter[0]?.tgl_transaksi)
     transaksiForm.tgl_pengiriman = formatTanggal(dataFilter[0]?.tgl_pengiriman)
     transaksiForm.bukti_bayar = dataFilter[0]?.bukti_bayar
@@ -288,9 +293,10 @@ const setSelesaiTransaksi = id_transaksi =>
     showPengiriman.value = true
 }
 
-const uploadBukti = id_transaksi =>
+const uploadBukti = (id_transaksi, user_id) =>
 {
     const dataFilter = props.dataTransaksi.filter((transaksi) => transaksi.id_transaksi === id_transaksi)
+    daftarNoRekFix.value = props.daftarNoRek.filter(data => data.id_produsen === user_id)
     transaksiForm.id_transaksi = id_transaksi
     transaksiForm.nama_pesanan = dataFilter?.pemesanan?.beras?.nama_beras
     showPreviewBukti.value = true
@@ -337,6 +343,14 @@ const onUpload = (e) =>
         reader.readAsDataURL(transaksiForm.bukti_bayar);
     }, 2000)
 
+}
+
+const setRekening = idRekening =>
+{
+    const getRekening = props.daftarNoRek.find(data => data.id_rekening === idRekening)
+
+    if(getRekening) return getRekening?.nama_rekening+'-'+getRekening?.no_rekening
+    else return 'Belum melakukan pembayaran'
 }
 
 const switchStatus = status =>
@@ -482,7 +496,17 @@ const cetakLaporan = () =>
 
 <template>
     <!-- Dialog preview Bukti -->
-    <Dialog v-model:visible="showPreviewBukti" modal header="Preview Bukti" :style="{ width: '25rem' }">
+    <Dialog v-model:visible="showPreviewBukti" modal header="Upload Bukti" :style="{ width: '25rem' }">
+        <div class="my-4">
+            <FloatLabel variant="on">
+                <Select v-model="transaksiForm.rekening" inputId="id_rekening" :options="daftarNoRekFix" optionLabel="nama_rekening" optionValue="id_rekening" fluid>
+                    <template #option="slotProps">
+                        {{ slotProps.option.nama_rekening+'-'+slotProps.option.no_rekening }}
+                    </template>
+                </Select>
+                <label for="id_rekening">Pilih Rekening Tujuan</label>
+            </FloatLabel>
+        </div>
         <div class="w-full min-h-60 overflow-hidden border rounded mb-2">
             <Image :src="previewImg" class="size-full" preview/>
         </div>
@@ -631,6 +655,7 @@ const cetakLaporan = () =>
                     <Column header="20kg" colspan="2"/>
                     <Column header="50kg" colspan="2"/>
                     <Column header="Total Bayar" style="min-width: 100px;" rowspan="2"/>
+                    <Column header="Rekening" style="min-width: 100px;" rowspan="2"/>
                     <Column header="Bukti Bayar" style="min-width: 150px;" rowspan="2"/>
                     <Column header="Status Pembayaran" style="min-width: 150px;" rowspan="2"/>
                     <Column header="Status Pengiriman" style="min-width: 150px;" rowspan="2"/>
@@ -707,6 +732,11 @@ const cetakLaporan = () =>
             </Column>
             <Column>
                 <template #body="{data}">
+                    {{ setRekening(data.rekening) }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
                     <div class="size-10 overflow-hidden border rounded" v-if="data?.bukti_bayar">
                         <Image :src="data?.bukti_bayar" class="size-full" preview />
                     </div>
@@ -732,7 +762,7 @@ const cetakLaporan = () =>
             <Column header="Action" frozen align-frozen="right">
                 <template #body="{data}">
                     <div class="flex place-content-center gap-2">
-                        <Button @click="uploadBukti(data.id_transaksi)" severity="info" size="small" icon="pi pi-camera" :disabled="data.bukti_bayar" v-if="!data.bukti_bayar"/>
+                        <Button @click="uploadBukti(data.id_transaksi, data.pemesanan.produsen.user_id)" severity="info" size="small" icon="pi pi-camera" :disabled="data.bukti_bayar" v-if="!data.bukti_bayar"/>
                         <Button severity="success" @click="setSelesaiTransaksi(data.id_transaksi)" size="small" label="Konfirmasi" v-if="data.status_pengiriman==='Dijadwalkan'"/>
                         <Tag icon="pi pi-check" severity="success" v-else/>
                     </div>
