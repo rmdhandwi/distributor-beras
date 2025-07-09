@@ -8,6 +8,7 @@ import { useConfirm, useToast } from 'primevue'
 onMounted(() =>
 {
     dataTransaksiFix.value = props.dataTransaksi
+    daftarNoRekFix.value = props.daftarNoRek
     setDaftarBeras()
     setDataStats()
 })
@@ -18,6 +19,7 @@ const filters = ref({
 
 const props = defineProps({
     dataTransaksi : Object,
+    daftarNoRek : Object,
 })
 
 const emit = defineEmits(['refreshPage'])
@@ -53,6 +55,7 @@ const selectedTransaksiDate = ref(null)
 const selectedPengirimanDate = ref(null)
 
 const dataTransaksiFix = ref([])
+const daftarNoRekFix = ref([])
 
 const showPengiriman = ref(false)
 
@@ -60,6 +63,7 @@ const transaksiForm = useForm({
     id_transaksi : null,
     nama_pesanan : null,
     total_bayar : null,
+    rekening : null,
     jumlah_pesanan : null,
     tgl_transaksi : null,
     tgl_pengiriman : null,
@@ -229,6 +233,14 @@ const filterByBeras = () =>
     else resetData()
 }
 
+const setRekening = idRekening =>
+{
+    const getRekening = props.daftarNoRek.find(data => data.id_rekening === idRekening)
+
+    if(getRekening) return getRekening?.nama_rekening+'-'+getRekening?.no_rekening
+    else return 'Belum melakukan pembayaran'
+}
+
 const switchStatus = status =>
 {
     switch(status)
@@ -260,6 +272,7 @@ const setJadwal = id_transaksi =>
     transaksiForm.nama_pesanan = dataFilter[0]?.pemesanan?.beras?.nama_beras
     transaksiForm.jumlah_pesanan = dataFilter[0]?.jmlh
     transaksiForm.total_bayar = formatRupiah(dataFilter[0]?.total_bayar)
+    transaksiForm.rekening = dataFilter[0]?.rekening
     transaksiForm.tgl_transaksi = formatTanggal(dataFilter[0]?.tgl_transaksi)
     transaksiForm.bukti_bayar = dataFilter[0]?.bukti_bayar
 
@@ -388,6 +401,14 @@ const cetakLaporan = () =>
                     <label for="tgl_transaksi">Tanggal Transaksi</label>
                 </FloatLabel>
             </div>
+
+            <!-- Rekening pesanan -->
+            <div>
+                <FloatLabel variant="on">
+                    <InputText id="tgl_transaksi" :model-value="setRekening(transaksiForm.rekening)"  disabled fluid/>
+                    <label for="tgl_transaksi">Rekening</label>
+                </FloatLabel>
+            </div>
             <!-- Bukti Bayar -->
             <div>
                 <span>Bukti Pembayaran</span>
@@ -472,6 +493,7 @@ const cetakLaporan = () =>
                     <Column header="20kg" colspan="2"/>
                     <Column header="50kg" colspan="2"/>
                     <Column header="Total Bayar" style="min-width: 100px;" rowspan="2"/>
+                    <Column header="Rekening" style="min-width: 100px;" rowspan="2"/>
                     <Column header="Bukti Bayar" style="min-width: 150px;" rowspan="2"/>
                     <Column header="Status Pembayaran" style="min-width: 150px;" rowspan="2"/>
                     <Column header="Status Pengiriman" style="min-width: 150px;" rowspan="2"/>
@@ -539,6 +561,11 @@ const cetakLaporan = () =>
             <Column>
                 <template #body="{data}">
                     {{ formatRupiah(data.total_bayar) }}
+                </template>
+            </Column>
+            <Column>
+                <template #body="{data}">
+                    {{ setRekening(data.rekening) }}
                 </template>
             </Column>
             <Column>
