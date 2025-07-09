@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PemesananModel;
 use App\Models\ProdusenModel;
+use App\Models\RekeningModel;
 use App\Models\TransaksiModel;
 use App\Services\ImageValidation;
 use Carbon\Carbon;
@@ -25,10 +26,12 @@ class TransaksiController extends Controller
         {
             $dataTransaksi = TransaksiModel::with([
                 'pemesanan:id_pemesanan,id_beras,id_produsen',
-                'pemesanan.produsen:id_produsen,nama_produsen',
+                'pemesanan.produsen:id_produsen,user_id,nama_produsen',
                 'pemesanan.beras:id_beras,nama_beras',
-                'pemesanan.detail'
+                'pemesanan.detail',
             ])->get();
+
+            $daftarNoRek = RekeningModel::select('id_rekening','id_produsen','no_rekening','nama_rekening')->get();
 
             // pisahkan detail berdasarkan berat
             foreach ($dataTransaksi as $item) {
@@ -41,6 +44,7 @@ class TransaksiController extends Controller
 
             return Inertia::render('Admin/Transaksi/Index', [
                 'dataTransaksi' => $dataTransaksi,
+                'daftarNoRek' => $daftarNoRek,
             ]);
         }
         else if($loggedInUser->role === 'Pemilik')
@@ -80,6 +84,8 @@ class TransaksiController extends Controller
                 $query->where('id_produsen', $idProdusen);
             })->get();
 
+            $daftarNoRek = RekeningModel::where('id_produsen', $loggedInUser->user_id)->select('id_rekening', 'id_produsen', 'no_rekening', 'nama_rekening')->get();
+
             // pisahkan detail berdasarkan berat
             foreach ($dataTransaksi as $item) {
                 $detailMap = $item->pemesanan->detail->keyBy('berat');
@@ -89,10 +95,9 @@ class TransaksiController extends Controller
                 $item->stok50kg = $detailMap->get(50);
             }
 
-
-
             return Inertia::render('Produsen/Transaksi/Index', [
                 'dataTransaksi' => $dataTransaksi,
+                'daftarNoRek' => $daftarNoRek,
             ]);
         }
     }
@@ -101,6 +106,7 @@ class TransaksiController extends Controller
     {
         $req->validate([
             'id_transaksi' => 'required',
+            'rekening' => 'required',
             'bukti_bayar' => 'required',
         ]);
 
@@ -118,6 +124,7 @@ class TransaksiController extends Controller
         {
 
             $transaksi = transaksiModel::findOrFail($req->id_transaksi);
+            $transaksi->rekening = $req->rekening;
             $transaksi->tgl_transaksi = Carbon::now()->format('Y-m-d');
             $transaksi->bukti_bayar = $linkFile;
 
