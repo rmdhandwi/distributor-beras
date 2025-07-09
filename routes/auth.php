@@ -81,6 +81,7 @@ Route::middleware(['auth', 'produsen'])->group(function () {
     Route::post('produsen/beras/destroy', [BerasController::class, 'destroy'])->name('produsen.beras.destroy');
 
     Route::get('/produsen/rekening', [RekeningController::class, 'index'])->name('produsen.rekening.index');
+    Route::post('/produsen/rekening', [RekeningController::class, 'store'])->name('produsen.rekening.store');
 
 
     Route::get('/produsen/pemesanan/', [PemesananController::class, 'index'])->name('produsen.pemesanan.index');
