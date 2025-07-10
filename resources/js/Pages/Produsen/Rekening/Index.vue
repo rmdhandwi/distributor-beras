@@ -1,6 +1,6 @@
 <script setup>
 import { computed, defineAsyncComponent, onMounted, ref} from 'vue'
-import { Head } from '@inertiajs/vue3'
+import { Head, router } from '@inertiajs/vue3'
 
 import { useToast } from 'primevue'
 
@@ -26,7 +26,7 @@ const currentTab = ref('DaftarRekening')
 const refreshPage = () =>
 {
     checkNotif()
-    switchComponents('DaftarRekening','Daftar Rekening')
+    router.visit(route('produsen.rekening.index'))
 }
 
 const checkNotif = async () =>
