@@ -58,4 +58,21 @@ class RekeningController extends Controller
             'notif_message' => 'Gagal menambahkan rekening ' . $validated['nama_rekening'],
         ]);
     }
+
+    public function destroy(Request $req)
+    {
+        $rekening = RekeningModel::find($req->id_rekening);
+
+        if ($rekening->delete()) {
+            return redirect()->back()->with([
+                'notif_status' => 'success',
+                'notif_message' => 'Rekening berhasil dihapus.',
+            ]);
+        } else {
+            return redirect()->back()->with([
+                'notif_status' => 'error',
+                'notif_message' => 'Gagal menghapus rekening.',
+            ]);
+        }
+    }
 }
