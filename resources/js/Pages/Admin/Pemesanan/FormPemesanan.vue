@@ -230,6 +230,8 @@ const confirmHapus = () => {
                 <span class="text-red-500" v-if="pemesananForm.errors['stok10kg.jumlah']"> {{ pemesananForm.errors['stok10kg.jumlah'] }} </span>
             </div>
 
+            <span  v-if="selectedBeras?.stok10kg">Maks pesan : {{ selectedBeras?.stok10kg?.jumlah+' Kg' }}</span>
+
             <div>
                 <FloatLabel variant="on">
                     <InputNumber id="harga_10kg" v-model="pemesananForm.stok10kg.harga_satuan" readonly locale="id-ID" prefix="Rp" fluid/>
@@ -259,6 +261,8 @@ const confirmHapus = () => {
                 <span class="text-red-500" v-if="pemesananForm.errors['stok20kg.jumlah']"> {{ pemesananForm.errors['stok20kg.jumlah'] }} </span>
             </div>
 
+            <span  v-if="selectedBeras?.stok20kg">Maks pesan : {{ selectedBeras?.stok20kg?.jumlah+' Kg' }}</span>
+
             <div>
                 <FloatLabel variant="on">
                     <InputNumber id="harga_20kg" v-model="pemesananForm.stok20kg.harga_satuan" readonly locale="id-ID" prefix="Rp" fluid/>
@@ -287,6 +291,8 @@ const confirmHapus = () => {
                 </FloatLabel>
                 <span class="text-red-500" v-if="pemesananForm.errors['stok50kg.jumlah']"> {{ pemesananForm.errors['stok50kg.jumlah'] }} </span>
             </div>
+
+            <span  v-if="selectedBeras?.stok50kg">Maks pesan : {{ selectedBeras?.stok50kg?.jumlah+' Kg' }}</span>
 
             <div>
                 <FloatLabel variant="on">
