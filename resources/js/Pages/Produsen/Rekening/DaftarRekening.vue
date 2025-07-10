@@ -2,6 +2,8 @@
 import { onBeforeMount, ref } from 'vue'
 
 import {FilterMatchMode} from '@primevue/core/api'
+import { useForm } from '@inertiajs/vue3'
+import { useConfirm, useToast } from 'primevue'
 
 onBeforeMount(() =>
 {
@@ -16,7 +18,61 @@ const props = defineProps({
     dataRekening : Object,
 })
 
+const emit = defineEmits(['refreshPage'])
+
+const confirm = useConfirm()
+const toast = useToast()
+
 const dataRekeningFix = ref([])
+
+const rekForm = useForm({
+    id_rekening : null,
+    no_rekening : null,
+    nama_rekening : null,
+})
+
+const hapusRek = id =>
+{
+    const findRek = props.dataRekening.find( rek => rek.id_rekening === id)
+    rekForm.id_rekening = id
+    rekForm.no_rekening = findRek.no_rekening
+    rekForm.nama_rekening = findRek.nama_rekening
+
+    console.log(findRek)
+
+    confirm.require({
+        message: `Hapus rekening ${rekForm.nama_rekening+' - '+rekForm.no_rekening}?`,
+        header: 'Peringatan',
+        icon: 'pi pi-exclamation-triangle',
+        rejectProps: {
+            label: 'Batal',
+            severity: 'secondary',
+            outlined: true,
+        },
+        acceptProps: {
+            label: `Hapus`,
+            severity : 'danger',
+        },
+        accept: () => {
+
+            rekForm.post(route('produsen.rekening.destroy'), {
+                onError : () => {
+                    toast.add({
+                        severity : 'error',
+                        summary : 'Notifikasi',
+                        detail : 'Terjadi kesalahan',
+                        life : 3000,
+                    })
+                },
+                onSuccess : () => {
+                    rekForm.reset()
+                    rekForm.clearErrors()
+                    emit('refreshPage')
+                }
+            })
+        },
+    })
+}
 </script>
 
 <template>
@@ -50,7 +106,7 @@ const dataRekeningFix = ref([])
             <Column header="Action" frozen align-frozen="right">
                 <template #body="{data}">
                     <div class="flex place-content-center gap-2">
-                        <Button severity="danger" size="small" icon="pi pi-trash"/>
+                        <Button @click="hapusRek(data.id_rekening)" severity="danger" size="small" icon="pi pi-trash"/>
                     </div>
                 </template>
             </Column>
